@@ -5,7 +5,5 @@ const root = resolve(import.meta.dirname, "..");
 const dist = resolve(root, "dist");
 await rm(dist, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
-for (const name of ["index.html", "styles.css", "app.js"]) {
-  await cp(resolve(root, name), resolve(dist, name));
-}
+await cp(resolve(root, "index.html"), resolve(dist, "index.html"));
 console.log("Built static site in dist/");
