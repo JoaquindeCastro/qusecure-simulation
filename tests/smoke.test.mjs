@@ -18,5 +18,5 @@ test("contains multiple crypto-agility stress events", () => {
 });
 
 test("contains interactive model controls and isometric visual classes", () => {
-  for (const token of ["inventory", "orchestration", "island", "building", "layer"]) assert.ok(html.includes(token));
+  for (const token of ["inventory", "Orchestration", "island", "building", "layer"]) assert.ok(html.includes(token));
 });
