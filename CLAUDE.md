@@ -125,8 +125,15 @@ app's own account of how it works, and it must not drift.
 - Enterprise architecture is the primary visual object; illustrations are shown whole and
   uncropped, never buried in small cards or covered in UI.
 - Animation carries meaning: event → impact → propagation → response. Anything else is decoration.
-- Progressive disclosure: plain-language claim first, mechanism one interaction deeper, terms
-  defined inline at first use.
+- Progressive disclosure: plain-language claim first, mechanism one interaction deeper.
+- **Plain language is the default.** Prefer the ordinary word. Jargon is allowed only where a plain
+  word would be inaccurate — and then it must be in `GLOSSARY`, which gives it a dashed underline
+  and a definition on hover, focus or tap. `annotate(root)` marks the first mention of each defined
+  term per block automatically, so new copy is covered without hand-marking; add the term to
+  `GLOSSARY` and it will be picked up. Headings, buttons and option cards are excluded from marking
+  (a marker inside a card is a hover-only span, never a nested button), so **jargon in a heading has
+  nowhere to be defined — do not put it there.** A definition must not lean on another undefined
+  acronym; a test enforces this.
 - Accessibility is not optional: real buttons, `aria-pressed` on option groups, focus moved to the
   heading on screen change, `aria-live` on the result, and a `prefers-reduced-motion` path for every
   animation (the trigger sequence collapses to its end state).

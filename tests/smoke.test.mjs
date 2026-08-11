@@ -19,7 +19,7 @@ test("contains the four industry environments", () => {
 });
 
 test("contains the four stress events", () => {
-  for (const event of ["Q-Day", "Protocol deprecation", "PQC implementation flaw", "Trust-chain failure"]) {
+  for (const event of ["Q-Day", "Old protocol banned", "Flaw in post-quantum software", "Certificate authority fails"]) {
     assert.ok(html.includes(event), event);
   }
 });
@@ -45,6 +45,50 @@ test("hotspot coordinates stay inside the illustration", () => {
 test("respects reduced motion and states its modelling limits", () => {
   assert.ok(html.includes("prefers-reduced-motion"));
   assert.ok(html.includes("not breach probabilities"));
+});
+
+// ---- glossary: markers are generated at runtime, so the source of truth is checked directly ----
+
+const glossarySrc = html.slice(html.indexOf("var GLOSSARY="), html.indexOf("/* ---------------- view"));
+const GLOSSARY = new Function(`${glossarySrc}; return GLOSSARY;`)();
+
+test("every glossary entry is usable", () => {
+  const keys = Object.keys(GLOSSARY);
+  assert.ok(keys.length >= 30, `expected a real glossary, found ${keys.length} entries`);
+  for (const [key, entry] of Object.entries(GLOSSARY)) {
+    assert.ok(entry.label && entry.label.length > 1, `${key} has no label`);
+    assert.ok(entry.def && entry.def.length > 30, `${key} has no usable definition`);
+    assert.ok(Array.isArray(entry.match) && entry.match.length, `${key} has no trigger phrases`);
+    for (const phrase of entry.match) assert.ok(phrase.trim().length > 1, `${key} has an empty phrase`);
+  }
+});
+
+test("no phrase is claimed by two glossary entries", () => {
+  const owner = new Map();
+  for (const [key, entry] of Object.entries(GLOSSARY)) {
+    for (const phrase of entry.match) {
+      const p = phrase.toLowerCase();
+      assert.equal(owner.get(p), undefined, `"${phrase}" is claimed by both ${owner.get(p)} and ${key}`);
+      owner.set(p, key);
+    }
+  }
+});
+
+test("a definition never leans on an undefined term of its own", () => {
+  // A definition that needs a second definition to make sense has not done its job.
+  const opaque = ["ML-KEM", "SCADA", "PQC", "CDN", "HSM", "VPN"];
+  for (const [key, entry] of Object.entries(GLOSSARY)) {
+    for (const acronym of opaque) {
+      if (!entry.def.includes(acronym)) continue;
+      const explains = entry.match.some((m) => m.toLowerCase() === acronym.toLowerCase());
+      const spelled = new RegExp(`${acronym}\\b[^.]{0,20}(is|—|-)|\\b(content delivery|hardware security|post-quantum)`, "i");
+      assert.ok(explains || spelled.test(entry.def), `${key} uses "${acronym}" without unpacking it`);
+    }
+  }
+});
+
+test("the page tells the reader what the dotted words are", () => {
+  assert.ok(/Dotted words[^<]*definition/i.test(html), "the marker convention is never explained");
 });
 
 test("publishes its method and its limits in the page", () => {

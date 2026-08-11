@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#fcfcfc">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Crypto Agility Stress Test">
-<meta property="og:description" content="See how a cryptographic shock propagates through an enterprise — and how prepared the organization is to respond.">
+<meta property="og:description" content="Cryptography is the invisible technology that keeps data private and proves who sent it. See what happens to an organization when it suddenly has to change — and how much of that change it can actually make.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d97a4'/%3E%3Cpath d='M16 7l7 4v10l-7 4-7-4V11z' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preload" as="image" href="assets/industry/financial-services.png" fetchpriority="high">
@@ -38,6 +38,8 @@ h1,h2,h3{line-height:1.1;letter-spacing:-.02em;margin:0;font-weight:640}
 p{margin:0}
 button{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:4px}
+/* Headings receive focus on navigation as a landing spot, not as a control — no ring. */
+.screen h1:focus,.screen h2:focus{outline:none}
 
 /* ---------- shell ---------- */
 .shell{max-width:1180px;margin:0 auto;padding:26px 30px 90px}
@@ -279,6 +281,21 @@ details.learn[open] summary:before{content:"–"}
 .live .say{font-size:16.5px;line-height:1.5;font-weight:520;padding-top:14px;border-top:1px solid var(--line)}
 .live .foot{font-size:14px;color:var(--muted);line-height:1.5}
 .disclaimer{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);color:var(--faint);font-size:13.4px;max-width:720px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.term{
+  border:0;border-bottom:1px dashed var(--faint);background:none;padding:0;
+  font:inherit;color:inherit;cursor:help;line-height:inherit;
+  transition:border-color .15s,color .15s
+}
+.term:hover,.term:focus-visible{border-bottom-color:var(--teal);color:var(--teal-deep)}
+#tip{
+  position:fixed;z-index:60;max-width:min(320px,calc(100vw - 24px));
+  background:var(--navy);color:#eef6f8;padding:13px 15px;border-radius:13px;
+  font-size:13.8px;line-height:1.55;box-shadow:0 12px 34px rgba(14,28,38,.28);
+  opacity:0;transition:opacity .14s var(--step);pointer-events:none
+}
+#tip.on{opacity:1}
+#tip b{display:block;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:#68d7e2;margin-bottom:5px;font-weight:640}
 .linky{border:0;background:none;padding:0;color:var(--teal-deep);cursor:pointer;font:inherit;text-decoration:underline;text-underline-offset:3px}
 .linky:hover{color:var(--ink)}
 .method-link{margin-top:26px;text-align:center;font-size:15px}
@@ -340,7 +357,8 @@ details.learn[open] summary:before{content:"–"}
     <div class="copy">
       <p class="eyebrow">Interactive simulation</p>
       <h1 class="display">Crypto Agility <em>Stress Test</em></h1>
-      <p class="lede">See how a cryptographic shock propagates through an enterprise — and how prepared the organization is to respond.</p>
+      <p class="lede">Almost everything an organization runs on is held together by cryptography. See what happens when it suddenly has to be changed — and how much of that change the organization can actually make.</p>
+      <p class="sub">Dotted words like this one have a definition: hover, tap or tab to them.</p>
       <div class="row"><button class="btn primary big" data-go="1">Start simulation</button></div>
     </div>
     <div class="intro-art">
@@ -349,12 +367,12 @@ details.learn[open] summary:before{content:"–"}
   </div>
   <div class="glossary">
     <details class="learn">
-      <summary>New to cryptography? Start here</summary>
+      <summary>New to this? Start here</summary>
       <dl class="defs">
-        <div><dt>Cryptography</dt><dd>Technology used to keep data private and to prove who sent it.</dd></div>
-        <div><dt>PQC</dt><dd>Post-quantum cryptography — designed to resist attacks from quantum computers.</dd></div>
-        <div><dt>Q-Day</dt><dd>A hypothetical point when a quantum computer can break the public-key cryptography in wide use today. Nobody knows when. This tool does not predict it.</dd></div>
-        <div><dt>Crypto agility</dt><dd>The ability to find, manage and replace cryptography without rebuilding the whole organization.</dd></div>
+        <div><dt>Cryptography</dt><dd>The technology that keeps data private and proves who sent it. It is behind the padlock in your browser, your bank card, and almost every login.</dd></div>
+        <div><dt>Post-quantum cryptography</dt><dd>Newer cryptography built to stay secure even against a quantum computer. Often shortened to PQC.</dd></div>
+        <div><dt>Q-Day</dt><dd>The hypothetical day a quantum computer becomes able to break the cryptography protecting the internet today. Nobody knows when that is, and this tool does not try to guess.</dd></div>
+        <div><dt>Crypto agility</dt><dd>Being able to find, manage and replace cryptography without rebuilding the whole organization. The question is not what you use today, but how fast you could change it.</dd></div>
       </dl>
     </details>
   </div>
@@ -376,7 +394,7 @@ details.learn[open] summary:before{content:"–"}
 <!-- 2 · READINESS -->
 <section class="screen" id="s2">
   <div class="center"><p class="eyebrow">Step 2 of 4</p><h2 class="title">How deep does protection go?</h2>
-    <p class="lede">Post-quantum readiness is not a yes or no. Protection can stop at the public edge while the enterprise behind it stays classical.</p></div>
+    <p class="lede">Being ready is not a yes-or-no question. Protection often stops at the public website, while everything the organization actually runs on is untouched.</p></div>
   <div class="readiness">
     <div class="stackwrap">
       <div class="stack" id="stack" aria-hidden="true">
@@ -398,11 +416,11 @@ details.learn[open] summary:before{content:"–"}
 <!-- 3 · EVENT -->
 <section class="screen" id="s3">
   <div class="center"><p class="eyebrow">Step 3 of 4</p><h2 class="title">Choose a cryptographic shock</h2>
-    <p class="lede">Crypto agility is not only about quantum computers. It is about being able to change cryptography at all — on someone else's schedule.</p></div>
+    <p class="lede">This is not only about quantum computers. It is about whether an organization can change its cryptography at all, at short notice, on somebody else’s deadline.</p></div>
   <div class="events" id="events"></div>
   <details class="learn advanced">
     <summary>Advanced assumptions (optional)</summary>
-    <p class="sub" style="margin-top:14px">Defaults describe a mid-sized enterprise. You can run the simulation without changing anything.</p>
+    <p class="sub" style="margin-top:14px">The defaults describe a typical mid-sized organization. You can run the whole simulation without touching any of these.</p>
     <div class="sliders" id="sliders"></div>
   </details>
   <div class="row between" style="max-width:none">
@@ -439,14 +457,14 @@ details.learn[open] summary:before{content:"–"}
   </div>
   <div class="versus">
     <h3 style="font-size:18px">Fragmented cryptography vs. a crypto-agile response</h3>
-    <p class="sub" style="margin-top:8px">Same industry, same event, same vendor readiness, same team capacity. The only difference is orchestration.</p>
+    <p class="sub" style="margin-top:8px">Both rows use the same industry, the same event, the same suppliers and the same number of people. The only thing that differs is how centrally the organization can make a change.</p>
     <div class="vs-row"><b>Fragmented</b><div class="track"><i class="fill-frag" id="barFrag"></i><span class="floor" id="floorFrag" hidden></span></div><span class="vs-num" id="numFrag"></span></div>
     <div class="vs-row"><b>Crypto-agile</b><div class="track"><i class="fill-agile" id="barAgile"></i><span class="floor" id="floorAgile" hidden></span></div><span class="vs-num" id="numAgile"></span></div>
     <p class="floor-note" id="floorNote" hidden><s></s><span></span></p>
     <div class="secondary">
       <div><b id="mExposed"></b>systems the response can act on</div>
-      <div><b id="mBlocked"></b>blocked by vendor or hardware</div>
-      <div><b id="mUnknown"></b>not in the inventory</div>
+      <div><b id="mBlocked"></b>waiting on a supplier or on hardware</div>
+      <div><b id="mUnknown"></b>nobody has a record of</div>
       <div><b id="mReach"></b>of affected systems reachable</div>
     </div>
   </div>
@@ -461,7 +479,7 @@ details.learn[open] summary:before{content:"–"}
 <!-- 6 · EXPLORE -->
 <section class="screen" id="s6">
   <div class="center"><p class="eyebrow">Explore</p><h2 class="title">Change the assumptions</h2>
-    <p class="lede">Every number updates as you move a control. Nothing here is a probability — it is a transparent comparison of assumptions you choose.</p></div>
+    <p class="lede">Every number updates as you move a control. None of these are odds or predictions — they are a comparison between assumptions you choose.</p></div>
   <div class="explore">
     <div>
       <div class="panel"><p class="live" id="liveText"></p></div>
@@ -475,18 +493,18 @@ details.learn[open] summary:before{content:"–"}
 <!-- 7 · METHOD -->
 <section class="screen" id="s7">
   <div class="center"><p class="eyebrow">Method</p><h2 class="title">How this model works</h2>
-    <p class="lede">Every number on the result screen comes from the steps below. There is no hidden weighting and no randomness — the same inputs always produce the same output.</p></div>
+    <p class="lede">Every number on the result screen comes from the eight steps below. Nothing is hidden, nothing is random, and the same choices always produce the same answer.</p></div>
 
   <div class="method">
     <ol class="steps">
-      <li><b>Start from a fixed estate.</b> Each industry is a set of named systems drawn on the illustration. Every system belongs to one band — public edge, applications, network and VPN, identity and keys, or vendor and legacy — and declares which cryptography it depends on: key agreement, signatures, certificates, or symmetric encryption.</li>
-      <li><b>Apply the readiness level.</b> The chosen level says what share of each band has already migrated. The vendor and legacy band never exceeds 15%, because hardware and unsupported equipment are not a software problem.</li>
-      <li><b>Apply inventory visibility.</b> The same share logic decides which systems the organization can see, with embedded and field equipment discounted further. This is the only place discovery is decided, and orchestration is deliberately not an input to it.</li>
-      <li><b>Fire the event.</b> Each event has its own rule for what it touches. Q-Day hits anything relying on public-key cryptography that has not migrated. A protocol deprecation hits systems still speaking the old protocol. A PQC implementation flaw hits <em>only</em> systems that already migrated. A trust-chain failure hits everything depending on certificates, migrated or not.</li>
-      <li><b>Classify every affected system.</b> Not catalogued → nothing reaches it. Hardware or unsupported → blocked, whatever the policy says. Vendor-dependent below that supplier's readiness gate → blocked. Everything else → work the response can actually do.</li>
-      <li><b>Spread reduced assurance one hop.</b> A neighbour of an affected system loses assurance. It does not automatically fail — that would turn one broken system into a whole broken enterprise, which is not how dependency works.</li>
-      <li><b>Cost the work.</b> Each reachable system carries change effort plus coordination effort, weighted by band. Teams divide it with mild diminishing returns. Orchestration removes up to 55% of the change effort and up to 85% of the coordination — coordination is the part crypto agility is actually for.</li>
-      <li><b>Hold everything else constant.</b> The fragmented figure is the same estate with orchestration at zero. Industry, event, vendor readiness, inventory and team capacity are identical on both sides, so the gap is attributable to orchestration alone.</li>
+      <li><b>Start from a fixed set of systems.</b> Each industry is a group of named systems drawn on the picture. Every one of them sits in a layer — public edge, applications, network and VPN, identity and keys, or suppliers and old equipment — and says which kind of cryptography it relies on: key agreement, signatures, certificates, or symmetric encryption.</li>
+      <li><b>Apply the readiness level you chose.</b> It sets how much of each layer has already been upgraded. The suppliers and old equipment layer never goes above 15%, because physical equipment is not something a software rollout can fix.</li>
+      <li><b>Work out what the organization can even see.</b> The same logic decides which systems have been written down, with equipment out in the field counted as harder to find. This is the only place that is decided — and how centrally the organization can make changes deliberately does not affect it, because you cannot manage something nobody has recorded.</li>
+      <li><b>Set off the event.</b> Each one has its own rule for what it reaches. Q-Day hits anything still relying on public-key cryptography. A banned protocol hits the systems still using it. A flaw in a post-quantum product hits <em>only</em> the systems that already moved to it. A failed certificate authority hits everything that depended on it, upgraded or not.</li>
+      <li><b>Sort every affected system into one of four outcomes.</b> Not written down anywhere, so nothing reaches it. Physical or too old to change, so blocked no matter what the policy says. Waiting on a supplier who has not shipped a fix yet, so also blocked. Everything else is work the organization can actually get on with.</li>
+      <li><b>Follow the knock-on effects one step.</b> Anything directly connected to an affected system becomes less trustworthy too. It does not automatically fail — treating it that way would turn one broken system into a broken organization, and that is not how dependencies behave.</li>
+      <li><b>Add up the work.</b> Each system that can be reached costs time to change, plus time spent finding the owner and agreeing the change. More people help, but not proportionally. Central control removes up to 55% of the changing and up to 85% of the chasing — the chasing is what crypto agility is really for.</li>
+      <li><b>Compare fairly.</b> The fragmented figure is exactly the same organization with central control set to zero. Industry, event, suppliers, records and people are identical on both sides, so the difference between the two bars can only come from one thing.</li>
     </ol>
 
     <div class="limits">
@@ -494,10 +512,10 @@ details.learn[open] summary:before{content:"–"}
       <ul>
         <li><b>It is not a probability.</b> Nothing here is a likelihood, an expected loss, or a risk score. The figures compare assumptions you chose against each other.</li>
         <li><b>It does not predict Q-Day.</b> The event horizon is the window over which traffic is assumed to be captured — not a forecast of when anything happens.</li>
-        <li><b>The estate is a stand-in.</b> Nine to eleven named systems represent classes of system, not an inventory of a real organization. A real estate has thousands, and the ratios matter more than the counts.</li>
-        <li><b>Effort figures are illustrative.</b> Days per system, the agility ceilings and the supplier gates are stated assumptions, not measurements. Change them and every number moves.</li>
-        <li><b>Dependencies are simplified.</b> Assurance spreads exactly one hop along a small hand-drawn graph. Real dependency graphs are larger, cyclical, and partly unknown.</li>
-        <li><b>It says nothing about your organization.</b> This is a tabletop instrument for reasoning about crypto agility. It is not an assessment, an audit, or advice.</li>
+        <li><b>These systems are stand-ins.</b> Nine to eleven named systems stand for whole categories, not a list of anything real. An actual organization has thousands, so the proportions matter and the counts do not.</li>
+        <li><b>The day counts are illustrative.</b> How long a system takes, how much central control helps, and when each supplier ships are all assumptions written into the model, not measurements. Change them and every number changes.</li>
+        <li><b>Dependencies are simplified.</b> Knock-on effects travel exactly one step, along a small set of connections drawn by hand. Real ones are far larger, loop back on themselves, and are partly unknown even to the organization.</li>
+        <li><b>It says nothing about your organization.</b> This is a thinking tool for reasoning about crypto agility. It is not an assessment, an audit, or advice.</li>
       </ul>
     </div>
   </div>
@@ -505,7 +523,7 @@ details.learn[open] summary:before{content:"–"}
   <div class="row"><button class="btn" id="methodBack">← Back</button></div>
 </section>
 
-<p class="disclaimer">Deterministic tabletop model. Figures compare assumptions you selected; they are not breach probabilities, loss estimates, or a forecast of when Q-Day will occur. Nothing you enter leaves this browser. <button class="linky" data-go="7">Method and limits</button></p>
+<p class="disclaimer">A deterministic tabletop model: the same choices always give the same answer. The figures compare assumptions you selected against each other — they are not breach probabilities, loss estimates, or a forecast of when Q-Day will happen. Nothing you enter leaves this browser. <button class="linky" data-go="7">Method and limits</button></p>
 
 </div>
 
@@ -518,19 +536,19 @@ var BANDS=[
  {id:'app',  label:'Applications'},
  {id:'net',  label:'Network & VPN'},
  {id:'keys', label:'Identity & keys'},
- {id:'legacy',label:'Vendor & legacy'}
+ {id:'legacy',label:'Suppliers & old equipment'}
 ];
 
 /* Adoption states. coverage = share of each band that has been migrated.
    The vendor/legacy band never reaches 1: hardware and unsupported systems are not a software problem. */
 var ADOPTION={
- edge:{label:'Edge protected',blurb:'The public website or CDN uses post-quantum protection. Most of the enterprise behind it is unchanged.',
+ edge:{label:'Edge protected',blurb:'The public website has been upgraded to post-quantum protection — often by an outside service such as a CDN. Everything behind it is unchanged.',
    coverage:{edge:1,app:0,net:0,keys:0,legacy:0}},
- pilot:{label:'Targeted pilots',blurb:'A few internal applications and links have pilot deployments.',
+ pilot:{label:'Targeted pilots',blurb:'A handful of internal systems have been upgraded as a trial. The rest have not been touched.',
    coverage:{edge:1,app:.4,net:.2,keys:0,legacy:0}},
- orchestrated:{label:'Orchestrated coverage',blurb:'Central inventory and crypto policy reach most of the environment, applied through overlays where systems cannot change natively.',
+ orchestrated:{label:'Orchestrated coverage',blurb:'The organization can see what cryptography it has and change it centrally — including by putting a protective layer in front of systems that cannot be changed themselves.',
    coverage:{edge:1,app:.85,net:.8,keys:.6,legacy:0}},
- native:{label:'Broad native migration',blurb:'Most systems support approved post-quantum algorithms directly. Vendor and legacy dependencies remain.',
+ native:{label:'Broad native migration',blurb:'Most systems have been upgraded in the products themselves. Equipment bought from suppliers, and older gear, still has not.',
    coverage:{edge:1,app:1,net:.9,keys:.85,legacy:.15}}
 };
 
@@ -538,25 +556,25 @@ var ADOPTION={
    confidentiality, authenticity, integrity, availability and compliance distinct. */
 var EVENTS={
  qday:{label:'Q-Day',tag:'Cryptographic break',
-   blurb:'A quantum computer capable of breaking RSA and ECC becomes real. Public-key cryptography stops being trustworthy.',
+   blurb:'A quantum computer capable of breaking RSA and ECC becomes real. The public-key cryptography protecting almost everything stops being trustworthy.',
    properties:'confidentiality and authenticity',kind:'vulnerability',
    stresses:['confidentiality','authenticity','integrity'],
-   plain:'Anything relying on RSA or ECC to agree keys or prove identity is no longer trustworthy. Symmetric encryption such as AES-256 is weakened, not broken, so well-encrypted data at rest is not simply readable.',
+   plain:'Anything relying on RSA or ECC to agree keys or prove identity is no longer trustworthy. Symmetric encryption such as AES-256 is weakened, not broken, so well-encrypted stored data does not simply become readable.',
    hits:function(a,ctx){return !ctx.covered[a.id] && (a.dep.indexOf('pk')>=0||a.dep.indexOf('sig')>=0||a.dep.indexOf('cert')>=0)}},
- tls:{label:'Protocol deprecation',tag:'Compliance deadline',
-   blurb:'A protocol still in use is prohibited by policy on a fixed date. Nothing is broken — it simply becomes unacceptable.',
+ tls:{label:'Old protocol banned',tag:'Compliance deadline',
+   blurb:'A protocol still in daily use is banned by a rule with a fixed deadline. Nothing is broken — it simply stops being allowed.',
    properties:'availability and compliance standing',kind:'compliance',
    stresses:['availability','compliance'],
    plain:'Nothing is cryptographically broken. Systems still speaking the prohibited protocol fall out of compliance, and switching it off without knowing who depends on it is how a compliance date becomes an outage.',
    hits:function(a,ctx){return a.proto && !ctx.covered[a.id]}},
- mlkem:{label:'PQC implementation flaw',tag:'Migrate again',
-   blurb:'A flaw is found in a widely deployed ML-KEM implementation. Systems that already migrated must be changed again.',
+ mlkem:{label:'Flaw in post-quantum software',tag:'Migrate again',
+   blurb:'A serious flaw is found in a widely used ML-KEM product. The systems that already moved to it are the ones that must now change again.',
    properties:'confidentiality',kind:'vulnerability',
    stresses:['confidentiality'],
    plain:'This event only touches systems that already moved to post-quantum cryptography. Having migrated once is not protection — being able to migrate again is.',
    hits:function(a,ctx){return !!ctx.covered[a.id]}},
- ca:{label:'Trust-chain failure',tag:'Trust withdrawn',
-   blurb:'A certificate authority is no longer trusted. Everything that relied on it to prove identity has to be re-issued.',
+ ca:{label:'Certificate authority fails',tag:'Trust withdrawn',
+   blurb:'The organization that issues digital certificates is no longer trusted. Everything that relied on it to prove its identity has to be replaced at once.',
    properties:'authenticity and availability',kind:'outage',
    stresses:['authenticity','availability'],
    plain:'Certificates prove that a machine is who it claims to be. When the authority behind them is distrusted, identity fails across boundaries the organization does not control — including its vendors.',
@@ -570,7 +588,7 @@ health:{name:'Healthcare',img:'assets/industry/healthcare.png',
  assets:[
  {id:'core',x:43,y:33,band:'net',proto:true,dep:['pk','cert'],name:'Hospital core network',what:'The internal network every ward, device and system connects through.',crypto:'Certificates decide which machines may join, and keys encrypt the traffic between them.'},
  {id:'ehr',x:13,y:12,band:'app',dep:['pk','sig'],name:'Clinician workstation',what:'Where staff open, read and update patient records.',crypto:'An encrypted session protects the record in transit; signatures record who changed what.'},
- {id:'datacenter',x:63,y:11,band:'keys',dep:['sym','pk'],name:'Hospital data centre',what:'Servers holding patient records, backups and archives.',crypto:'Records are encrypted at rest with symmetric keys, which quantum computers weaken rather than break. The risk is traffic copied today and decrypted later.'},
+ {id:'datacenter',x:63,y:11,band:'keys',dep:['sym','pk'],name:'Hospital data centre',what:'Servers holding patient records, backups and archives.',crypto:'Stored records are encrypted with symmetric keys, which quantum computers weaken rather than break. The real risk here is traffic copied today and decrypted years later.'},
  {id:'telehealth',x:84,y:27,band:'app',vendor:true,dep:['pk','cert'],name:'Telehealth',what:'Remote appointments and clinician-to-clinician video.',crypto:'Session encryption keeps the consultation private; certificates prove the clinician is genuine.'},
  {id:'imaging',x:87,y:45,band:'legacy',legacy:true,vendor:true,proto:true,dep:['sig','cert'],name:'Imaging systems',what:'MRI and CT scanners and the archive that stores what they produce.',crypto:'Vendor-signed firmware controls what the scanner will run. These are replaced on ten-year cycles, not patch cycles.'},
  {id:'monitors',x:85,y:66,band:'legacy',legacy:true,proto:true,dep:['cert'],name:'Bedside monitors and pumps',what:'Connected devices on the ward network.',crypto:'Each unit proves itself with a device certificate. Many are too constrained to ever be upgraded.'},
@@ -601,11 +619,11 @@ gov:{name:'Government',img:'assets/industry/government.png',
  assets:[
  {id:'core',x:45,y:37,band:'app',dep:['pk','cert'],name:'Central government systems',what:'The services citizens see and the systems behind them.',crypto:'Certificates prove a service genuinely belongs to the government.'},
  {id:'agency',x:17,y:24,band:'app',dep:['cert','sig'],name:'Agency office systems',what:'Departmental applications and inter-agency exchange.',crypto:'Traffic between agencies is authenticated under one shared trust root with many dependents.'},
- {id:'datacenter',x:51,y:14,band:'keys',dep:['sym','pk'],name:'Government data centre',what:'Central compute and bulk storage.',crypto:'Encrypted at rest, with retention measured in decades.'},
+ {id:'datacenter',x:51,y:14,band:'keys',dep:['sym','pk'],name:'Government data centre',what:'Central compute and bulk storage.',crypto:'Stored encrypted, and kept for decades rather than years.'},
  {id:'treasury',x:82,y:21,band:'app',dep:['sig'],name:'Treasury and courts',what:'Disbursement and legal records.',crypto:'Signatures must stay verifiable long after the signer is gone.'},
  {id:'citizens',x:11,y:42,band:'edge',dep:['pk','cert'],name:'Citizen service counters',what:'Benefits, licensing and public-facing desks.',crypto:'Session encryption protects personal data submitted by the public.'},
  {id:'archive',x:11,y:57,band:'keys',dep:['sym','pk'],name:'National records archive',what:'Long-term storage of sensitive national material.',crypto:'The clearest copy-now-decrypt-later target here: material that must stay secret for fifty years.'},
- {id:'secureops',x:86,y:42,band:'net',dep:['pk','sig'],name:'Secure operations centre',what:'Classified coordination and command.',crypto:'High-assurance key material with its own approval process before any algorithm can change.'},
+ {id:'secureops',x:86,y:42,band:'net',dep:['pk','sig'],name:'Secure operations centre',what:'Classified coordination and command.',crypto:'The most tightly controlled keys in government, with their own approval process before anything can change.'},
  {id:'checkpoint',x:83,y:57,band:'legacy',legacy:true,vendor:true,dep:['sig','cert'],name:'Border checkpoints',what:'Document inspection and identity verification.',crypto:'Passport chips carry signatures checked against a national root, on readers replaced slowly and in the field.'},
  {id:'airport',x:18,y:74,band:'legacy',legacy:true,vendor:true,proto:true,dep:['cert'],name:'Aviation and transport',what:'Airport operations and transport coordination.',crypto:'Operational links whose vendors certify software on multi-year cycles.'},
  {id:'soc',x:45,y:80,band:'net',proto:true,dep:['pk','cert'],name:'Infrastructure operations',what:'Monitoring and control of national systems.',crypto:'Its own remote-access keys are among the highest-value targets in government.'},
@@ -756,9 +774,176 @@ function simulate(input){
 }
 /*MODEL-END*/
 
+/* ---------------- glossary ----------------
+   Every term the page cannot avoid using is defined here once. Copy should prefer plain words;
+   this exists for the words that carry real meaning and cannot be replaced without losing accuracy.
+   `match` lists the phrases that trigger the marker, longest first. */
+var GLOSSARY={
+ cryptography:{label:'Cryptography',def:'The technology that keeps data private and proves who sent it. It is what sits behind the padlock in a browser, the chip in a bank card, and the login to almost anything.',match:['cryptography','cryptographic']},
+ encryption:{label:'Encryption',def:'Scrambling data so that only someone holding the right key can read it.',match:['encryption','encrypted','encrypt']},
+ key:{label:'Key',def:'The secret value that locks or unlocks encrypted data. Whoever holds the key can read what it protects, which is why replacing keys is such a large part of this.',match:['keys','key']},
+ publickey:{label:'Public-key cryptography',def:'A method where a system publishes one key for anyone to use and keeps a matching secret one. It is what lets two strangers agree on a secret without ever having met. RSA and elliptic-curve cryptography are the two in wide use.',match:['public-key cryptography','public key cryptography','public-key']},
+ rsa:{label:'RSA and ECC',def:'The two public-key methods nearly all internet security has relied on for decades. RSA is the older one; ECC (elliptic-curve cryptography) is the more modern, and is what most phones and websites use today.',match:['RSA and ECC','RSA','ECC']},
+ pqc:{label:'Post-quantum cryptography',def:'Newer cryptography designed to stay secure even against a quantum computer. Often shortened to PQC.',match:['post-quantum cryptography','post-quantum protection','post-quantum','PQC']},
+ quantum:{label:'Quantum computer',def:'A fundamentally different kind of computer. A large enough one could break the public-key cryptography protecting the internet today. None exists yet, and nobody can say when one will.',match:['quantum computer']},
+ qday:{label:'Q-Day',def:'The hypothetical day a quantum computer becomes capable of breaking today’s public-key cryptography. Nobody knows when that is. This tool does not try to predict it.',match:['Q-Day']},
+ mlkem:{label:'ML-KEM',def:'The main post-quantum method now being standardised and rolled out for agreeing keys. Being an early adopter of it is exactly why a flaw in it would matter.',match:['ML-KEM']},
+ agility:{label:'Crypto agility',def:'Being able to find, manage and replace cryptography without rebuilding the organization. The point is not which algorithm you run today, but how quickly you could change it.',match:['crypto agility','crypto-agile','cryptographically agile']},
+ orchestration:{label:'Orchestration',def:'One central place to see what cryptography is deployed, set the rules for it, and push a change out — instead of asking every system owner separately.',match:['orchestration','orchestrated']},
+ inventory:{label:'Cryptographic inventory',def:'A record of which cryptography is used where. You cannot change what you do not know you have, which is why this limits everything else.',match:['cryptographic inventory','inventory']},
+ tls:{label:'TLS',def:'The protocol behind the padlock in a web browser. It encrypts traffic between two systems. TLS 1.2 is an older version still widely in use.',match:['TLS 1.2','TLS']},
+ protocol:{label:'Protocol',def:'An agreed set of rules two systems follow in order to talk to each other securely.',match:['protocol']},
+ certificate:{label:'Certificate',def:'A digital identity card for a machine, signed by an authority that other machines already trust. It is how one system proves to another that it is genuine.',match:['certificates','certificate']},
+ ca:{label:'Certificate authority',def:'The organization that issues digital certificates. Everything it has signed depends on it staying trusted — so if trust in it is withdrawn, all of that has to be replaced at once.',match:['certificate authority','trust anchor']},
+ trustchain:{label:'Trust chain',def:'The chain of signatures leading back to an authority everyone already trusts. Break a link near the top and everything below it stops being believable.',match:['trust-chain','trust chain','trust root','national root','shared trust root']},
+ signature:{label:'Digital signature',def:'A cryptographic seal proving who produced something and that it has not been altered since. It is what makes a document or a software update provable years later.',match:['digital signature','signatures','signature','signed']},
+ keyagreement:{label:'Key agreement',def:'The opening handshake in which two systems work out a shared secret, which then encrypts the rest of their conversation. This is the step a quantum computer would break.',match:['key agreement','agree keys']},
+ rotation:{label:'Key rotation',def:'Replacing keys and certificates with fresh ones — routinely on a schedule, or urgently after a problem. Routine until it has to happen everywhere at once.',match:['key rotation','rotating certificates and keys','rotated','rotation']},
+ symmetric:{label:'Symmetric encryption',def:'Encryption where both sides use the same key. It is what protects stored data in bulk, and it is far less affected by quantum computers than public-key methods.',match:['symmetric encryption','symmetric']},
+ aes:{label:'AES-256',def:'The standard symmetric encryption used for stored data. A quantum computer weakens it, but does not break it the way it breaks RSA and ECC — which is why well-encrypted stored data is not simply readable on Q-Day.',match:['AES-256']},
+ harvest:{label:'Harvest now, decrypt later',def:'Capturing encrypted traffic today and storing it until it can be decrypted years from now. It is why data that must stay secret for a long time is already at risk, before any quantum computer exists.',match:['harvest now, decrypt later','copied now and decrypted later','captured traffic']},
+ cdn:{label:'CDN',def:'A content delivery network — an outside service that sits in front of a website to serve it quickly and absorb traffic. It can be upgraded entirely independently of the organization behind it, which is what makes it such a misleading signal.',match:['CDN']},
+ edge:{label:'Public edge',def:'The outermost layer of an organization, the part facing the open internet: the public website and the outside services that deliver it. It is what outsiders can see, and the least representative of everything behind it.',match:['public edge','public-facing']},
+ pilot:{label:'Pilot deployment',def:'A small trial on a handful of systems to prove something works, before committing the whole organization to it.',match:['pilot deployments','pilot deployment','pilots']},
+ vpn:{label:'VPN',def:'An encrypted tunnel connecting remote sites or staff into the internal network.',match:['VPN']},
+ firmware:{label:'Firmware',def:'The software built into a physical device. Usually only the manufacturer can change it, and only by issuing an update the owner then has to install.',match:['firmware']},
+ scada:{label:'SCADA',def:'The control system operators use to watch and command physical equipment — a power grid, a water plant, a pipeline. A false instruction here has physical consequences, not just data ones.',match:['SCADA']},
+ ot:{label:'Operational technology',def:'The computing that runs physical processes — plants, pipelines, substations — as distinct from the office IT that runs email and spreadsheets. It is replaced on decade-long cycles.',match:['operational technology']},
+ hsm:{label:'Hardware security module',def:'A tamper-resistant device that stores an organization’s most important keys. Every other key is usually derived from what it holds.',match:['hardware security modules','hardware security module']},
+ relay:{label:'Protection relay',def:'The device in an electrical substation that decides when to cut a circuit. Many speak protocols designed before modern cryptography existed.',match:['protection relays','protection relay']},
+ inverter:{label:'Inverter',def:'The unit converting solar or wind output into grid electricity. A utility may have thousands, each with keys built in and no practical way to update them.',match:['inverters','inverter']},
+ pos:{label:'Point-of-sale terminal',def:'The card machine a customer taps or inserts a card into.',match:['point-of-sale','card terminals','payment terminals']},
+ epassport:{label:'Passport chip',def:'The chip inside a modern passport, carrying signatures that a border reader checks against a national authority.',match:['passport chips','passport chip']},
+ confidentiality:{label:'Confidentiality',def:'Keeping data unreadable to anyone who should not see it. This is the property that fails retroactively — data captured years ago can be exposed later.',match:['confidentiality']},
+ integrity:{label:'Integrity',def:'Being able to tell whether data has been altered since it was created.',match:['integrity']},
+ authenticity:{label:'Authenticity',def:'Being able to prove that a system or message really is what it claims to be, rather than an impostor.',match:['authenticity']},
+ availability:{label:'Availability',def:'Systems being usable when they are needed. Cryptography causes availability problems when something has to be switched off before its replacement is ready.',match:['availability']},
+ compliance:{label:'Compliance',def:'Meeting the rules a regulator or industry body sets. A system can be perfectly secure and still be out of compliance, and be forced to change anyway.',match:['compliance','non-compliance']},
+ deterministic:{label:'Deterministic',def:'The same inputs always produce exactly the same result. There is no randomness, no sampling and no estimation anywhere in this model.',match:['deterministic']},
+ tabletop:{label:'Tabletop model',def:'A planning exercise: you reason through a scenario on paper rather than testing it on live systems. Useful for comparing assumptions, not for measuring a real organization.',match:['tabletop model','tabletop']},
+ migration:{label:'Migration',def:'Moving systems from old cryptography onto new cryptography.',match:['migration','migrated','migrate']},
+ legacy:{label:'Legacy equipment',def:'Older equipment still doing its job but too old, too small or too closed to be upgraded. It does not disappear because a policy says so.',match:['legacy equipment','unsupported equipment','legacy']},
+ overlay:{label:'Overlay',def:'A protective layer placed in front of a system that cannot be changed itself, so that traffic to it is protected even though the system is not.',match:['overlays','overlay']},
+ telemetry:{label:'Telemetry',def:'Status and measurement data sent back automatically from remote equipment.',match:['telemetry']},
+ historian:{label:'Historian',def:'The system that stores a plant’s operating history — every reading, for years.',match:['historian']}
+};
+
 /* ---------------- view ---------------- */
 var $=function(s){return document.querySelector(s)},$$=function(s){return[].slice.call(document.querySelectorAll(s))};
 var REDUCED=matchMedia('(prefers-reduced-motion: reduce)');
+
+/* ---- glossary markers ----
+   Rather than hand-marking every sentence, the first mention of a defined term inside each block
+   is turned into a definition marker. First mention only: marking every instance would turn the
+   page into a field of dashed underlines and stop reading like prose. */
+var TERM_INDEX=(function(){
+  var list=[];
+  Object.keys(GLOSSARY).forEach(function(key){
+    GLOSSARY[key].match.forEach(function(phrase){list.push({key:key,phrase:phrase})});
+  });
+  return list.sort(function(a,b){return b.phrase.length-a.phrase.length});
+})();
+var termSeq=0;
+function escapeRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+var TERM_RE=new RegExp('(^|[^\\w-])('+TERM_INDEX.map(function(t){return escapeRe(t.phrase)}).join('|')+')(?![\\w-])','i');
+function phraseKey(text){
+  var lower=text.toLowerCase();
+  for(var i=0;i<TERM_INDEX.length;i++)if(TERM_INDEX[i].phrase.toLowerCase()===lower)return TERM_INDEX[i].key;
+  return null;
+}
+/* Marks the first mention of each defined term inside `root`. Safe to call repeatedly: already
+   marked terms are skipped, and headings, buttons and controls are left alone. */
+function annotate(root){
+  if(!root)return;
+  var used={},nodes=[],
+      walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+        if(!n.nodeValue||!/\S/.test(n.nodeValue))return NodeFilter.FILTER_REJECT;
+        var p=n.parentElement;
+        if(!p||p.closest('.term,.sr-only,h1,h2,h3,h4,.btn,.eyebrow,.tagline,.progress,.wordmark,#tip,.spot,.mark,.dots,.defs,.limits'))
+          return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }});
+  while(walk.nextNode())nodes.push(walk.currentNode);
+  root.querySelectorAll('.term').forEach(function(t){used[t.dataset.t]=true});
+  nodes.forEach(function(node){
+    var m=TERM_RE.exec(node.nodeValue);
+    while(m){
+      var key=phraseKey(m[2]);
+      if(key&&!used[key]){
+        used[key]=true;
+        var start=m.index+m[1].length,
+            after=node.splitText(start),tail=after.splitText(m[2].length),
+            /* Inside an option card the marker cannot be a button — nesting one interactive control
+               inside another is invalid and breaks selection. There it is a plain hover marker, and
+               the card's own sentence has to stand on its own without the definition. */
+            inControl=!!after.parentElement.closest('button,[role=radio],label'),
+            mark=document.createElement(inControl?'span':'button');
+        mark.className='term';mark.dataset.t=key;
+        mark.textContent=after.nodeValue;
+        if(!inControl){
+          var id='gd'+(++termSeq);
+          mark.type='button';mark.setAttribute('aria-describedby',id);
+          var sr=document.createElement('span');
+          sr.className='sr-only';sr.id=id;
+          sr.textContent=GLOSSARY[key].label+': '+GLOSSARY[key].def;
+          after.parentNode.replaceChild(mark,after);
+          mark.parentNode.insertBefore(sr,mark.nextSibling);
+        }else{
+          after.parentNode.replaceChild(mark,after);
+        }
+        node=tail;
+      }else{
+        /* already marked in this block, or not a real term — move past it and keep looking */
+        node=node.splitText(m.index+m[1].length+m[2].length);
+      }
+      m=TERM_RE.exec(node.nodeValue);
+    }
+  });
+}
+
+/* ---- definition tooltip ---- */
+var tip=document.createElement('div');
+tip.id='tip';tip.setAttribute('role','tooltip');tip.hidden=true;
+document.body.appendChild(tip);
+var pinnedTerm=null;
+function showTip(btn){
+  var g=GLOSSARY[btn.dataset.t];if(!g)return;
+  tip.innerHTML='';
+  var h=document.createElement('b');h.textContent=g.label;
+  var p=document.createElement('span');p.textContent=g.def;
+  tip.appendChild(h);tip.appendChild(p);
+  tip.hidden=false;tip.classList.add('on');
+  var r=btn.getBoundingClientRect(),t=tip.getBoundingClientRect(),pad=12;
+  var left=Math.min(Math.max(pad,r.left+r.width/2-t.width/2),innerWidth-t.width-pad);
+  var top=r.top-t.height-10;
+  if(top<pad){top=r.bottom+10;tip.classList.add('below')}else tip.classList.remove('below');
+  tip.style.left=left+'px';tip.style.top=top+'px';
+}
+function hideTip(){tip.classList.remove('on');tip.hidden=true;pinnedTerm=null}
+document.addEventListener('pointerover',function(e){
+  var b=e.target.closest&&e.target.closest('.term');
+  if(b&&!pinnedTerm)showTip(b);
+});
+document.addEventListener('pointerout',function(e){
+  var b=e.target.closest&&e.target.closest('.term');
+  if(b&&!pinnedTerm)hideTip();
+});
+document.addEventListener('focusin',function(e){
+  var b=e.target.closest&&e.target.closest('.term');
+  if(b)showTip(b);else if(!pinnedTerm)hideTip();
+});
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('.term');
+  if(b&&b.tagName==='BUTTON'){e.preventDefault();
+    if(pinnedTerm===b)hideTip();else{pinnedTerm=null;showTip(b);pinnedTerm=b}
+    return;
+  }
+  if(b)return;   /* a hover-only marker inside a card: let the card handle the click */
+  if(pinnedTerm)hideTip();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')hideTip()});
+addEventListener('scroll',function(){if(!tip.hidden)hideTip()},{passive:true});
+addEventListener('resize',hideTip);
 var ORDER=['health','finance','gov','infra'];
 var STEP_OF={1:1,2:2,3:3,4:3,5:4,6:4};
 
@@ -766,11 +951,11 @@ var input={industry:'health',adoption:'edge',event:'qday',inventory:65,teams:3,v
 var slide=0,result=null,fired=false,pinned=null;
 
 var CONTROLS=[
- {id:'inventory',label:'Inventory visibility',min:20,max:100,unit:'%',hint:'How much of the estate the organization can actually see. What it cannot see, it cannot fix.'},
- {id:'teams',label:'Migration capacity',min:1,max:10,unit:' teams',hint:'How much parallel change the organization can sustain.'},
- {id:'vendor',label:'Vendor readiness',min:10,max:100,unit:'%',hint:'Whether suppliers have shipped something to install yet.'},
- {id:'orch',label:'Orchestration coverage',min:0,max:100,unit:'%',hint:'Central policy, discovery and rotation — this is the crypto-agility dial.'},
- {id:'horizon',label:'Event horizon',min:1,max:20,unit:' years',hint:'How far out the change is assumed to land. Not a prediction.'}
+ {id:'inventory',label:'Inventory visibility',min:20,max:100,unit:'%',hint:'How much of the organization has actually been written down. What nobody has recorded, nobody can fix.'},
+ {id:'teams',label:'Migration capacity',min:1,max:10,unit:' teams',hint:'How many changes the organization can work on at the same time.'},
+ {id:'vendor',label:'Vendor readiness',min:10,max:100,unit:'%',hint:'Whether the companies that sold the equipment have released a fix yet.'},
+ {id:'orch',label:'Orchestration coverage',min:0,max:100,unit:'%',hint:'How much can be changed from one central place, rather than system by system. This is the crypto agility dial.'},
+ {id:'horizon',label:'Capture window',min:1,max:20,unit:' years',hint:'How long traffic is assumed to have been collected before the event. Not a prediction of when anything happens.'}
 ];
 
 var EVENT_ART={
@@ -781,7 +966,7 @@ var EVENT_ART={
 };
 
 /* ---- navigation ---- */
-var current=0,priorScreen=0;
+var current=0,priorScreen=0,booted=false;
 function go(n){
   if(n===7)priorScreen=current;
   current=n;
@@ -796,10 +981,13 @@ function go(n){
   if(n===4)enterTrigger();
   if(n===5)paintResult();
   if(n===6)enterExplore();
+  annotate($('#s'+n));
   window.scrollTo({top:0,behavior:REDUCED.matches?'auto':'smooth'});
-  /* Move focus to the new screen so keyboard and screen-reader users land where sighted users look. */
+  /* Move focus to the new screen so keyboard and screen-reader users land where sighted users look.
+     Not on first paint: nobody navigated there, and a ring around the title on load reads as a bug. */
   var head=$('#s'+n+' h1, #s'+n+' h2');
-  if(head){head.setAttribute('tabindex','-1');head.focus({preventScroll:true})}
+  if(head&&booted){head.setAttribute('tabindex','-1');head.focus({preventScroll:true})}
+  booted=true;
 }
 $$('[data-go]').forEach(function(b){b.onclick=function(){go(+b.dataset.go)}});
 $('#restart').onclick=function(){fired=false;go(0)};
@@ -870,12 +1058,13 @@ function paintStack(){
   });
   $$('.mark').forEach(function(m,i){m.classList.toggle('lit',(cov[BANDS[i].id]||0)>=.75)});
   var note={
-    edge:'The public edge is protected. Everything behind it — applications, network, identity, keys — is unchanged. This is the gap that "our CDN supports PQC" hides.',
-    pilot:'Pilots prove the technology works. They do not yet change what happens when the whole estate has to move at once.',
-    orchestrated:'Central visibility and policy reach most systems, including ones that cannot change natively. Vendor and legacy equipment still cannot.',
-    native:'Most systems now support approved algorithms directly — and the vendor and legacy band is still not solved by software.'
+    edge:'The public edge is protected. Everything behind it — the applications staff use, the internal network, the systems that prove who is who — is unchanged. This is the gap that "our website already supports post-quantum" hides.',
+    pilot:'A trial proves the technology works. It does not change what happens when every system has to move at once.',
+    orchestrated:'Central visibility and control now reach most systems, including ones that cannot be changed themselves. Supplier equipment and older gear still cannot.',
+    native:'Most systems have been upgraded directly — and the supplier and old-equipment layer is still not something software can solve.'
   }[input.adoption];
   $('#stackNote').textContent=note;
+  annotate($('#stackNote'));
 }
 
 /* ---- screen 3: events + sliders ---- */
@@ -973,12 +1162,12 @@ function enterTrigger(){
   paintStates($('#scene4'),null);
   var ev=EVENTS[input.event];
   $('#triggerTitle').textContent=ev.label+' hits '+SCENES[input.industry].name.toLowerCase();
-  $('#triggerCopy').textContent=ev.blurb+' Watch where it lands, what it drags with it, and what the organization cannot reach.';
+  $('#triggerCopy').textContent=ev.blurb+' Watch where it lands, what it drags down with it, and what the organization simply cannot reach.';
   $('#fire').hidden=false;$('#afterFire').hidden=true;$('#legend4').hidden=true;fired=false;
 }
 function buildLegend(host){
-  host.innerHTML='<span><i class="l-exposed"></i>Exposed</span><span><i class="l-dependent"></i>Reduced assurance</span>'+
-    '<span><i class="l-blocked"></i>Blocked by vendor or hardware</span><span><i class="l-unknown"></i>Not in inventory</span>'+
+  host.innerHTML='<span><i class="l-exposed"></i>Exposed</span><span><i class="l-dependent"></i>Less trustworthy</span>'+
+    '<span><i class="l-blocked"></i>Waiting on a supplier or hardware</span><span><i class="l-unknown"></i>Not written down anywhere</span>'+
     '<span><i class="l-protected"></i>Protected</span>';
 }
 $('#fire').onclick=function(){
@@ -1019,6 +1208,7 @@ function showDetail(id){
   box.hidden=false;
   $('#d4band').textContent=band?band.label:'';
   $('#d4name').textContent=a.name;$('#d4what').textContent=a.what;$('#d4crypto').textContent=a.crypto;
+  annotate(box);
 }
 
 /* ---- screen 5: result ---- */
@@ -1035,10 +1225,10 @@ function paintResult(){
     lines.push('<p>That is the configuration working, not the problem disappearing — lower the readiness level or the inventory visibility to see what the event would otherwise reach.</p>');
   }else{
     lines.push('<p>'+num(affected,'warnnum')+' of '+r.total+' systems are affected the moment this happens.</p>');
-    if(c.blocked)lines.push('<p>'+num(c.blocked,'blocknum')+' of them cannot be changed on demand — they wait for a vendor release or a hardware replacement.</p>');
-    if(c.unknown)lines.push('<p>'+num(c.unknown)+' are missing from the cryptographic inventory, so no response reaches them at all.</p>');
+    if(c.blocked)lines.push('<p>'+num(c.blocked,'blocknum')+' of them cannot be changed on demand. They are waiting for a supplier to release a fix, or for physical equipment to be replaced.</p>');
+    if(c.unknown)lines.push('<p>'+num(c.unknown)+' are missing from the cryptographic inventory — nobody has a record of them, so no response reaches them at all.</p>');
     if(c.exposed){
-      lines.push('<p>The systems that can be worked on are restored in '+num(r.days.agile)+' days at today’s orchestration level.</p>');
+      lines.push('<p>The systems that can be worked on are back to an acceptable state in '+num(r.days.agile)+' days, at how centrally this organization can currently make a change.</p>');
     }else if(c.blockedVendor){
       lines.push('<p>Nothing here can be worked on directly. Every affected system is waiting on somebody else’s release schedule.</p>');
     }else{
@@ -1050,15 +1240,15 @@ function paintResult(){
   $('#qWhat').textContent=ev.plain;
   $('#qWhy').textContent='At the “'+ADOPTION[input.adoption].label+'” level, '+c.protected+' of '+r.total+
     ' systems had already migrated. The event puts pressure on '+ev.properties+'. '+
-    (c.dependent?c.dependent+' further system'+(c.dependent>1?'s lose':' loses')+' assurance by depending on something affected — they do not automatically fail.':'No neighbouring systems lose assurance in this configuration.');
+    (c.dependent?c.dependent+' further system'+(c.dependent>1?'s become less trustworthy':' becomes less trustworthy')+' by depending on something affected — they do not automatically fail.':'No neighbouring systems lose assurance in this configuration.');
 
-  var can=['Finding the affected systems, when they are in the inventory','Changing configuration and policy centrally rather than host by host',
-    'Rotating certificates and keys without rebuilding each application','Re-running the same migration when the next change arrives'];
+  var can=['Finding the affected systems — as long as somebody wrote them down','Making the change in one place, instead of machine by machine',
+    'Replacing certificates and keys without rebuilding each application','Doing the whole thing again, cheaply, when the next change arrives'];
   var cant=[];
-  if(c.blockedVendor)cant.push('Vendor release timelines — these move when the supplier ships, not when policy says: '+r.names.blockedVendor.join(', '));
-  if(c.blockedLegacy)cant.push('Hardware and unsupported equipment — physical replacement, not configuration: '+r.names.blockedLegacy.join(', '));
-  if(c.unknown)cant.push('Systems nobody has catalogued — outside every response until discovery reaches them: '+r.names.unknown.join(', '));
-  if(!cant.length)cant.push('In this configuration nothing is blocked — lower vendor readiness or inventory visibility to see the constraints agility cannot remove');
+  if(c.blockedVendor)cant.push('Supplier release schedules — these move when the supplier ships, not when a policy says so: '+r.names.blockedVendor.join(', '));
+  if(c.blockedLegacy)cant.push('Physical equipment — somebody has to go and replace it: '+r.names.blockedLegacy.join(', '));
+  if(c.unknown)cant.push('Systems nobody has written down — invisible to every response until somebody finds them: '+r.names.unknown.join(', '));
+  if(!cant.length)cant.push('Nothing is blocked in this setup. Lower supplier readiness or inventory visibility to see the limits crypto agility cannot remove');
   $('#qCan').innerHTML=can.map(function(t){return '<li>'+t+'</li>'}).join('');
   $('#qCant').innerHTML=cant.map(function(t){return '<li>'+t+'</li>'}).join('');
 
@@ -1072,10 +1262,10 @@ function paintResult(){
   var msg='';
   if(c.blocked)msg='Neither bar includes the '+c.blocked+' blocked system'+(c.blocked>1?'s':'')+
     (r.days.residual?', which wait about '+r.days.residual+' days on a supplier':', which wait on hardware replacement')+
-    '. Orchestration is absent from that figure on purpose: it cannot shorten somebody else’s schedule.';
+    '. Central control is deliberately left out of that figure, because it cannot shorten somebody else’s schedule.';
   else if(r.days.fragmented&&r.days.fragmented-r.days.agile<=Math.max(2,r.days.fragmented*.12))
-    msg='The two bars are nearly identical because orchestration is still low. At this level the organization is fragmented — the agile bar is what it could become, not what it has.';
-  else if(!r.days.fragmented)msg='There is no remediable work in this configuration, so there is nothing for orchestration to speed up.';
+    msg='The two bars are nearly identical because central control is still low. At this level the organization is the fragmented one — the lower bar is what it could become, not what it has.';
+  else if(!r.days.fragmented)msg='There is no work that can be acted on here, so there is nothing to speed up.';
   $('#floorNote').hidden=!msg;
   if(msg)$('#floorNote').querySelector('span').textContent=msg;
 
@@ -1112,6 +1302,7 @@ function paintProperties(r){
   }
   $('#props').innerHTML=html;
   $('#props').hidden=!html;
+  annotate($('#props'));
 }
 
 /* ---- screen 6: explore ---- */
@@ -1125,11 +1316,12 @@ function enterExplore(update){
     '<span class="tiles">'+
       '<span><b class="warnnum">'+(c.exposed+c.blocked+c.unknown)+'</b>of '+r.total+' affected</span>'+
       '<span><b class="blocknum">'+c.blocked+'</b>blocked</span>'+
-      '<span><b>'+c.unknown+'</b>uncatalogued</span>'+
+      '<span><b>'+c.unknown+'</b>unrecorded</span>'+
     '</span>'+
-    '<span class="say">Remediable work done in '+num(r.days.agile)+' days, against '+num(r.days.fragmented)+
-    ' days without orchestration.</span>'+
-    (c.blocked?'<span class="foot">Neither figure covers the '+c.blocked+' blocked system'+(c.blocked>1?'s':'')+' — those wait on vendors and hardware.</span>':'');
+    '<span class="say">Work that can be acted on finishes in '+num(r.days.agile)+' days, against '+num(r.days.fragmented)+
+    ' days without central control.</span>'+
+    (c.blocked?'<span class="foot">Neither figure covers the '+c.blocked+' blocked system'+(c.blocked>1?'s':'')+' — those wait on suppliers and hardware.</span>':'');
+  annotate($('#liveText'));
 }
 
 go(0);
