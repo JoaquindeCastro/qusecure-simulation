@@ -3,7 +3,15 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Crypto Agility Stress Test</title>
-<meta name="description" content="A guided simulation of how a cryptographic shock moves through an enterprise.">
+<meta name="description" content="A guided simulation of how a cryptographic shock moves through an enterprise, and how much of the response crypto agility can actually reach.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fcfcfc">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Crypto Agility Stress Test">
+<meta property="og:description" content="See how a cryptographic shock propagates through an enterprise — and how prepared the organization is to respond.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d97a4'/%3E%3Cpath d='M16 7l7 4v10l-7 4-7-4V11z' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preload" as="image" href="assets/industry/financial-services.png" fetchpriority="high">
 <style>
 :root{
   --paper:#fcfcfc; --surface:#fff; --raise:#f3f5f6;
@@ -174,6 +182,9 @@ details.learn[open] summary:before{content:"–"}
 /* ---------- scene ---------- */
 .scene{position:relative;width:100%;max-width:min(455px,52vh);margin-inline:auto;aspect-ratio:1122/1402}
 .scene .plate-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.noart{background:var(--raise);border:1px dashed var(--line-2);border-radius:var(--r-lg)}
+.noart img{opacity:0}
+.slide.noart{min-height:280px;display:grid;place-items:center}
 .scene .links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .scene .links path{fill:none;stroke:#9fb2bd;stroke-opacity:.55;stroke-width:1.2;stroke-dasharray:4 5}
 .scene .links path.hot{stroke:var(--stop);stroke-opacity:.85;stroke-width:2}
@@ -268,6 +279,27 @@ details.learn[open] summary:before{content:"–"}
 .live .say{font-size:16.5px;line-height:1.5;font-weight:520;padding-top:14px;border-top:1px solid var(--line)}
 .live .foot{font-size:14px;color:var(--muted);line-height:1.5}
 .disclaimer{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);color:var(--faint);font-size:13.4px;max-width:720px}
+.linky{border:0;background:none;padding:0;color:var(--teal-deep);cursor:pointer;font:inherit;text-decoration:underline;text-underline-offset:3px}
+.linky:hover{color:var(--ink)}
+.method-link{margin-top:26px;text-align:center;font-size:15px}
+.props{margin-top:26px;padding:30px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);text-align:left}
+.props h3{font-size:18px}
+.prop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-top:20px}
+.prop{padding:18px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--raise)}
+.prop b{display:block;font-size:28px;font-weight:640;letter-spacing:-.02em;color:var(--teal-deep);font-variant-numeric:tabular-nums}
+.prop span{display:block;font-weight:600;font-size:14.5px;margin:2px 0 6px}
+.prop p{font-size:13.6px;color:var(--muted);line-height:1.5}
+.retro{margin-top:22px;padding:18px 20px;border-radius:var(--r-md);background:var(--warn-wash);color:#79490d;font-size:14.6px;line-height:1.6}
+.retro b{font-weight:640}
+.method{max-width:820px;margin:44px auto 0;text-align:left}
+.steps{margin:0;padding-left:26px;display:grid;gap:18px}
+.steps li{color:var(--body);font-size:15.6px;line-height:1.62;padding-left:6px}
+.steps b{color:var(--ink);font-weight:620}
+.limits{margin-top:44px;padding:30px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+.limits h3{font-size:19px}
+.limits ul{margin:16px 0 0;padding-left:20px;display:grid;gap:13px}
+.limits li{color:var(--body);font-size:15.2px;line-height:1.6}
+.limits b{color:var(--ink);font-weight:620}
 
 /* ---------- responsive ---------- */
 @media(max-width:940px){
@@ -412,12 +444,14 @@ details.learn[open] summary:before{content:"–"}
     <div class="vs-row"><b>Crypto-agile</b><div class="track"><i class="fill-agile" id="barAgile"></i><span class="floor" id="floorAgile" hidden></span></div><span class="vs-num" id="numAgile"></span></div>
     <p class="floor-note" id="floorNote" hidden><s></s><span></span></p>
     <div class="secondary">
-      <div><b id="mExposed"></b>systems exposed</div>
+      <div><b id="mExposed"></b>systems the response can act on</div>
       <div><b id="mBlocked"></b>blocked by vendor or hardware</div>
       <div><b id="mUnknown"></b>not in the inventory</div>
-      <div><b id="mScore"></b>readiness index (0–100)</div>
+      <div><b id="mReach"></b>of affected systems reachable</div>
     </div>
   </div>
+  <div class="props" id="props"></div>
+  <p class="method-link"><button class="linky" data-go="7">How this model works, and what it cannot tell you →</button></p>
   <div class="row between" style="max-width:none">
     <button class="btn ghost" data-go="4">← Replay the event</button>
     <button class="btn primary" data-go="6">Adjust the situation →</button>
@@ -438,7 +472,40 @@ details.learn[open] summary:before{content:"–"}
   </div>
 </section>
 
-<p class="disclaimer">Deterministic tabletop model. Figures compare assumptions you selected; they are not breach probabilities, loss estimates, or a forecast of when Q-Day will occur. Nothing you enter leaves this browser.</p>
+<!-- 7 · METHOD -->
+<section class="screen" id="s7">
+  <div class="center"><p class="eyebrow">Method</p><h2 class="title">How this model works</h2>
+    <p class="lede">Every number on the result screen comes from the steps below. There is no hidden weighting and no randomness — the same inputs always produce the same output.</p></div>
+
+  <div class="method">
+    <ol class="steps">
+      <li><b>Start from a fixed estate.</b> Each industry is a set of named systems drawn on the illustration. Every system belongs to one band — public edge, applications, network and VPN, identity and keys, or vendor and legacy — and declares which cryptography it depends on: key agreement, signatures, certificates, or symmetric encryption.</li>
+      <li><b>Apply the readiness level.</b> The chosen level says what share of each band has already migrated. The vendor and legacy band never exceeds 15%, because hardware and unsupported equipment are not a software problem.</li>
+      <li><b>Apply inventory visibility.</b> The same share logic decides which systems the organization can see, with embedded and field equipment discounted further. This is the only place discovery is decided, and orchestration is deliberately not an input to it.</li>
+      <li><b>Fire the event.</b> Each event has its own rule for what it touches. Q-Day hits anything relying on public-key cryptography that has not migrated. A protocol deprecation hits systems still speaking the old protocol. A PQC implementation flaw hits <em>only</em> systems that already migrated. A trust-chain failure hits everything depending on certificates, migrated or not.</li>
+      <li><b>Classify every affected system.</b> Not catalogued → nothing reaches it. Hardware or unsupported → blocked, whatever the policy says. Vendor-dependent below that supplier's readiness gate → blocked. Everything else → work the response can actually do.</li>
+      <li><b>Spread reduced assurance one hop.</b> A neighbour of an affected system loses assurance. It does not automatically fail — that would turn one broken system into a whole broken enterprise, which is not how dependency works.</li>
+      <li><b>Cost the work.</b> Each reachable system carries change effort plus coordination effort, weighted by band. Teams divide it with mild diminishing returns. Orchestration removes up to 55% of the change effort and up to 85% of the coordination — coordination is the part crypto agility is actually for.</li>
+      <li><b>Hold everything else constant.</b> The fragmented figure is the same estate with orchestration at zero. Industry, event, vendor readiness, inventory and team capacity are identical on both sides, so the gap is attributable to orchestration alone.</li>
+    </ol>
+
+    <div class="limits">
+      <h3>What this model cannot tell you</h3>
+      <ul>
+        <li><b>It is not a probability.</b> Nothing here is a likelihood, an expected loss, or a risk score. The figures compare assumptions you chose against each other.</li>
+        <li><b>It does not predict Q-Day.</b> The event horizon is the window over which traffic is assumed to be captured — not a forecast of when anything happens.</li>
+        <li><b>The estate is a stand-in.</b> Nine to eleven named systems represent classes of system, not an inventory of a real organization. A real estate has thousands, and the ratios matter more than the counts.</li>
+        <li><b>Effort figures are illustrative.</b> Days per system, the agility ceilings and the supplier gates are stated assumptions, not measurements. Change them and every number moves.</li>
+        <li><b>Dependencies are simplified.</b> Assurance spreads exactly one hop along a small hand-drawn graph. Real dependency graphs are larger, cyclical, and partly unknown.</li>
+        <li><b>It says nothing about your organization.</b> This is a tabletop instrument for reasoning about crypto agility. It is not an assessment, an audit, or advice.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row"><button class="btn" id="methodBack">← Back</button></div>
+</section>
+
+<p class="disclaimer">Deterministic tabletop model. Figures compare assumptions you selected; they are not breach probabilities, loss estimates, or a forecast of when Q-Day will occur. Nothing you enter leaves this browser. <button class="linky" data-go="7">Method and limits</button></p>
 
 </div>
 
@@ -473,21 +540,25 @@ var EVENTS={
  qday:{label:'Q-Day',tag:'Cryptographic break',
    blurb:'A quantum computer capable of breaking RSA and ECC becomes real. Public-key cryptography stops being trustworthy.',
    properties:'confidentiality and authenticity',kind:'vulnerability',
+   stresses:['confidentiality','authenticity','integrity'],
    plain:'Anything relying on RSA or ECC to agree keys or prove identity is no longer trustworthy. Symmetric encryption such as AES-256 is weakened, not broken, so well-encrypted data at rest is not simply readable.',
    hits:function(a,ctx){return !ctx.covered[a.id] && (a.dep.indexOf('pk')>=0||a.dep.indexOf('sig')>=0||a.dep.indexOf('cert')>=0)}},
  tls:{label:'Protocol deprecation',tag:'Compliance deadline',
    blurb:'A protocol still in use is prohibited by policy on a fixed date. Nothing is broken — it simply becomes unacceptable.',
    properties:'availability and compliance standing',kind:'compliance',
+   stresses:['availability','compliance'],
    plain:'Nothing is cryptographically broken. Systems still speaking the prohibited protocol fall out of compliance, and switching it off without knowing who depends on it is how a compliance date becomes an outage.',
    hits:function(a,ctx){return a.proto && !ctx.covered[a.id]}},
  mlkem:{label:'PQC implementation flaw',tag:'Migrate again',
    blurb:'A flaw is found in a widely deployed ML-KEM implementation. Systems that already migrated must be changed again.',
    properties:'confidentiality',kind:'vulnerability',
+   stresses:['confidentiality'],
    plain:'This event only touches systems that already moved to post-quantum cryptography. Having migrated once is not protection — being able to migrate again is.',
    hits:function(a,ctx){return !!ctx.covered[a.id]}},
  ca:{label:'Trust-chain failure',tag:'Trust withdrawn',
    blurb:'A certificate authority is no longer trusted. Everything that relied on it to prove identity has to be re-issued.',
    properties:'authenticity and availability',kind:'outage',
+   stresses:['authenticity','availability'],
    plain:'Certificates prove that a machine is who it claims to be. When the authority behind them is distrusted, identity fails across boundaries the organization does not control — including its vendors.',
    hits:function(a){return a.dep.indexOf('cert')>=0}}
 };
@@ -562,39 +633,62 @@ var WORK_PER_SYSTEM=22;     /* days to change and validate one class of system, 
 var COORD_PER_SYSTEM=14;    /* finding it, agreeing the change, chasing the owner */
 var WORK_AGILITY=.55;       /* orchestration removes at most 55% of the change effort */
 var COORD_AGILITY=.85;      /* and most of the coordination, which is what it is actually for */
-var VENDOR_THRESHOLD=60;    /* below this, a vendor-dependent system cannot be changed on demand */
-/* Cryptographic inventories are patchy everywhere, and worst in embedded and field equipment. */
-var LEGACY_VISIBILITY=.85;
+var TEAM_RETURNS=.85;       /* teams do not scale linearly: coordination grows with headcount */
+var LEGACY_VISIBILITY=.85;  /* inventories are patchy everywhere, worst in embedded equipment */
+var BAND_EFFORT={edge:.7,app:1,net:1.2,keys:1.4,legacy:1};
+
+/* Which security property each kind of cryptography actually provides. This is what keeps
+   confidentiality, authenticity, integrity and availability from collapsing into one bar. */
+var PROPERTY_OF={
+  pk:['confidentiality'],          /* key agreement over the wire */
+  sym:['confidentiality'],         /* bulk encryption at rest */
+  sig:['authenticity','integrity'],
+  cert:['authenticity','availability']
+};
+
+/* Suppliers do not all ship on the same day. Each vendor-dependent system clears at its own
+   readiness level, so raising vendor readiness unblocks them one at a time rather than all at once. */
+function vendorGate(i){return Math.min(92,58+17*i)}
+
+/* Deterministic share: item j of n is included when it falls inside the given share. The phase is
+   staggered per band so that bands do not all cross their threshold at the same input — otherwise a
+   one-point slider move would flip several systems at once for no reason anyone could explain. */
+var BAND_PHASE={edge:.30,app:.46,net:.62,keys:.54,legacy:.38};
+function within(j,n,share,band){return (j+(BAND_PHASE[band]||.5))/n<share}
 
 function simulate(input){
   var scene=SCENES[input.industry], assets=scene.assets, n=assets.length;
   var coverage=ADOPTION[input.adoption].coverage;
 
-  /* Which assets are already migrated. Deterministic: the first share of each band. */
-  var covered={},byBand={};
+  var byBand={};
   assets.forEach(function(a){(byBand[a.band]=byBand[a.band]||[]).push(a)});
-  Object.keys(byBand).forEach(function(band){
-    var list=byBand[band],take=Math.round((coverage[band]||0)*list.length);
-    list.slice(0,take).forEach(function(a){covered[a.id]=true});
-  });
 
-  /* Which assets the organization actually knows about. Agility never improves this:
-     an undiscovered asset stays undiscovered on both sides of the comparison. */
-  var known={};
+  /* Which systems have already migrated, and which the organization can actually see.
+     Agility never improves visibility: an uncatalogued system stays uncatalogued on both
+     sides of the comparison. */
+  var covered={},known={};
   Object.keys(byBand).forEach(function(band){
-    var list=byBand[band],factor=input.inventory/100*(band==='legacy'?LEGACY_VISIBILITY:1);
-    list.slice(0,Math.round(list.length*factor)).forEach(function(a){known[a.id]=true});
+    var list=byBand[band],
+        cov=coverage[band]||0,
+        vis=input.inventory/100*(band==='legacy'?LEGACY_VISIBILITY:1);
+    list.forEach(function(a,j){
+      if(within(j,list.length,cov,band))covered[a.id]=true;
+      if(within(j,list.length,vis,band))known[a.id]=true;
+    });
   });
 
   var ev=EVENTS[input.event],ctx={covered:covered};
   var directly=assets.filter(function(a){return ev.hits(a,ctx)});
   var directIds={};directly.forEach(function(a){directIds[a.id]=true});
 
-  var states={},exposed=[],blockedVendor=[],blockedLegacy=[],unknown=[];
+  var states={},exposed=[],blockedVendor=[],blockedLegacy=[],unknown=[],vendorSeen=0;
   directly.forEach(function(a){
     if(!known[a.id]){states[a.id]='unknown';unknown.push(a);return}
     if(a.legacy){states[a.id]='blocked';blockedLegacy.push(a);return}
-    if(a.vendor&&input.vendor<VENDOR_THRESHOLD){states[a.id]='blocked';blockedVendor.push(a);return}
+    if(a.vendor){
+      var gate=vendorGate(vendorSeen++);
+      if(input.vendor<gate){states[a.id]='blocked';blockedVendor.push(a);return}
+    }
     states[a.id]='exposed';exposed.push(a);
   });
 
@@ -607,35 +701,57 @@ function simulate(input){
   });
   assets.forEach(function(a){if(!states[a.id])states[a.id]=covered[a.id]?'protected':'ok'});
 
-  /* Effort. Only discovered, unblocked systems can be worked on at all.
+  /* What is actually under pressure, per property. An affected system only counts against a
+     property if its cryptography provides that property AND the event stresses it. */
+  var properties={};
+  directly.forEach(function(a){
+    var has={};
+    a.dep.forEach(function(d){(PROPERTY_OF[d]||[]).forEach(function(p){has[p]=true})});
+    ev.stresses.forEach(function(p){
+      if(p==='compliance'||has[p])properties[p]=(properties[p]||0)+1;
+    });
+  });
+
+  /* Harvest now, decrypt later. Only for events that break key agreement, and only for systems
+     holding long-lived data that travelled over a public-key protected channel. Data sitting under
+     symmetric encryption alone is weakened, not opened, so it is not counted here. */
+  var retro=directly.filter(function(a){
+    return ev.stresses.indexOf('confidentiality')>=0&&a.band==='keys'&&a.dep.indexOf('pk')>=0;
+  });
+
+  /* Effort. Only catalogued, unblocked systems can be worked on at all.
      Fragmented is the same estate with no orchestration; every other assumption is held constant. */
-  var eligible=exposed.length;
-  var fragmented=Math.ceil(eligible*(WORK_PER_SYSTEM+COORD_PER_SYSTEM)/input.teams);
-  var agile=Math.ceil(eligible*(WORK_PER_SYSTEM*(1-WORK_AGILITY*input.orch/100)
-                               +COORD_PER_SYSTEM*(1-COORD_AGILITY*input.orch/100))/input.teams);
+  var load=exposed.reduce(function(t,a){return t+(BAND_EFFORT[a.band]||1)},0);
+  var capacity=Math.pow(input.teams,TEAM_RETURNS);
+  var fragmented=Math.ceil(load*(WORK_PER_SYSTEM+COORD_PER_SYSTEM)/capacity);
+  var agile=Math.ceil(load*(WORK_PER_SYSTEM*(1-WORK_AGILITY*input.orch/100)
+                           +COORD_PER_SYSTEM*(1-COORD_AGILITY*input.orch/100))/capacity);
   /* Blocked systems sit outside both responses. Orchestration does not appear in this figure at
      all, because it cannot shorten a supplier's release cycle or a hardware refresh. */
   var residual=blockedVendor.length?Math.round(45+(100-input.vendor)*.9):0;
 
-  var s=input,adoptionWeight={edge:0,pilot:12,orchestrated:33,native:44}[s.adoption],
-      eventWeight={qday:18,tls:10,mlkem:13,ca:15}[s.event];
-  var score=Math.max(12,Math.min(96,Math.round(20+s.inventory*.28+s.teams*2+s.vendor*.12+s.orch*.22+adoptionWeight-eventWeight)));
+  /* How much of the problem the response can even touch. Derived from the outcome rather than
+     from a weighting of the inputs, so it cannot disagree with the systems shown on the map. */
+  var reach=directly.length?Math.round(100*exposed.length/directly.length):100;
 
   return{
-    states:states,total:n,event:ev,industry:scene.name,
+    states:states,total:n,event:ev,industry:scene.name,horizon:input.horizon,
     counts:{
       exposed:exposed.length,unknown:unknown.length,dependent:dependent.length,
       blocked:blockedVendor.length+blockedLegacy.length,
       blockedVendor:blockedVendor.length,blockedLegacy:blockedLegacy.length,
-      affected:directly.length,protected:Object.keys(covered).length
+      affected:directly.length,protected:Object.keys(covered).length,
+      known:Object.keys(known).length,retro:retro.length
     },
     names:{
       blockedLegacy:blockedLegacy.map(function(a){return a.name}),
       blockedVendor:blockedVendor.map(function(a){return a.name}),
-      unknown:unknown.map(function(a){return a.name})
+      unknown:unknown.map(function(a){return a.name}),
+      retro:retro.map(function(a){return a.name})
     },
+    properties:properties,
     days:{fragmented:fragmented,agile:agile,residual:residual},
-    score:score
+    reach:reach
   };
 }
 /*MODEL-END*/
@@ -665,7 +781,10 @@ var EVENT_ART={
 };
 
 /* ---- navigation ---- */
+var current=0,priorScreen=0;
 function go(n){
+  if(n===7)priorScreen=current;
+  current=n;
   $$('.screen').forEach(function(s){s.classList.toggle('on',s.id==='s'+n)});
   var step=STEP_OF[n]||0;
   $$('#progress b').forEach(function(b){
@@ -678,10 +797,14 @@ function go(n){
   if(n===5)paintResult();
   if(n===6)enterExplore();
   window.scrollTo({top:0,behavior:REDUCED.matches?'auto':'smooth'});
+  /* Move focus to the new screen so keyboard and screen-reader users land where sighted users look. */
+  var head=$('#s'+n+' h1, #s'+n+' h2');
+  if(head){head.setAttribute('tabindex','-1');head.focus({preventScroll:true})}
 }
 $$('[data-go]').forEach(function(b){b.onclick=function(){go(+b.dataset.go)}});
 $('#restart').onclick=function(){fired=false;go(0)};
 $('#again').onclick=function(){fired=false;go(1)};
+$('#methodBack').onclick=function(){go(priorScreen)};
 
 /* ---- screen 1: gallery ---- */
 (function buildGallery(){
@@ -691,6 +814,7 @@ $('#again').onclick=function(){fired=false;go(1)};
     d.className='slide'+(i?'':' on');d.dataset.key=key;
     var img=document.createElement('img');
     img.src=sc.img;img.alt=sc.alt;img.width=1122;img.height=1402;img.decoding='async';
+    img.onerror=function(){d.classList.add('noart')};
     if(i)img.loading='lazy';
     d.appendChild(img);stage.appendChild(d);
     var dot=document.createElement('button');
@@ -805,6 +929,8 @@ function renderScene(host,interactive){
   host.dataset.key=input.industry;host.textContent='';
   var img=document.createElement('img');
   img.className='plate-img';img.src=sc.img;img.alt=sc.alt;img.width=1122;img.height=1402;img.decoding='async';
+  /* If the illustration cannot load, the map still has to work: hotspots and states stay usable. */
+  img.onerror=function(){host.classList.add('noart')};
   host.appendChild(img);
   var at={};sc.assets.forEach(function(a){at[a.id]=a});
   var svg=document.createElementNS(SVGNS,'svg');
@@ -956,7 +1082,36 @@ function paintResult(){
   $('#mExposed').textContent=c.exposed;
   $('#mBlocked').textContent=c.blocked;
   $('#mUnknown').textContent=c.unknown;
-  $('#mScore').textContent=r.score;
+  $('#mReach').textContent=r.reach+'%';
+  paintProperties(r);
+}
+
+var PROPERTY_COPY={
+  confidentiality:['Confidentiality','Data that should stay private could be read.'],
+  authenticity:['Authenticity','The proof of who a system is stops being reliable.'],
+  integrity:['Integrity','Records could be altered without that being detectable.'],
+  availability:['Availability','Systems may have to stop until the change is made.'],
+  compliance:['Compliance','Still working, but no longer permitted.']
+};
+function paintProperties(r){
+  var keys=Object.keys(r.properties).filter(function(k){return r.properties[k]>0});
+  var html='';
+  if(keys.length){
+    html+='<h3>What is actually under pressure</h3>'+
+      '<p class="sub">These are different failures with different fixes. The count is the number of affected systems whose cryptography provides that property.</p><div class="prop-grid">'+
+      keys.map(function(k){
+        var t=PROPERTY_COPY[k]||[k,''];
+        return '<div class="prop"><b>'+r.properties[k]+'</b><span>'+t[0]+'</span><p>'+t[1]+'</p></div>';
+      }).join('')+'</div>';
+  }
+  if(r.counts.retro){
+    html+='<p class="retro"><b>Harvest now, decrypt later.</b> '+r.counts.retro+' system'+(r.counts.retro>1?'s hold':' holds')+
+      ' long-lived data that travelled over key agreement this event breaks — up to '+r.horizon+
+      ' years of captured traffic becomes readable in retrospect, and migrating afterwards does not undo it. '+
+      'Data sitting under symmetric encryption alone is weakened, not opened. ('+r.names.retro.join(', ')+')</p>';
+  }
+  $('#props').innerHTML=html;
+  $('#props').hidden=!html;
 }
 
 /* ---- screen 6: explore ---- */

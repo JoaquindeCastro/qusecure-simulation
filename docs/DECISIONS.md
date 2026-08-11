@@ -53,14 +53,14 @@ existing four do not.
 
 ## D4 — "Edge protected, enterprise unchanged" is the default adoption state
 
-**Decision.** The first adoption option is public-edge PQC with a classical enterprise behind it,
-and it contributes **zero** to the resilience score.
+**Decision.** The first adoption option is public-edge PQC with a classical enterprise behind it.
+It gives the `edge` band full coverage and **zero** to every band behind it.
 
 **Why.** This is the most important false-confidence pattern in the space: a CDN or load balancer
 advertises post-quantum TLS while everything behind it is unchanged. Making it the default means
 most readers start in the situation they are actually in.
 
-**Forbids.** Giving edge adoption partial credit in the score.
+**Forbids.** Giving edge adoption any credit for systems behind the edge.
 
 ---
 
@@ -75,8 +75,11 @@ fragmented-vs-agile comparison.
 vanish. The floor is also the actual argument for inventory coverage, since it is the part agility
 cannot reach until discovery reaches it.
 
-**Forbids.** Any parameter path that drives exposure toward zero. The current flat agility
-multiplier violates this; see defect 2 in `SIMULATION.md`.
+**Forbids.** Any parameter path that drives exposure toward zero.
+
+**Status.** Enforced structurally since [D13]: blocked and uncatalogued systems are removed from the
+work set, so no multiplier can reach them, and orchestration is not an input to visibility or to the
+residual. The earlier flat multiplier violated this.
 
 ---
 
@@ -88,8 +91,10 @@ capacity, and horizon. Only orchestration/agility differs.
 **Why.** A comparison that improves several things at once produces a bigger gap and proves
 nothing about agility specifically.
 
-**Forbids.** Convenience adjustments on the agile side. The current implementation already
-violates this by double-counting orchestration; see defect 1 in `SIMULATION.md`.
+**Forbids.** Convenience adjustments on the agile side.
+
+**Status.** Resolved by [D13]. The fragmented figure is now the same estate recomputed with
+orchestration at zero; the earlier implementation double-counted it.
 
 ---
 
@@ -140,6 +145,78 @@ hardcoded and do not respond to industry, event, or sliders. This shipped knowin
 
 **Why.** It made the full four-step flow demonstrable before the propagation model existed.
 
-**Consequence.** Anyone planning results-screen work should know these are not wired to anything —
-the fix is building the model behind them, not adjusting the markup. Tracked with the other gaps
-in `CLAUDE.md` and `SIMULATION.md`.
+**Status.** Repaid. The propagation map is now the industry illustration painted with per-system
+states from `simulate()`, and the recommendations are generated from the actual outcome — including
+the named systems agility cannot reach.
+
+---
+
+## D11 — Critical infrastructure as a fourth industry
+
+**Decision.** Added alongside healthcare, financial services and government.
+
+**Why.** A dedicated illustration existed, and industry only selects the estate rather than
+weighting the model, so the addition is presentational and carries no modelling risk. It is also the
+best vehicle for the constraint in [D5]: thousands of inverters with embedded keys, and protection
+relays speaking protocols that predate public-key cryptography.
+
+**Forbids.** Treating it as a skin on the government estate. It has its own asset vocabulary.
+
+---
+
+## D12 — The interface is a guided presentation, not a dashboard
+
+**Decision.** Seven screens on a light background, large type, one major choice per screen, few
+visible controls, no persistent sidebar. Sliders stay hidden behind a disclosure until the reader
+has seen a result. The isometric illustrations are shown whole and uncropped as the spatial
+environment.
+
+**Why.** The audience includes people who do not know what cryptography is. A dense control panel
+asks them to configure something they do not yet understand, and buries the argument under widgets.
+The story has to land before the parameters do.
+
+**Forbids.** Reintroducing a sidebar, a metric-card grid, or a dark admin aesthetic. Putting
+controls before comprehension. Cropping the illustrations to fit a layout.
+
+---
+
+## D13 — Asset-level outcomes replace scalar exposure-days
+
+**Decision.** The model classifies every named system as exposed, blocked, uncatalogued, dependent
+or protected, and the result screen leads with counts of systems in plain English. The old
+`exposure-days` formulas were removed.
+
+**Why.** The scalar model had two defects recorded in `SIMULATION.md`: it double-counted
+orchestration, so the "fragmented" figure was itself agility-adjusted; and its agility multiplier
+was flat across all exposure, including the vendor-blocked and undiscovered portions agility cannot
+reach. Classifying systems individually fixes both structurally rather than by arithmetic — blocked
+systems are removed from the work set, so no multiplier can reach them.
+
+**Forbids.** Reintroducing a single severity number as the headline result.
+
+---
+
+## D14 — No score derived from the inputs
+
+**Decision.** The 0–100 resilience index was deleted. The secondary figure is `reach` — the share of
+affected systems the response can actually act on — computed from the outcome.
+
+**Why.** The old score was a weighting of the input sliders, so it could report a healthy number
+while the map showed most of the estate exposed. A figure that can contradict the thing it
+summarises is worse than no figure.
+
+**Forbids.** Any headline number that is a weighting of inputs rather than a consequence of the
+simulated outcome.
+
+---
+
+## D15 — The product documents its own model
+
+**Decision.** Screen `s7` (**Method**) states, in the product, how every number is produced and what
+the model cannot tell you. It is linked from the result screen and the footer.
+
+**Why.** The advantage of crypto agility only counts if a skeptical reader can inspect the
+mechanics. Publishing the method inside the product — rather than only in a repository nobody
+reading the page will see — is what makes [D7] real rather than aspirational.
+
+**Forbids.** Changing the model without changing the Method screen in the same commit.

@@ -1,150 +1,142 @@
 # Simulation model
 
-The rules in this file are correctness requirements. A number that overclaims is the fastest way
-to lose the skeptical reader described in `PRODUCT.md`.
+The rules here are correctness requirements. A number that overclaims is the fastest way to lose
+the skeptical reader described in `PRODUCT.md`.
 
-Everything the model does today lives in one function, `calc()`, inside `index.html`.
+The model lives in `index.html` between the `/*MODEL-START*/` and `/*MODEL-END*/` markers. That
+block is **pure** — no DOM, no network, no storage — so `tests/smoke.test.mjs` extracts and
+evaluates it directly. A test asserts it stays DOM-free; keep it that way.
+
+The user-facing version of this document is the **Method** screen in the app (screen `s7`). If you
+change the model, change that screen too, or the app starts lying about itself.
 
 ## Principles
 
 ### Never claim more than the model knows
 
-The output is a **deterministic tabletop comparison**: same inputs, same numbers, every time.
-There is no randomness, no sampling, no distribution behind any figure.
+Deterministic: same inputs, same outputs, always. No randomness, no sampling, no distributions.
 
-Therefore no output may be presented as a **breach probability**, a likelihood, an expected loss,
-or a forecast. "Resilience score 54" is a comparative index produced by assumptions the reader
-chose; it is not a 54% anything. Copy, labels, tooltips, and any exported data must respect this.
-The phrase "deterministic tabletop model" already appears in the UI — keep that promise.
+No output may be presented as a breach probability, likelihood, expected loss, or forecast. The
+figures compare assumptions the reader chose against each other. Copy, labels, and any future
+export must respect this.
 
-### Separate the four security properties
+### The four security properties stay separate
 
-**Confidentiality, integrity, authenticity, availability** fail differently and are remediated
-differently. Collapsing them into one severity bar destroys the product's main teaching value.
+`PROPERTY_OF` maps each kind of cryptography to what it actually provides:
 
-- Harvest-now-decrypt-later is a *confidentiality* loss, retroactive and unfixable after the fact —
-  migration limits future exposure, not past captures.
-- A forged signature is an *authenticity* loss, forward-looking and fixable by rotation.
-- A protocol switch-off is an *availability* event.
+| Dependency | Provides |
+|---|---|
+| `pk` — key agreement | confidentiality |
+| `sym` — bulk encryption at rest | confidentiality |
+| `sig` — signatures | authenticity, integrity |
+| `cert` — certificates | authenticity, availability |
 
-Q-Day hits confidentiality and authenticity. A CA distrust hits authenticity and availability. A
-deprecation deadline hits availability and compliance standing. These profiles should be visible
-to the reader, not averaged away.
+Each event declares what it `stresses`. An affected system counts against a property only when its
+cryptography provides that property **and** the event stresses it. That intersection is why a
+trust-chain failure reports authenticity and availability but never confidentiality, and why a
+deprecation deadline reports availability and compliance but never a cryptographic break.
 
-### Separate vulnerability, compliance failure, and outage
+### Vulnerability, compliance failure, and outage are different
 
-Three distinct failure modes that the current single-severity presentation blurs:
-
-| Mode | Meaning | Example |
+| `kind` | Meaning | Event |
 |---|---|---|
-| Cryptographic vulnerability | The math or implementation no longer protects | Q-Day; ML-KEM flaw |
-| Compliance failure | Still cryptographically sound, but no longer permitted | TLS 1.2 after the deadline |
-| Outage | The system stops working | Flipping off TLS 1.2 without knowing who used it |
+| `vulnerability` | The math or implementation no longer protects | Q-Day, ML-KEM flaw |
+| `compliance` | Sound, but no longer permitted | Protocol deprecation |
+| `outage` | Identity fails across a boundary you do not control | Trust-chain failure |
 
-A compliance event can cause an outage with nothing broken cryptographically. That is a real and
-common enterprise experience and the model should be able to express it.
+A compliance event can cause an outage with nothing broken cryptographically.
 
 ### What crypto agility may improve
 
-- Discovery and inventory coverage
-- Configuration and policy enforcement
-- Certificate and key rotation
-- Migration of **eligible** assets
+Discovery *within what is already catalogued*, configuration, policy enforcement, certificate and
+key rotation, and the migration of eligible systems. In the model this is one dial — `orch` — and
+it only ever reduces effort.
 
 ### What crypto agility must not fix
 
-- **Vendor release timelines.** If the vendor has not shipped it, orchestration cannot install it.
-- **Hardware replacement.** Physical devices need physical work.
-- **Unsupported legacy devices.** Some assets will never support the new primitive.
-- **Undiscovered assets.** You cannot orchestrate what you have not found.
+Vendor release timelines, hardware replacement, unsupported equipment, and anything not yet
+catalogued. Enforced structurally, not by convention:
 
-If any parameter change drives exposure toward zero, the model is wrong. There must be a floor
-composed of vendor-blocked, hardware-blocked, and undiscovered exposure — and that floor must be
-**identical on both sides** of the fragmented-vs-agile comparison. That identical floor *is* the
-argument for inventory coverage: it is the part agility cannot reach until discovery reaches it.
+- Blocked systems are removed from the work set entirely, so no multiplier can touch them.
+- `orch` is not an input to the visibility calculation at all.
+- The residual figure is computed from vendor readiness alone; `orch` does not appear in it.
+
+Three tests hold this line: orchestration must not change `blockedVendor`, must not change
+`unknown`, and must not change `residual`.
 
 ### Comparisons hold external assumptions constant
 
-Fragmented and crypto-agile runs must share industry, event, vendor readiness, migration capacity,
-and horizon. **Only orchestration/agility differs.** Silently improving vendor readiness on the
-agile side would produce a bigger gap and a dishonest one.
+`fragmented` is the same estate with orchestration at zero. Industry, event, vendor readiness,
+inventory, team capacity, and horizon are identical on both sides, so the gap is attributable to
+orchestration alone.
 
-## Current implementation
+## How a run works
 
-Read directly from `calc()` in `index.html`. All figures are unitless model quantities.
+1. **Estate.** Each industry in `SCENES` is 9–11 named systems. Each has a `band` (`edge`, `app`,
+   `net`, `keys`, `legacy`), a `dep` list, and optional `legacy` / `vendor` / `proto` flags.
+2. **Coverage.** `ADOPTION[level].coverage` gives a share per band. The `legacy` band never exceeds
+   `0.15`.
+3. **Visibility.** `input.inventory` gives a share per band, multiplied by `LEGACY_VISIBILITY`
+   (0.85) for the `legacy` band.
+4. **Selection.** Both use `within(j, n, share, band)` → `(j + BAND_PHASE[band]) / n < share`. The
+   per-band phase exists so bands do not all cross their threshold at the same slider value; without
+   it, one slider point moved three systems at once. A test caps the step at 2 systems and asserts
+   monotonicity.
+5. **Event.** `EVENTS[key].hits(asset, ctx)` decides direct impact. Note `mlkem` hits **only**
+   covered systems, and `ca` ignores coverage entirely.
+6. **Classification**, in this order — the order is the model's argument:
+   `unknown` → `blocked` (hardware/legacy) → `blocked` (vendor below its gate) → `exposed`.
+7. **Dependents.** Neighbours in `scene.links` get `dependent` — reduced assurance, exactly one hop,
+   never automatic failure.
+8. **Effort.**
+   ```
+   load       = Σ BAND_EFFORT[band] over exposed systems
+   capacity   = teams ^ 0.85
+   fragmented = ceil(load × (22 + 14) / capacity)
+   agile      = ceil(load × (22×(1 − 0.55×orch/100) + 14×(1 − 0.85×orch/100)) / capacity)
+   residual   = blockedVendor ? round(45 + (100 − vendor) × 0.9) : 0
+   reach      = affected ? round(100 × exposed / affected) : 100
+   ```
+   Coordination (14 days) is discounted harder than change work (22 days) because coordination is
+   what crypto agility is actually for.
+9. **Harvest now, decrypt later.** For events stressing confidentiality, systems in the `keys` band
+   that depend on `pk` are counted in `counts.retro`. `input.horizon` is the assumed capture window
+   and is reported as years of traffic — not a prediction of when anything happens. Systems holding
+   data under symmetric encryption alone are excluded: AES-256 is weakened, not opened.
 
-### Inputs
+### Supplier gates
 
-| Control | Element | Range | Default |
-|---|---|---|---|
-| Inventory coverage | `#inventory` | 20–100 | 65 |
-| Migration teams | `#teams` | 1–10 | 3 |
-| Vendor readiness | `#vendor` | 10–100 | 55 |
-| Orchestration coverage | `#orch` | 0–100 | 15 |
-| Event horizon | `#horizon` | 1–20 | 7 |
+`vendorGate(i) = min(92, 58 + 17i)`. The *i*-th vendor-dependent affected system clears at that
+readiness level, so raising vendor readiness unblocks suppliers one at a time. This replaced a
+single 60% cliff where every vendor-blocked system flipped at once.
 
-Adoption weights (added to score): `edge 0`, `pilot 12`, `orchestrated 33`, `native 44`.
-Edge is zero on purpose — public-edge PQC contributes nothing to enterprise resilience, which is
-the false-confidence point from `PRODUCT.md`.
+## Deliberate simplifications
 
-Event weights (subtracted from score): `qday 18`, `ca 15`, `mlkem 13`, `tls 10`.
+Documented on the Method screen too, because a reader deserves them:
 
-### Formulas
+- The estate is 9–11 systems standing in for classes of system. Ratios matter, counts do not.
+- Effort constants, agility ceilings, and supplier gates are stated assumptions, not measurements.
+- Assurance spreads exactly one hop along a small hand-authored graph.
+- Industry does not yet change the model — only the estate it runs against.
+- `residual` is a single figure derived from vendor readiness, not a per-supplier schedule.
 
-```
-score  = clamp(12, 96, round(20 + inv*0.28 + teams*2 + vendor*0.12 + orch*0.22
-                             + adoptionWeight - eventWeight))
-exp    = round(980 - score*9 + max(0, 60 - vendor) * 3)      // "fragmented" exposure-days
-agile  = round(exp * (1 - 0.55 * orch/100))                  // "crypto-agile" exposure-days
-manual = max(3, round(24 - orch*0.12 - teams*0.7))           // manual changes
-```
+## History
 
-Bar widths are `min(100, exp/9)%` and `min(100, agile/9)%`.
+The original model produced a scalar `exposure-days` from a hand-tuned formula, plus a 0–100
+resilience score. Both were removed:
 
-The `max(0, 60 - vendor) * 3` term is the one place vendor readiness resists everything else:
-below 60, poor vendor readiness adds exposure that no other slider removes.
-
-## Known modeling defects
-
-These are live violations of the principles above, verified against the current `calc()`. Fix
-them before adding model surface area, since each new metric inherits the same flaws.
-
-**1. Orchestration is double-counted, and the "fragmented" side is not fragmented.**
-`orch` raises `score`, which lowers `exp` — and then `agile` applies a *second* reduction to that
-already-reduced `exp`. So the number labeled "fragmented cryptography" is itself agility-adjusted,
-and the comparison does not hold assumptions constant. The two sides should be computed from one
-shared set of external assumptions, with agility applied to exactly one of them.
-
-**2. The agility multiplier discounts exposure it must not touch.**
-`exp * (1 - 0.55*orch/100)` is a flat multiplier over *all* exposure, including the portion
-attributable to vendor-blocked assets, unsupported hardware, and undiscovered inventory.
-Orchestration currently makes undiscovered assets safer, which is precisely the thing crypto
-agility cannot do. Exposure needs to be decomposed into an agility-reachable part and a blocked
-floor, with the multiplier applied only to the former.
-
-**3. The horizon slider is inert.** `#horizon` updates its own label and is never read by
-`calc()`. Either wire it into the model (longer horizon → more harvest-now-decrypt-later
-confidentiality exposure, more vendor timelines that resolve on their own) or remove it. A
-control that visibly does nothing costs credibility with the skeptical reader.
-
-**4. "Vendor-blocked assets: 2" is hardcoded** in the results markup with no id and no update
-path. It is the exact quantity that should be derived from vendor readiness and shared as the
-comparison's floor.
-
-**5. One severity dimension.** Exposure-days is a single scalar, so the confidentiality /
-integrity / authenticity / availability distinction and the vulnerability / compliance / outage
-distinction cannot currently be expressed at all, regardless of event selected.
-
-**6. Event weights are undifferentiated.** Each event is a single scalar penalty. A TLS
-deprecation and a Q-Day event differ in *kind*, not in magnitude, and modeling them as 10 vs 18 on
-one axis asserts they are the same thing at different volumes.
+- The old comparison **double-counted orchestration** — `orch` lowered the shared exposure figure
+  and then a second multiplier was applied on top, so the "fragmented" number was itself
+  agility-adjusted.
+- The old agility multiplier was **flat across all exposure**, including vendor-blocked and
+  undiscovered systems, which is precisely what agility cannot reach.
+- The 0–100 score was a weighting of the *inputs*, so it could disagree with the systems on the
+  map. It is replaced by `reach`, derived from the outcome.
 
 ## Adding to the model
 
-- Keep everything in `calc()` and its weight tables. Determinism, no network, no storage.
-- New sliders must fit the `#id` → `#idout` label mapping in `index.html` (the `.replace()` chain)
-  or extend it.
-- State the unit and the meaning of any new metric in the UI. If it cannot be explained in one
-  plain-language sentence to the nontechnical reader, it is not ready.
-- Any new mechanic should be checkable: a reader who disagrees with an assumption should be able
-  to find the control that expresses it.
+- Keep it inside the markers, pure, and deterministic.
+- New outputs need a plain-language sentence a nontechnical reader can follow, and a line on the
+  Method screen.
+- Add the invariant to `tests/smoke.test.mjs` in the same change. The suite already encodes the
+  principles above; a new mechanic that cannot be expressed as an invariant is probably not ready.

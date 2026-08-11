@@ -47,6 +47,12 @@ test("respects reduced motion and states its modelling limits", () => {
   assert.ok(html.includes("not breach probabilities"));
 });
 
+test("publishes its method and its limits in the page", () => {
+  assert.ok(html.includes("How this model works"));
+  assert.ok(html.includes("What this model cannot tell you"));
+  assert.ok(html.includes("It does not predict Q-Day"));
+});
+
 // ---- model tests: the simulation block is pure, so it can be evaluated directly ----
 
 const source = html.slice(html.indexOf("/*MODEL-START*/"), html.indexOf("/*MODEL-END*/"));
@@ -152,4 +158,79 @@ test("an affected system does not automatically fail its neighbours", () => {
   const dependents = Object.values(r.states).filter((s) => s === "dependent");
   const failed = Object.values(r.states).filter((s) => s === "exposed");
   assert.ok(dependents.length + failed.length < r.total, "not every system should fail");
+});
+
+test("security properties stay distinct and match the event", () => {
+  const compliance = simulate({ ...base, event: "tls" }).properties;
+  assert.ok(compliance.compliance > 0 && compliance.availability > 0);
+  assert.equal(compliance.confidentiality, undefined, "a deprecation deadline is not a confidentiality break");
+
+  const trust = simulate({ ...base, industry: "gov", event: "ca" }).properties;
+  assert.ok(trust.authenticity > 0, "a distrusted authority is an authenticity failure");
+  assert.equal(trust.confidentiality, undefined, "a distrusted authority does not read anyone's data");
+
+  const quantum = simulate({ ...base, event: "qday" }).properties;
+  assert.ok(quantum.confidentiality > 0 && quantum.authenticity > 0);
+});
+
+test("harvest-now-decrypt-later only counts long-lived data behind key agreement", () => {
+  const quantum = simulate({ ...base, inventory: 100, event: "qday" });
+  assert.ok(quantum.counts.retro > 0, "a public-key break should expose retained data in retrospect");
+  for (const name of quantum.names.retro) {
+    const asset = SCENES.health.assets.find((a) => a.name === name);
+    assert.equal(asset.band, "keys");
+    assert.ok(asset.dep.includes("pk"), "symmetric-only storage is weakened, not opened");
+  }
+  // A trust-chain failure reads nobody's archives.
+  assert.equal(simulate({ ...base, inventory: 100, event: "ca" }).counts.retro, 0);
+});
+
+test("the event horizon is carried into the result", () => {
+  assert.equal(simulate({ ...base, horizon: 3 }).horizon, 3);
+  assert.equal(simulate({ ...base, horizon: 18 }).horizon, 18);
+});
+
+test("suppliers clear one at a time rather than all at once", () => {
+  const seen = new Set();
+  for (const vendor of [10, 30, 50, 70, 90, 100]) {
+    seen.add(simulate({ ...base, industry: "infra", inventory: 100, vendor }).counts.blockedVendor);
+  }
+  assert.ok(seen.size >= 3, `vendor readiness should unblock gradually, saw ${[...seen]}`);
+});
+
+test("response reach is derived from the outcome, not from a weighting of inputs", () => {
+  for (const industry of industries) {
+    for (const event of events) {
+      const r = simulate({ ...base, industry, event });
+      const expected = r.counts.affected ? Math.round((100 * r.counts.exposed) / r.counts.affected) : 100;
+      assert.equal(r.reach, expected, `${industry}/${event}`);
+      assert.ok(r.reach >= 0 && r.reach <= 100);
+    }
+  }
+});
+
+test("controls move the outcome monotonically and in small steps", () => {
+  for (const industry of industries) {
+    // Seeing more can never mean seeing less, and never swings more than a couple of systems at once.
+    let worstStep = 0;
+    for (let inventory = 20; inventory < 100; inventory += 1) {
+      const a = simulate({ ...base, industry, inventory });
+      const b = simulate({ ...base, industry, inventory: inventory + 1 });
+      assert.ok(b.counts.unknown <= a.counts.unknown, `${industry}: inventory ${inventory}→${inventory + 1} hid systems`);
+      worstStep = Math.max(worstStep, a.counts.unknown - b.counts.unknown);
+    }
+    assert.ok(worstStep <= 2, `${industry}: inventory moved ${worstStep} systems in one step`);
+
+    // Better supplier readiness never blocks more, and more orchestration never takes longer.
+    for (let vendor = 10; vendor < 100; vendor += 1) {
+      const a = simulate({ ...base, industry, inventory: 100, vendor });
+      const b = simulate({ ...base, industry, inventory: 100, vendor: vendor + 1 });
+      assert.ok(b.counts.blockedVendor <= a.counts.blockedVendor, `${industry}: vendor ${vendor}→${vendor + 1} blocked more`);
+    }
+    for (let orch = 0; orch < 100; orch += 5) {
+      const a = simulate({ ...base, industry, orch });
+      const b = simulate({ ...base, industry, orch: orch + 5 });
+      assert.ok(b.days.agile <= a.days.agile, `${industry}: orchestration ${orch}→${orch + 5} slowed the response`);
+    }
+  }
 });

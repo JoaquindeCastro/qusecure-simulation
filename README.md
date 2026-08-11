@@ -1,17 +1,25 @@
 # Crypto Agility Stress Test
 
-A self-contained interactive tabletop model for exploring how an enterprise responds to a cryptographic change event.
+A guided, self-contained simulation of how a cryptographic shock moves through an enterprise — and
+how much of the response crypto agility can actually reach.
+
+It does not predict Q-Day. It shows what happens when cryptographic assumptions change, and which
+parts of the problem visibility, orchestration, vendor readiness and migration capacity do and do
+not solve.
 
 ## What it includes
 
-- Healthcare, financial-services, and government environments
-- Isometric 3D industry scenes and enterprise graphics
-- Four adoption states, including public-edge-only PQC
-- Four stress events: Q-Day, TLS policy prohibition, ML-KEM implementation flaw, and certificate-authority distrust
-- Deterministic consequence and migration model
-- Fragmented-versus-crypto-agile comparison
-- Interactive enterprise map, recommendations, live controls, timeline, and JSON export
-- Keyboard navigation, reduced-motion support, and mobile layouts
+- Four industry environments — healthcare, financial services, government, critical infrastructure —
+  each drawn as an isometric enterprise with 9–11 named systems
+- A readiness stack showing protection penetrating from the public edge down to vendor and legacy
+  equipment, which never fully covers
+- Four stress events: Q-Day, protocol deprecation, a PQC implementation flaw, and trust-chain failure
+- A propagation sequence animated across the selected industry's illustration
+- A result that leads in plain English, separates confidentiality, authenticity, integrity and
+  availability, and names what crypto agility cannot fix
+- A fragmented-versus-crypto-agile comparison that holds every other assumption constant
+- An explore screen where every assumption is adjustable and every number updates live
+- A Method screen documenting the model and its limits in the product itself
 
 ## Run locally
 
@@ -19,23 +27,27 @@ A self-contained interactive tabletop model for exploring how an enterprise resp
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000`. `PORT` overrides the port.
 
 ## Test and build
 
 ```bash
-npm run check
+npm run check     # tests, then the static build into dist/
 ```
 
-The static production files are written to `dist/`.
+The test suite does two things: string checks over the page, and invariant tests that evaluate the
+simulation model directly — for example that orchestration can never shorten a supplier's schedule,
+never discovers a system on its own, and never makes the response slower.
 
-## Deploy on Vercel
+## Deploy
 
-1. Import this GitHub repository in Vercel.
-2. Vercel will read `vercel.json` and run `npm run build`.
-3. The output directory is `dist`.
-4. No environment variables or backend services are required.
+Import the repository in Vercel. It reads `vercel.json`, runs `npm run build`, and serves `dist`.
+No environment variables, no backend, no runtime network access — a strict Content-Security-Policy
+with `connect-src 'none'` enforces that nothing leaves the browser.
 
 ## Modeling note
 
-This is a deterministic tabletop tool. Its severity indicators are not breach probabilities, and it does not predict when Q-Day will occur. It is designed to compare discovery, governance, migration, vendor, and orchestration assumptions transparently.
+This is a deterministic tabletop model. Its figures are not breach probabilities, loss estimates, or
+a forecast of when Q-Day will occur — they compare assumptions you selected against each other. The
+Method screen in the app, and [`docs/SIMULATION.md`](docs/SIMULATION.md), describe exactly how each
+number is produced and what the model deliberately cannot tell you.

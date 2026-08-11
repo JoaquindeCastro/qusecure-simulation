@@ -3,207 +3,166 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 Deeper context lives in `docs/`: [PRODUCT.md](docs/PRODUCT.md) (what this is for and who it is for),
-[SIMULATION.md](docs/SIMULATION.md) (the model, its formulas, and its known defects),
+[SIMULATION.md](docs/SIMULATION.md) (the model, its formulas, and its deliberate simplifications),
 [DESIGN.md](docs/DESIGN.md) (visual and interaction language), and
 [DECISIONS.md](docs/DECISIONS.md) (why things are the way they are). This file carries the rules
 that must hold on every change; the docs carry the reasoning and the detail.
 
 ## Product
 
-This started as a "Q-Day Simulator" and has been reframed as a **Crypto Agility Stress Test**.
-The product does not predict when Q-Day arrives and must never imply it does. It shows what
-happens when an enterprise's cryptographic assumptions change, and how five factors move the
-outcome: visibility/discovery, crypto agility, vendor readiness, migration capacity, and
-architecture.
+This started as a "Q-Day Simulator" and is now a **Crypto Agility Stress Test**. It does not predict
+when Q-Day arrives and must never imply it does. It shows what happens when an enterprise's
+cryptographic assumptions change, and how five factors move the outcome: visibility/discovery,
+crypto agility, vendor readiness, migration capacity, and architecture.
 
 The teaching goal: **installing PQC once is not the same as becoming crypto-agile.**
 
-### Intended flow
+### The journey
 
-choose industry → see industry-specific architecture → choose PQC/crypto adoption state →
-trigger a cryptographic stress event → watch consequences propagate → see recommended
-response → adjust assumptions and re-run
+Seven screens, `s0`–`s7`: intro → industry → readiness → event → trigger → result → explore, plus
+`s7` **Method**, reachable from the result screen and the footer. The user-facing progress indicator
+shows only four steps (Industry → Readiness → Event → Result).
 
-The current four-screen wizard is a compressed version of this. "See industry-specific
-architecture" and "watch consequences propagate" are the two steps that exist as static
-markup rather than as real stages (see Known gaps).
+The experience is a guided presentation, not a dashboard: light background, large type, one major
+choice per screen, few controls, minimal chrome. Sliders are hidden behind a disclosure until the
+explore screen. Do not reintroduce a sidebar, a metric-card grid, or a dark admin aesthetic.
 
 ### Industries
 
-Financial services, healthcare, government, critical infrastructure. Language, asset names, and
-consequences should be industry-specific throughout — not one generic model with the industry
-name swapped in. Each has an isometric illustration in `assets/industry/` (from Meg Gleason at
-QuSecure) and a scene definition in the `scenes` object in `index.html`: hotspot coordinates as
-percentages of the image, plus per-asset tier, plain-language description, and the cryptography
-it depends on. Industry does not feed `calc()` yet.
+Financial services, healthcare, government, critical infrastructure. Each has an isometric
+illustration in `assets/industry/` (from Meg Gleason at QuSecure) and an entry in `SCENES` with
+9–11 named systems: hotspot coordinates as percentages of the image, band, cryptographic
+dependencies, and plain-language copy. Industry selects the estate; it does not otherwise weight
+the model yet.
 
 ### Stress events
 
-- **Q-Day / CRQC breaks RSA and ECC** — confidentiality, authenticity, and signatures under stress
-- **Protocol or compliance deprecation** — e.g. TLS 1.2 prohibited; a deadline, not a break
-- **ML-KEM implementation vulnerability** — systems that already migrated to PQC must patch or swap
-- **Certificate / trust-chain failure** — a shared trust anchor is distrusted
+- **Q-Day** — public-key cryptography stops being trustworthy
+- **Protocol deprecation** — a compliance deadline, nothing cryptographically broken
+- **PQC implementation flaw** — hits *only* systems that already migrated
+- **Trust-chain failure** — certificates fail regardless of migration
 
-The last two exist specifically to make the point that crypto agility is about *change*, not
-about arriving at one algorithm.
+The last two exist to make the point that agility is about *change*, not about arriving at one
+algorithm. A new event must probe a capability the existing four do not.
 
 ### Standing product feedback (from Meg)
 
-These are durable requirements, not a one-time changelog. Treat them as acceptance criteria
-for new work:
-
-1. Broaden beyond Q-Day to crypto agility generally.
-2. Model **partial adoption** — a public edge (e.g. a CDN) can be PQ-ready while the internal
-   enterprise is not. Edge readiness is a false-confidence signal, and the model should show that.
-3. Use industry-specific language everywhere.
-4. Include realistic compliance and deprecation triggers, not only cryptographic breaks.
-5. Define technical terms inline for nontechnical readers.
-6. Animate the stress event.
-7. Assume some users do not know what cryptography is when they arrive.
-8. Move toward a polished 3D/isometric enterprise visual style, in the spirit of QuSecure's
-   presentation and admin UI.
+Durable acceptance criteria: broaden beyond Q-Day; model partial adoption (public edge PQ-ready
+while the enterprise is not); industry-specific language throughout; realistic compliance triggers;
+define technical terms inline; animate the stress event; assume readers may not know what
+cryptography is; polished 3D/isometric visuals in the spirit of QuSecure's UI.
 
 ## Commands
 
 ```bash
 npm run dev     # static server on :3000 (PORT env overrides); serves the repo root, not dist/
 npm test        # node --test tests/*.test.mjs
-npm run build   # copies index.html -> dist/
-npm run check   # test + build (what CI/Vercel-equivalent verification looks like)
+npm run build   # copies index.html + assets/ into dist/
+npm run check   # test + build
 
-node --test tests/smoke.test.mjs                          # single test file
-node --test --test-name-pattern "industry" tests/*.test.mjs  # single test
+node --test tests/smoke.test.mjs                              # single file
+node --test --test-name-pattern "vendor" tests/*.test.mjs      # single test
 ```
 
-There are no dependencies, no bundler, no lint config, and no `node_modules`. Node >= 18 (uses
-`import.meta.dirname`, so 20.11+ in practice) and the built-in `node:test` runner are the whole
-toolchain. Because `npm run dev` serves the repo root, edits to `index.html` are live on reload
-without a build step.
+No dependencies, no bundler, no lint config, no `node_modules`. Node 20.11+ (uses
+`import.meta.dirname`) and the built-in `node:test` runner are the whole toolchain. `npm run dev`
+serves the repo root, so edits to `index.html` are live on reload.
 
 ## Architecture
 
-**The entire application is `index.html`.** Markup, CSS, and JS are inlined in that one file;
-`scripts/build.mjs` only copies it into `dist/`. Any behavior or styling change is an edit to
-`index.html` — do not add a framework, split into modules, or introduce a build pipeline unless
-explicitly asked.
+**The entire application is `index.html`** — markup, CSS, and JS inline. `scripts/build.mjs` copies
+it and `assets/` into `dist/`. Do not add a framework, split into modules, or introduce a build
+pipeline unless explicitly asked. No external fonts, CDN assets, analytics, or network calls at
+runtime: the UI promises nothing leaves the browser, and `vercel.json` enforces it with
+`connect-src 'none'`.
 
-The file is written in a deliberately dense style: the whole stylesheet is one long line inside
-`<style>`, and the whole application script is one long line inside `<script>`. Edits must match
-that style. Locate code with `Grep -o` on a distinctive selector or identifier rather than
-reading by line number.
+Unlike the original dense one-line style, the file is now written readably (multi-line CSS and JS).
+Match that.
 
-**Four-screen wizard.** `<section class="screen" data-screen="0..3">` = Industry → Adoption →
-Stress event → Results. Exactly one carries `.active`. Any element with `data-go="n"` (nav rail
-buttons, back/next buttons) routes through `go(n)`, which toggles `.active` on both the screen
-and the matching nav button. New navigation should reuse `data-go` rather than adding handlers.
+**Screens.** `<section class="screen" id="s0…s7">`, exactly one carrying `.on`. Any element with
+`data-go="n"` routes through `go(n)`, which paints the progress indicator, calls the screen's
+enter-hook (`paintStack`, `enterTrigger`, `paintResult`, `enterExplore`), scrolls to top, and moves
+focus to the screen heading for keyboard and screen-reader users. Reuse `data-go` rather than adding
+handlers.
 
-**Selection state.** A module-level `state = {industry, adoption, event}` holds the scenario.
-`select(rootSelector, stateKey)` installs one delegated click handler on a container; every
-`[data-value]` child inside becomes an option, gets `.selected` + `aria-pressed` toggled, and
-writes its `data-value` into `state[stateKey]`. Adding an option means adding a button with
-`data-value` — no JS change — but its display label must also be added to the `names` map used
-on the results screen.
+**Scene component.** `renderScene(host, interactive)` builds an aspect-locked box (1122/1402, so
+hotspot percentages always align), an `<img>` plate, an SVG link overlay (`viewBox 0 0 100 100`,
+`preserveAspectRatio="none"`, `vector-effect="non-scaling-stroke"`), and `.spot` buttons.
+`paintStates(host, states)` applies `data-s` per system. If an illustration fails to load the host
+gets `.noart` and the map stays usable.
 
-**The model is `calc()`.** Deterministic, no randomness, no network. Inputs: four sliders
-(`#inventory`, `#teams`, `#vendor`, `#orch`) plus lookup weights for the selected adoption state
-and stress event. It derives resilience score (clamped 12–96), exposure-days, an "agile"
-exposure figure (`exp * (1 - .55*orch/100)`), and manual-change count, then writes them into the
-metric/bar elements by id. All tuning of simulation outcomes happens inside this one function
-and its two weight tables. Slider ids are mapped to their output-label ids by a chain of
-`.replace()` calls (`inventory`→`inv`, `teams`→`team`), so a new slider id must fit that mapping
-or the mapping must be extended. Every change to `calc()` must satisfy the Modeling rules below;
-`docs/SIMULATION.md` documents the current formulas line by line and the places where they
-already violate those rules.
-
-`#run` shows the `#overlay` scan animation on a fixed ~1900ms timer, then commits the result
-labels, calls `calc()`, and jumps to screen 3. The impact-propagation map and recommendation
-list on the results screen are static markup, not model output.
+**The model** is the block between `/*MODEL-START*/` and `/*MODEL-END*/`. It is **pure — no DOM,
+no network, no storage** — so tests evaluate it directly; a test enforces this. `simulate(input)`
+returns states, counts, per-property impact, effort days, and `reach`. All model tuning happens
+there. See `docs/SIMULATION.md` for the formulas and the rules they must satisfy.
 
 ## Modeling rules
 
-These constrain `calc()` and any copy that reports its output. They are correctness
-requirements, not preferences.
+Correctness requirements, not preferences. `docs/SIMULATION.md` explains how each is enforced.
 
-**Never claim more than the model knows.**
-- Output is a deterministic tabletop comparison. Do not label any number a breach probability,
-  a likelihood, or a forecast. No randomness, no Monte Carlo framing.
-- Keep distinct: **confidentiality, integrity, authenticity, availability.** A harvest-now-
-  decrypt-later exposure is not a signature-forgery risk is not an outage.
-- Keep distinct: **cryptographic vulnerability**, **compliance failure**, and **outage.** A TLS
-  1.2 prohibition is a compliance event that can cause an outage without anything being broken
-  cryptographically. Do not collapse these into one severity bar.
+- **No output is a probability.** No likelihood, expected loss, or forecast language anywhere.
+- **Keep confidentiality, integrity, authenticity and availability distinct**, and keep
+  cryptographic vulnerability, compliance failure, and outage distinct.
+- **Crypto agility may improve** discovery within what is catalogued, configuration, policy,
+  rotation, and migration of eligible systems.
+- **Crypto agility must not fix** vendor timelines, hardware replacement, unsupported equipment, or
+  uncatalogued systems. Blocked systems are excluded from the work set structurally; `orch` is not
+  an input to visibility or to the residual.
+- **Fragmented vs agile holds every other assumption constant.**
+- **RSA/ECC falling does not mean AES-256 is broken.** Symmetric-only storage is weakened, not
+  opened, and is excluded from harvest-now-decrypt-later counts.
+- **An affected system does not fail its neighbours.** Assurance spreads one hop, as `dependent`.
 
-**What crypto agility is allowed to improve:**
-discovery/inventory, configuration, policy enforcement, certificate and key rotation, and the
-migration of *eligible* assets.
+The advantage of agility must emerge from mechanics a skeptical reader can inspect. This is not a
+disguised QuSecure advertisement: if the mechanics do not produce the advantage, fix the mechanics
+or lower the claim.
 
-**What crypto agility must NOT fix:**
-vendor release timelines, hardware replacement, unsupported legacy devices, and anything not
-yet discovered. If agility ever drives exposure toward zero, the model is wrong. Undiscovered
-assets in particular must stay undiscovered on both sides of the comparison — that is the
-entire argument for inventory coverage.
-
-**Fragmented vs crypto-agile comparisons hold external assumptions constant.** Same industry,
-same event, same vendor readiness, same horizon. The only thing that varies is orchestration/
-agility. A comparison that quietly improves vendor readiness on the agile side is dishonest and
-defeats the purpose.
-
-The advantage of agility must emerge from transparent mechanics that a skeptical reader can
-follow. This is not a disguised QuSecure advertisement; if the mechanics don't produce the
-advantage, fix the mechanics or lower the claim — do not assert the conclusion in copy.
+**Whenever you change the model, update the Method screen (`s7`) in the same change.** It is the
+app's own account of how it works, and it must not drift.
 
 ## UX rules
 
-- **Enterprise architecture is the primary visual object.** Not charts, not stat cards. The
-  reader should be looking at a system.
-- **Prefer dimensional/isometric visuals over generic SaaS cards.** The existing `.island`,
-  `.land`, `.building`, `.layer`, and `.ring` CSS is the seed of this style; extend it rather
-  than replacing it with flat components.
-- **Animation carries meaning:** event → impact → propagation → response. Animation that does
-  not communicate one of those four beats is decoration and should be cut.
-- **Progressive disclosure for technical material.** Surface a plain-language claim first;
-  put mechanism, algorithm names, and math behind a reveal. Define terms inline at first use.
-- **Accessibility is not optional.** Keyboard-operable controls, `aria-pressed` on option
-  buttons (the `select()` helper already does this), and a working `prefers-reduced-motion`
-  path for every animation added.
+- Enterprise architecture is the primary visual object; illustrations are shown whole and
+  uncropped, never buried in small cards or covered in UI.
+- Animation carries meaning: event → impact → propagation → response. Anything else is decoration.
+- Progressive disclosure: plain-language claim first, mechanism one interaction deeper, terms
+  defined inline at first use.
+- Accessibility is not optional: real buttons, `aria-pressed` on option groups, focus moved to the
+  heading on screen change, `aria-live` on the result, and a `prefers-reduced-motion` path for every
+  animation (the trigger sequence collapses to its end state).
 
-## Tests are string-presence checks
+## Tests
 
-`tests/smoke.test.mjs` reads `index.html` as text and asserts that literal substrings appear.
-This means **renaming user-facing copy breaks tests**: step names (`Industry`, `Adoption`,
-`Stress event`, `Results`), industry names (`Healthcare`, `Financial services`, `Government`),
-event names (`Q-Day`, `TLS 1.2`, `ML-KEM`, `Certificate authority`), and CSS/identifier tokens
-(`inventory`, `Orchestration`, `scene`, `hot`, `layer`, `tiers` — case-sensitive). Later tests also
-check that every `assets/industry/*.png` referenced by the page exists on disk and that hotspot
-coordinates stay within 0–100. Update the assertions alongside any such rename.
+`tests/smoke.test.mjs` does two jobs.
 
-## Known gaps (intended product vs. what is built)
+**String checks** over `index.html`, so renaming user-facing copy breaks them: step names
+(`Industry`, `Readiness`, `Event`, `Result`), industry names, event names (`Q-Day`,
+`Protocol deprecation`, `PQC implementation flaw`, `Trust-chain failure`), `Start simulation`,
+`Trigger stress event`, the Method headings, and the disclaimer phrase `not breach probabilities`.
+They also check every referenced illustration exists on disk and every hotspot coordinate is 0–100.
 
-Useful to know before planning work; each is a real gap, not a bug:
+**Model tests** evaluate the extracted model block and encode the modeling rules as invariants:
+determinism, the agility floor, monotonicity of every control, property separation, harvest-now
+scope, supplier gating, and `reach` being derived from the outcome. Add the invariant alongside any
+new mechanic.
 
-- The impact-propagation map and the recommendation list on the results screen are **static
-  markup**, not model output. They do not respond to industry, event, or sliders.
-- The `#horizon` slider ("Event horizon", 1–20 years) updates its own label and nothing else —
-  `calc()` never reads it. The "Vendor-blocked assets" metric is a hardcoded `2`.
-- The stress event does not animate. `window.stressScene.setAssetStates({id: 'impacted'|
-  'blocked'|'protected'|'unknown'})` renders propagation states on the architecture scene and is
-  ready to drive, but nothing calls it — states must not be derived until exposure is decomposed
-  into agility-reachable and blocked portions (defect 2 in `docs/SIMULATION.md`).
-- The results screen still uses the old static `.network` node markup rather than the scene
-  component from step 2.
-- Nothing in the UI separates confidentiality / integrity / authenticity / availability, or
-  separates compliance failure from cryptographic break.
-- The current fragmented-vs-agile comparison does **not** hold assumptions constant, and the
-  agility multiplier discounts vendor-blocked and undiscovered exposure. Both violate the
-  Modeling rules above; see `docs/SIMULATION.md` for the specifics.
-- `README.md` advertises features not present in `index.html` (JSON export, timeline,
-  reduced-motion support). Treat the README as aspirational.
+## Deployment
+
+Vercel reads `vercel.json`: `npm run build`, output `dist`, clean URLs, plus a strict CSP
+(`connect-src 'none'`, `frame-ancestors 'none'`), `nosniff`, `no-referrer`, HSTS, and immutable
+one-year caching for `/assets/*`. No env vars, no backend.
+
+## Known gaps
+
+- The four illustrations are ~2MB each (7.9MB total) and the carousel loads all of them. There is no
+  image tooling in this repo; WebP exports would cut this by roughly an order of magnitude.
+- Hotspot coordinates were positioned by eye against the illustrations.
+- Industry selects the estate but does not weight the model.
+- `residual` is one figure from vendor readiness, not a per-supplier schedule.
+- `prefers-reduced-motion` is implemented and tested for presence, but has not been verified by
+  toggling the OS setting.
 
 ## Repository notes
 
-- `source/index.html.000.b64` is a base64 blob of an earlier, shorter draft of the page. Nothing
-  reads it; it is not part of the build. Ignore it unless asked about it.
-- `.vercel-trigger` exists only to produce a commit that triggers a Vercel deploy.
-- Deployment is Vercel reading `vercel.json` (`npm run build`, output `dist`, clean URLs). No env
-  vars, no backend, no external requests at runtime — keep it that way; the UI states that no
-  data leaves the browser.
+- `source/index.html.000.b64` is a base64 blob of an early draft. Nothing reads it; ignore it.
+- `.vercel-trigger` exists only to produce a commit that triggers a deploy.

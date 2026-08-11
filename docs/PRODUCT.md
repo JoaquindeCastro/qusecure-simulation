@@ -73,7 +73,7 @@ The shipped wizard compresses this into four screens. "See industry-specific arc
 
 ## Industries
 
-Financial services, healthcare, government.
+Financial services, healthcare, government, critical infrastructure.
 
 Industry is not a skin. Each should carry its own asset vocabulary, its own regulatory pressure,
 and its own consequence language:
@@ -84,6 +84,9 @@ and its own consequence language:
   networks; long-lived confidentiality of records and device fleets that cannot be patched.
 - **Government** — citizen services, agency identity, critical infrastructure, archives;
   decades-long data sensitivity and procurement-bound replacement cycles.
+- **Critical infrastructure** — generation, substations, refineries, water treatment, pipelines and
+  the SCADA that runs them; operational technology where a forged instruction is a physical event,
+  and where embedded equipment cannot be patched on any software schedule.
 
 If a screen reads the same with the industry name swapped out, it is not finished.
 
