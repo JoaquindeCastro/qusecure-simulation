@@ -30,8 +30,12 @@ markup rather than as real stages (see Known gaps).
 
 ### Industries
 
-Financial services, healthcare, government. Language, asset names, and consequences should be
-industry-specific throughout — not one generic model with the industry name swapped in.
+Financial services, healthcare, government, critical infrastructure. Language, asset names, and
+consequences should be industry-specific throughout — not one generic model with the industry
+name swapped in. Each has an isometric illustration in `assets/industry/` (from Meg Gleason at
+QuSecure) and a scene definition in the `scenes` object in `index.html`: hotspot coordinates as
+percentages of the image, plus per-asset tier, plain-language description, and the cryptography
+it depends on. Industry does not feed `calc()` yet.
 
 ### Stress events
 
@@ -169,8 +173,9 @@ advantage, fix the mechanics or lower the claim — do not assert the conclusion
 This means **renaming user-facing copy breaks tests**: step names (`Industry`, `Adoption`,
 `Stress event`, `Results`), industry names (`Healthcare`, `Financial services`, `Government`),
 event names (`Q-Day`, `TLS 1.2`, `ML-KEM`, `Certificate authority`), and CSS/identifier tokens
-(`inventory`, `Orchestration`, `island`, `building`, `layer` — case-sensitive). Update the assertions alongside
-any such rename.
+(`inventory`, `Orchestration`, `scene`, `hot`, `layer`, `tiers` — case-sensitive). Later tests also
+check that every `assets/industry/*.png` referenced by the page exists on disk and that hotspot
+coordinates stay within 0–100. Update the assertions alongside any such rename.
 
 ## Known gaps (intended product vs. what is built)
 
@@ -180,10 +185,12 @@ Useful to know before planning work; each is a real gap, not a bug:
   markup**, not model output. They do not respond to industry, event, or sliders.
 - The `#horizon` slider ("Event horizon", 1–20 years) updates its own label and nothing else —
   `calc()` never reads it. The "Vendor-blocked assets" metric is a hardcoded `2`.
-- Step 2's layer stack is generic; only step 1's island art varies by industry. Industry-
-  specific *architecture* does not exist yet.
-- There is no `prefers-reduced-motion` handling, no propagation animation, and no inline
-  definitions of technical terms.
+- The stress event does not animate. `window.stressScene.setAssetStates({id: 'impacted'|
+  'blocked'|'protected'|'unknown'})` renders propagation states on the architecture scene and is
+  ready to drive, but nothing calls it — states must not be derived until exposure is decomposed
+  into agility-reachable and blocked portions (defect 2 in `docs/SIMULATION.md`).
+- The results screen still uses the old static `.network` node markup rather than the scene
+  component from step 2.
 - Nothing in the UI separates confidentiality / integrity / authenticity / availability, or
   separates compliance failure from cryptographic break.
 - The current fragmented-vs-agile comparison does **not** hold assumptions constant, and the
