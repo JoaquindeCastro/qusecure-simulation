@@ -27,6 +27,17 @@ The experience is a guided presentation, not a dashboard: light background, larg
 choice per screen, few controls, minimal chrome. Sliders are hidden behind a disclosure until the
 explore screen. Do not reintroduce a sidebar, a metric-card grid, or a dark admin aesthetic.
 
+**The industry choice must carry through the whole journey.** From `s2` onward every screen paints
+the illustration the reader picked, not a generic diagram. `s2` lights the systems the chosen
+readiness level has upgraded, using `coveredSet()` — the model's own function — so the picture and
+the simulation can never disagree. Systems in the `legacy` band render as `holdout` and never light
+at any level; that is the argument, made visually.
+
+**The turn.** Crypto agility must be *discovered*, not announced. `s5` shows the outcome first, then
+`#showAgile` re-runs the identical scenario with orchestration at 90 and animates the map. The
+reveal always states what did **not** move — blocked and uncatalogued systems are unchanged — so
+the aha and its limit arrive together. Do not let the reveal claim more than the model produced.
+
 ### Industries
 
 Financial services, healthcare, government, critical infrastructure. Each has an isometric

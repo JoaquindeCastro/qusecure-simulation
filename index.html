@@ -124,32 +124,14 @@ details.learn[open] summary:before{content:"–"}
 
 /* ---------- readiness stack ---------- */
 .readiness{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;margin-top:44px}
-.stackwrap{position:relative;padding-left:148px}
-.stack{position:relative;height:368px}
-.plate{
-  position:absolute;left:50%;height:92px;border-radius:16px;
-  transform:translateX(-50%) perspective(1100px) rotateX(60deg);
-  background:var(--raise);border:1px solid var(--line-2);
-  transition:background .55s var(--step),border-color .55s var(--step),box-shadow .55s var(--step),transform .55s var(--step);
-}
-.plate:nth-child(1){width:86%;top:0}
-.plate:nth-child(2){width:74%;top:64px}
-.plate:nth-child(3){width:62%;top:128px}
-.plate:nth-child(4){width:50%;top:192px}
-.plate:nth-child(5){width:38%;top:256px;border-style:dashed;background:repeating-linear-gradient(-45deg,#f0f2f3 0 7px,#e8ebec 7px 14px)}
-.plate.lit{
-  background:linear-gradient(140deg,#17aab6,#0a7f8b);border-color:transparent;
-  box-shadow:0 18px 40px rgba(10,127,139,.26);
-  transform:translateX(-50%) perspective(1100px) rotateX(60deg) translateZ(16px);
-}
-.plate.part{background:linear-gradient(140deg,#9adde3,#cfe9ec);border-color:#9fd3d9}
-.marks{position:absolute;left:0;top:0;width:140px;height:100%;pointer-events:none}
-.mark{position:absolute;right:0;display:flex;align-items:center;gap:11px;font-size:14.3px;color:var(--muted);transition:color .4s var(--step);flex-direction:row-reverse;text-align:right}
-.mark:nth-child(1){top:22px}.mark:nth-child(2){top:86px}.mark:nth-child(3){top:150px}
-.mark:nth-child(4){top:214px}.mark:nth-child(5){top:278px}
-.mark s{width:26px;height:1px;background:var(--line-2);display:block;text-decoration:none}
-.mark.lit{color:var(--ink);font-weight:560}
-.mark.lit s{background:var(--teal)}
+.scene-count{text-align:center;margin-top:16px;color:var(--muted);font-size:15px}
+.scene-count b{color:var(--ink);font-weight:640;font-variant-numeric:tabular-nums}
+.detail.slim{margin-top:18px;min-height:0}
+.detail .status{margin-top:12px;padding:11px 13px;border-radius:10px;font-size:14px;line-height:1.5}
+.detail .status:empty{display:none}
+.detail .status.ok{background:var(--good-wash);color:#12674a}
+.detail .status.no{background:var(--raise);color:var(--body)}
+.detail .status.hold{background:var(--warn-wash);color:#79490d}
 .levels{display:grid;gap:12px}
 .level{
   text-align:left;padding:19px 22px;border:1px solid var(--line);border-radius:var(--r-md);
@@ -190,7 +172,7 @@ details.learn[open] summary:before{content:"–"}
 .scene .links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .scene .links path{fill:none;stroke:#9fb2bd;stroke-opacity:.55;stroke-width:1.2;stroke-dasharray:4 5}
 .scene .links path.hot{stroke:var(--stop);stroke-opacity:.85;stroke-width:2}
-.scene .links path.calm{stroke:var(--teal);stroke-opacity:.8;stroke-width:2;stroke-dasharray:none}
+.scene .links path.calm{stroke:var(--teal);stroke-opacity:.5;stroke-width:1.4;stroke-dasharray:none}
 .spot{
   position:absolute;transform:translate(-50%,-50%);width:19px;height:19px;padding:0;border-radius:50%;
   border:2px solid #64798a;background:#fff;cursor:pointer;display:grid;place-items:center;
@@ -213,6 +195,10 @@ details.learn[open] summary:before{content:"–"}
 .spot[data-s=unknown]:after{background:transparent;border:1px dotted #7d909c;width:7px;height:7px}
 .spot[data-s=dependent]{border-color:#d8a24a;background:#fffaf0}
 .spot[data-s=dependent]:after{background:#d8a24a}
+.spot[data-s=dim]{border-color:#c3ccd2;background:#fff;opacity:.55;box-shadow:0 0 0 3px rgba(255,255,255,.8)}
+.spot[data-s=dim]:after{background:#c3ccd2}
+.spot[data-s=holdout]{border-color:#d7a04a;border-style:dashed;background:#fffaf1;opacity:.9}
+.spot[data-s=holdout]:after{background:#d7a04a}
 .spot[data-s=protected],.spot[data-s=resolved]{border-color:var(--good);background:var(--good-wash)}
 .spot[data-s=protected]:after,.spot[data-s=resolved]:after{background:var(--good)}
 .spot[data-s=resolved]{animation:ping .5s var(--step) both}
@@ -299,6 +285,29 @@ details.learn[open] summary:before{content:"–"}
 .linky{border:0;background:none;padding:0;color:var(--teal-deep);cursor:pointer;font:inherit;text-decoration:underline;text-underline-offset:3px}
 .linky:hover{color:var(--ink)}
 .method-link{margin-top:26px;text-align:center;font-size:15px}
+.reveal{margin-top:26px;padding:34px;border:1px solid var(--teal);border-radius:var(--r-lg);background:linear-gradient(160deg,var(--teal-wash),#fff 70%);text-align:left}
+.reveal h3{font-size:22px}
+.reveal .sub{max-width:640px}
+.reveal-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;margin-top:28px}
+.reveal-side{display:grid;gap:20px}
+.reveal-stat{display:grid;gap:2px}
+.reveal-stat span{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--teal-deep);font-weight:640}
+.reveal-stat b{font-size:36px;font-weight:660;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+.reveal-stat i{font-style:normal;color:var(--muted);font-size:14.4px}
+.reveal-hold{padding:18px 20px;border-radius:var(--r-md);background:var(--warn-wash);color:#79490d;font-size:14.6px;line-height:1.6}
+.reveal-hold b{font-weight:640}
+.cta{margin-top:34px;padding:40px;border-radius:var(--r-lg);background:var(--navy);color:#eef6f8;text-align:center}
+.cta h3{font-size:24px;color:#fff}
+.cta p{max-width:640px;margin:14px auto 0;color:#b9ced6;font-size:15.6px;line-height:1.65}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.cta .btn{background:#fff;border-color:#fff;color:var(--navy);text-decoration:none;display:inline-block}
+.cta .btn.primary{background:var(--teal);border-color:var(--teal);color:#04222a}
+.cta .btn.primary:hover{background:#12aab8;border-color:#12aab8}
+.cta .btn:not(.primary){background:transparent;border-color:#42606f;color:#eef6f8}
+.cta .btn:not(.primary):hover{border-color:#8fb2be}
+.cta-foot{margin-top:24px;font-size:13.6px;color:#8fa8b3}
+.cta-foot .linky{color:#b9ced6}
+.cta-foot .linky:hover{color:#fff}
 .props{margin-top:26px;padding:30px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);text-align:left}
 .props h3{font-size:18px}
 .prop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-top:20px}
@@ -324,8 +333,8 @@ details.learn[open] summary:before{content:"–"}
   .readiness,.trigger-wrap,.explore,.hero{grid-template-columns:1fr;gap:34px}
   .hero{min-height:0}.hero .copy{text-align:center;margin-inline:auto}.hero .row{justify-content:center}
   .stackwrap{padding-left:120px}
-  .events,.qa,.sliders{grid-template-columns:1fr}
-  .stack{height:390px}
+  .events,.qa,.sliders,.reveal-grid{grid-template-columns:1fr}
+  .reveal,.cta{padding:26px}
   .arrow{width:46px;height:46px}
   .arrow.prev{left:-6px}.arrow.next{right:-6px}
   .vs-row{grid-template-columns:1fr;gap:8px}
@@ -394,13 +403,17 @@ details.learn[open] summary:before{content:"–"}
 <!-- 2 · READINESS -->
 <section class="screen" id="s2">
   <div class="center"><p class="eyebrow">Step 2 of 4</p><h2 class="title">How deep does protection go?</h2>
-    <p class="lede">Being ready is not a yes-or-no question. Protection often stops at the public website, while everything the organization actually runs on is untouched.</p></div>
+    <p class="lede">Every system on this map is held together by cryptography — keys that keep its data private, and certificates that prove which machine is which. Upgrading a system means replacing those. Watch how far down the organization that actually reaches.</p></div>
   <div class="readiness">
-    <div class="stackwrap">
-      <div class="stack" id="stack" aria-hidden="true">
-        <div class="plate"></div><div class="plate"></div><div class="plate"></div><div class="plate"></div><div class="plate"></div>
+    <div>
+      <div class="scene" id="scene2"></div>
+      <p class="scene-count" id="s2count"></p>
+      <div class="panel detail slim" id="detail2">
+        <span class="band" id="d2band">Every point is a system</span>
+        <h4 id="d2name">Select any point on the map</h4>
+        <p id="d2crypto">Each one depends on cryptography to work: keys that keep its data private, certificates that prove which machine is which, signatures that prove nothing was altered. Upgrading a system means replacing those.</p>
+        <p id="d2status" class="status"></p>
       </div>
-      <div class="marks" aria-hidden="true"></div>
     </div>
     <div>
       <div class="levels" id="levels"></div>
@@ -455,6 +468,22 @@ details.learn[open] summary:before{content:"–"}
     <article><h3>What crypto agility solves here</h3><ul id="qCan"></ul></article>
     <article><h3>What crypto agility cannot solve</h3><ul id="qCant"></ul></article>
   </div>
+  <section class="reveal" id="reveal" aria-labelledby="revealTitle">
+    <h3 id="revealTitle">Now change one thing</h3>
+    <p class="sub" id="revealIntro">Keep the same event, the same suppliers, the same people and the same records. Change only this: the organization can find its cryptography and replace it from one place, instead of system by system. That ability has a name — crypto agility.</p>
+    <div class="row" style="justify-content:flex-start"><button class="btn primary" id="showAgile">Replay it that way</button></div>
+    <div id="revealOut" hidden>
+      <div class="reveal-grid">
+        <div><div class="scene" id="scene5"></div></div>
+        <div class="reveal-side">
+          <div class="reveal-stat"><span>Same event, handled centrally</span><b id="rvDays"></b><i id="rvDaysWas"></i></div>
+          <div class="reveal-stat"><span>Systems back in order</span><b id="rvFixed"></b><i id="rvFixedNote"></i></div>
+          <p class="reveal-hold" id="rvHold"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div class="versus">
     <h3 style="font-size:18px">Fragmented cryptography vs. a crypto-agile response</h3>
     <p class="sub" style="margin-top:8px">Both rows use the same industry, the same event, the same suppliers and the same number of people. The only thing that differs is how centrally the organization can make a change.</p>
@@ -469,10 +498,15 @@ details.learn[open] summary:before{content:"–"}
     </div>
   </div>
   <div class="props" id="props"></div>
-  <p class="method-link"><button class="linky" data-go="7">How this model works, and what it cannot tell you →</button></p>
-  <div class="row between" style="max-width:none">
-    <button class="btn ghost" data-go="4">← Replay the event</button>
-    <button class="btn primary" data-go="6">Adjust the situation →</button>
+
+  <div class="cta" id="cta">
+    <h3>So what actually helps?</h3>
+    <p>Three things stopped this response: a supplier’s release schedule, equipment somebody has to physically replace, and systems nobody had written down. The first two are not yours to shortcut. The third — knowing what cryptography you have, and being able to replace it from one place — is a decision an organization gets to make. That decision is crypto agility.</p>
+    <div class="cta-row">
+      <a class="btn primary big" id="ctaPrimary" href="https://www.qusecure.com" target="_blank" rel="noopener noreferrer">Get crypto agility</a>
+      <button class="btn big" data-go="6">Keep exploring</button>
+    </div>
+    <p class="cta-foot"><button class="linky" data-go="4">Replay the event</button> · <button class="linky" data-go="7">How this model works, and what it cannot tell you</button></p>
   </div>
 </section>
 
@@ -674,25 +708,33 @@ function vendorGate(i){return Math.min(92,58+17*i)}
 var BAND_PHASE={edge:.30,app:.46,net:.62,keys:.54,legacy:.38};
 function within(j,n,share,band){return (j+(BAND_PHASE[band]||.5))/n<share}
 
+function groupByBand(assets){
+  var by={};assets.forEach(function(a){(by[a.band]=by[a.band]||[]).push(a)});return by;
+}
+/* Which systems a readiness level has already upgraded. Shared by the simulation and by the
+   readiness screen, so the picture the reader is shown is the one the model actually runs. */
+function coveredSet(assets,coverage){
+  var by=groupByBand(assets),covered={};
+  Object.keys(by).forEach(function(band){
+    var list=by[band],cov=coverage[band]||0;
+    list.forEach(function(a,j){if(within(j,list.length,cov,band))covered[a.id]=true});
+  });
+  return covered;
+}
+
 function simulate(input){
   var scene=SCENES[input.industry], assets=scene.assets, n=assets.length;
   var coverage=ADOPTION[input.adoption].coverage;
 
-  var byBand={};
-  assets.forEach(function(a){(byBand[a.band]=byBand[a.band]||[]).push(a)});
+  var byBand=groupByBand(assets);
 
   /* Which systems have already migrated, and which the organization can actually see.
      Agility never improves visibility: an uncatalogued system stays uncatalogued on both
      sides of the comparison. */
-  var covered={},known={};
+  var covered=coveredSet(assets,coverage),known={};
   Object.keys(byBand).forEach(function(band){
-    var list=byBand[band],
-        cov=coverage[band]||0,
-        vis=input.inventory/100*(band==='legacy'?LEGACY_VISIBILITY:1);
-    list.forEach(function(a,j){
-      if(within(j,list.length,cov,band))covered[a.id]=true;
-      if(within(j,list.length,vis,band))known[a.id]=true;
-    });
+    var list=byBand[band],vis=input.inventory/100*(band==='legacy'?LEGACY_VISIBILITY:1);
+    list.forEach(function(a,j){if(within(j,list.length,vis,band))known[a.id]=true});
   });
 
   var ev=EVENTS[input.event],ctx={covered:covered};
@@ -859,7 +901,7 @@ function annotate(root){
       walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
         if(!n.nodeValue||!/\S/.test(n.nodeValue))return NodeFilter.FILTER_REJECT;
         var p=n.parentElement;
-        if(!p||p.closest('.term,.sr-only,h1,h2,h3,h4,.btn,.eyebrow,.tagline,.progress,.wordmark,#tip,.spot,.mark,.dots,.defs,.limits'))
+        if(!p||p.closest('.term,.sr-only,h1,h2,h3,h4,.btn,.eyebrow,.tagline,.progress,.wordmark,#tip,.spot,.band,.dots,.defs,.limits,.reveal-stat,.scene-count'))
           return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       }});
@@ -977,7 +1019,11 @@ function go(n){
   });
   $('#progress').style.visibility=step?'visible':'hidden';
   $('#restart').hidden=n===0;
-  if(n===2)paintStack();
+  if(n===2){
+    /* Start dark, then light up: the reader should see protection arrive, not find it already there. */
+    pinned2=null;paintReadiness(true);
+    if(REDUCED.matches)paintReadiness();else setTimeout(paintReadiness,420);
+  }
   if(n===4)enterTrigger();
   if(n===5)paintResult();
   if(n===6)enterExplore();
@@ -1037,26 +1083,29 @@ $('#methodBack').onclick=function(){go(priorScreen)};
     b.innerHTML='<b></b><span></span>';
     b.querySelector('b').textContent=a.label;
     b.querySelector('span').textContent=a.blurb;
-    b.onclick=function(){input.adoption=key;paintStack()};
+    b.onclick=function(){input.adoption=key;paintReadiness()};
     wrap.appendChild(b);
-  });
-  var marks=document.querySelector('.marks');
-  BANDS.forEach(function(band){
-    var m=document.createElement('div');m.className='mark';m.dataset.band=band.id;
-    m.innerHTML='<s></s><span></span>';m.querySelector('span').textContent=band.label;
-    marks.appendChild(m);
   });
 })();
 
-function paintStack(){
-  var cov=ADOPTION[input.adoption].coverage;
-  $$('#levels .level').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.key===input.adoption)});
-  $$('#stack .plate').forEach(function(p,i){
-    var c=cov[BANDS[i].id]||0;
-    p.classList.toggle('lit',c>=.75);
-    p.classList.toggle('part',c>0&&c<.75);
+/* The readiness screen paints the industry the reader just chose, using exactly the coverage the
+   model will use. Grey means the cryptography in that system has not been replaced. */
+function paintReadiness(dark){
+  renderScene($('#scene2'),true);
+  var scene=SCENES[input.industry],
+      covered=dark?{}:coveredSet(scene.assets,ADOPTION[input.adoption].coverage),
+      states={},lit=0;
+  scene.assets.forEach(function(a){
+    if(covered[a.id]){states[a.id]='protected';lit++}
+    else states[a.id]=a.band==='legacy'?'holdout':'dim';
   });
-  $$('.mark').forEach(function(m,i){m.classList.toggle('lit',(cov[BANDS[i].id]||0)>=.75)});
+  paintStates($('#scene2'),states);
+  /* The links are the organization's public-facing connections — the first thing anyone upgrades. */
+  $$('#scene2 .links path').forEach(function(p){p.classList.toggle('calm',!dark)});
+  $('#s2count').innerHTML=dark?'&nbsp;':'<b>'+lit+'</b> of '+scene.assets.length+
+    ' systems have had their cryptography replaced at this level.';
+  $$('#levels .level').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.key===input.adoption)});
+  if(!dark)showReadinessDetail(pinned2);
   var note={
     edge:'The public edge is protected. Everything behind it — the applications staff use, the internal network, the systems that prove who is who — is unchanged. This is the gap that "our website already supports post-quantum" hides.',
     pilot:'A trial proves the technology works. It does not change what happens when every system has to move at once.',
@@ -1065,6 +1114,31 @@ function paintStack(){
   }[input.adoption];
   $('#stackNote').textContent=note;
   annotate($('#stackNote'));
+}
+
+/* Selecting a system says, in one place, what cryptography it runs on and whether this level has
+   replaced it. That is the link between "cryptography" and "protected" the map is trying to make. */
+var pinned2=null;
+function showReadinessDetail(id){
+  var scene=SCENES[input.industry],
+      a=id&&scene.assets.filter(function(x){return x.id===id})[0];
+  if(!a){
+    $('#d2band').textContent='Every point is a system';
+    $('#d2name').textContent='Select any point on the map';
+    $('#d2crypto').textContent='Each one depends on cryptography to work: keys that keep its data private, certificates that prove which machine is which, signatures that prove nothing was altered. Upgrading a system means replacing those.';
+    $('#d2status').textContent='';$('#d2status').className='status';
+    annotate($('#detail2'));return;
+  }
+  var covered=coveredSet(scene.assets,ADOPTION[input.adoption].coverage),
+      band=BANDS.filter(function(b){return b.id===a.band})[0];
+  $('#d2band').textContent=band?band.label:'';
+  $('#d2name').textContent=a.name;
+  $('#d2crypto').textContent=a.crypto;
+  var s=$('#d2status');
+  if(covered[a.id]){s.className='status ok';s.textContent='Upgraded at this level — this system’s cryptography has been replaced.'}
+  else if(a.band==='legacy'){s.className='status hold';s.textContent='Not upgraded, and no readiness level fixes it. This is physical equipment or a supplier’s product; somebody has to ship or replace it.'}
+  else{s.className='status no';s.textContent='Not upgraded at this level — still running the cryptography it started with.'}
+  annotate($('#detail2'));
 }
 
 /* ---- screen 3: events + sliders ---- */
@@ -1191,6 +1265,19 @@ $('#fire').onclick=function(){
     setTimeout(function(){paintStates(host,states);finish()},1200);
   },2500);
 };
+$('#scene2').addEventListener('click',function(e){
+  var s=e.target.closest('.spot');if(!s)return;
+  pinned2=pinned2===s.dataset.id?null:s.dataset.id;
+  $$('#scene2 .spot').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.id===pinned2)});
+  showReadinessDetail(pinned2);
+});
+$('#scene2').addEventListener('pointerover',function(e){
+  var s=e.target.closest('.spot');if(s)showReadinessDetail(s.dataset.id);
+});
+$('#scene2').addEventListener('pointerleave',function(){showReadinessDetail(pinned2)});
+$('#scene2').addEventListener('focusin',function(e){
+  var s=e.target.closest('.spot');if(s)showReadinessDetail(s.dataset.id);
+});
 $('#scene4').addEventListener('click',function(e){
   var s=e.target.closest('.spot');if(!s)return;
   pinned=pinned===s.dataset.id?null:s.dataset.id;
@@ -1274,7 +1361,44 @@ function paintResult(){
   $('#mUnknown').textContent=c.unknown;
   $('#mReach').textContent=r.reach+'%';
   paintProperties(r);
+  /* The reveal is a one-time turn; reset it whenever the underlying run changes. */
+  $('#showAgile').hidden=false;$('#revealOut').hidden=true;
 }
+
+/* The turn in the story. Everything is held constant except the one thing the product is about,
+   and the reader watches the map change — including the systems that do not change, which is the
+   half of the point an advertisement would leave out. */
+var AGILE_ORCH=90;
+$('#showAgile').onclick=function(){
+  var before=result||simulate(input),
+      after=simulate(Object.assign({},input,{orch:AGILE_ORCH}));
+  $('#showAgile').hidden=true;
+  $('#revealOut').hidden=false;
+
+  renderScene($('#scene5'),false);
+  paintStates($('#scene5'),before.states);
+
+  var fixed={},stuck=before.counts.blocked+before.counts.unknown;
+  Object.keys(after.states).forEach(function(k){
+    fixed[k]=after.states[k]==='exposed'?'resolved':after.states[k];
+  });
+  var reveal=function(){paintStates($('#scene5'),fixed)};
+  if(REDUCED.matches)reveal();else setTimeout(reveal,700);
+
+  $('#rvDays').textContent=after.days.agile+' days';
+  $('#rvDaysWas').textContent='instead of '+before.days.fragmented+' days doing it system by system';
+  $('#rvFixed').textContent=after.counts.exposed+' of '+after.counts.affected;
+  $('#rvFixedNote').textContent=after.counts.exposed===before.counts.exposed
+    ? 'exactly the same systems as before — agility changes how fast you get there, not how many you can reach'
+    : 'affected systems the response reaches';
+  $('#rvHold').innerHTML=stuck
+    ? '<b>And these did not move.</b> '+stuck+' system'+(stuck>1?'s are':' is')+
+      ' still waiting on a supplier, still needing physical replacement, or still missing from the records. '+
+      'Crypto agility changes how fast you can act. It does not change what you are allowed to act on — '+
+      'which is why the inventory and the suppliers matter as much as the tooling.'
+    : '<b>Nothing was left behind in this run.</b> Lower the supplier readiness or the inventory visibility and you will see the systems no amount of agility reaches.';
+  annotate($('#reveal'));
+};
 
 var PROPERTY_COPY={
   confidentiality:['Confidentiality','Data that should stay private could be read.'],

@@ -91,6 +91,24 @@ test("the page tells the reader what the dotted words are", () => {
   assert.ok(/Dotted words[^<]*definition/i.test(html), "the marker convention is never explained");
 });
 
+test("the readiness screen runs on the chosen industry, not an abstract diagram", () => {
+  assert.ok(html.includes('id="scene2"'), "readiness screen has no industry map");
+  assert.ok(/coveredSet\(scene\.assets/.test(html), "the map is not driven by the model's own coverage");
+  assert.ok(html.includes("holdout"), "systems no readiness level reaches are not marked");
+});
+
+test("the crypto-agility turn exists and keeps its own caveat", () => {
+  assert.ok(html.includes('id="showAgile"'), "there is no agility reveal");
+  assert.ok(html.includes("AGILE_ORCH"), "the reveal does not re-run the model");
+  assert.ok(/did not move/.test(html), "the reveal does not say what agility fails to fix");
+});
+
+test("the ending offers both a way forward and a way to keep playing", () => {
+  assert.ok(html.includes("Get crypto agility"));
+  assert.ok(html.includes("Keep exploring"));
+  assert.ok(/rel="noopener noreferrer"/.test(html), "outbound link is not safely rel-tagged");
+});
+
 test("publishes its method and its limits in the page", () => {
   assert.ok(html.includes("How this model works"));
   assert.ok(html.includes("What this model cannot tell you"));
