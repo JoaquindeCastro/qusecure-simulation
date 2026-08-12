@@ -1,0 +1,55 @@
+{
+  "industry": "healthcare",
+  "masterImage": "../healthcare.png",
+  "viewBox": [0, 0, 1122, 1402],
+  "purpose": "Prototype semantic decomposition for the assembled-to-exploded migration-depth transition. These are migration-reach planes, not literal network-stack layers.",
+  "layers": [
+    {
+      "id": "public-edge",
+      "label": "Public & external services",
+      "depth": 1,
+      "z": 150,
+      "description": "Systems and communications that face patients, partners, mobile users, or the public internet.",
+      "regions": ["external-admin", "ambulance-fleet"],
+      "migration": {"edge": "active", "pilots": "active", "orchestrated": "active", "broad": "active"}
+    },
+    {
+      "id": "applications",
+      "label": "Enterprise applications",
+      "depth": 2,
+      "z": 55,
+      "description": "Clinical and business applications controlled by the healthcare organization.",
+      "regions": ["clinician-workstation", "pharmacy-lab", "outpatient-clinic"],
+      "migration": {"edge": "inactive", "pilots": "partial", "orchestrated": "active", "broad": "active"}
+    },
+    {
+      "id": "core-infrastructure",
+      "label": "Core trust & infrastructure",
+      "depth": 3,
+      "z": -40,
+      "description": "Data-center, identity, certificate, internal-network, and core hospital infrastructure that deeper migration must reach.",
+      "regions": ["data-center", "hospital-core"],
+      "migration": {"edge": "inactive", "pilots": "inactive", "orchestrated": "active", "broad": "active"}
+    },
+    {
+      "id": "vendor-embedded",
+      "label": "Suppliers & embedded systems",
+      "depth": 4,
+      "z": -135,
+      "description": "Vendor-managed, embedded, or difficult-to-replace clinical technology where orchestration cannot eliminate supplier and hardware constraints.",
+      "regions": ["mri-imaging", "clinical-devices"],
+      "migration": {"edge": "inactive", "pilots": "inactive", "orchestrated": "partial", "broad": "partial"}
+    }
+  ],
+  "regions": {
+    "external-admin": {"label": "External / administrative access", "clipPath": "region-external-admin"},
+    "ambulance-fleet": {"label": "Ambulance and mobile care", "clipPath": "region-ambulance-fleet"},
+    "clinician-workstation": {"label": "Clinician workstation", "clipPath": "region-clinician-workstation"},
+    "pharmacy-lab": {"label": "Pharmacy / lab environment", "clipPath": "region-pharmacy-lab"},
+    "outpatient-clinic": {"label": "Outpatient clinic", "clipPath": "region-outpatient-clinic"},
+    "data-center": {"label": "Data center", "clipPath": "region-data-center"},
+    "hospital-core": {"label": "Main hospital and internal infrastructure", "clipPath": "region-hospital-core"},
+    "mri-imaging": {"label": "MRI / imaging", "clipPath": "region-mri-imaging"},
+    "clinical-devices": {"label": "Connected clinical devices", "clipPath": "region-clinical-devices"}
+  }
+}
