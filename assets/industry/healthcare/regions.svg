@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1122 1402">
+  <defs>
+    <!-- Prototype semantic regions. Intentionally generous; tune against browser rendering. -->
+    <clipPath id="region-external-admin" clipPathUnits="userSpaceOnUse">
+      <polygon points="20,55 360,55 395,120 375,315 300,345 120,335 25,280"/>
+    </clipPath>
+    <clipPath id="region-ambulance-fleet" clipPathUnits="userSpaceOnUse">
+      <polygon points="0,690 365,700 390,860 325,1045 85,1070 0,990"/>
+    </clipPath>
+    <clipPath id="region-clinician-workstation" clipPathUnits="userSpaceOnUse">
+      <polygon points="805,205 1088,205 1110,285 1090,475 815,485 775,400"/>
+    </clipPath>
+    <clipPath id="region-pharmacy-lab" clipPathUnits="userSpaceOnUse">
+      <polygon points="200,1015 535,1010 560,1125 520,1275 245,1280 190,1190"/>
+    </clipPath>
+    <clipPath id="region-outpatient-clinic" clipPathUnits="userSpaceOnUse">
+      <polygon points="575,985 1015,955 1065,1085 1030,1330 640,1335 565,1225"/>
+    </clipPath>
+    <clipPath id="region-data-center" clipPathUnits="userSpaceOnUse">
+      <polygon points="560,35 840,35 880,115 830,285 585,300 530,205"/>
+    </clipPath>
+    <clipPath id="region-hospital-core" clipPathUnits="userSpaceOnUse">
+      <polygon points="65,285 745,265 870,460 860,930 620,1010 200,965 75,805 30,510"/>
+    </clipPath>
+    <clipPath id="region-mri-imaging" clipPathUnits="userSpaceOnUse">
+      <polygon points="825,505 1118,500 1120,735 1030,785 845,745 810,640"/>
+    </clipPath>
+    <clipPath id="region-clinical-devices" clipPathUnits="userSpaceOnUse">
+      <polygon points="770,785 1115,775 1120,1010 1040,1060 790,1020 745,910"/>
+    </clipPath>
+
+    <clipPath id="layer-public-edge" clipPathUnits="userSpaceOnUse">
+      <polygon points="20,55 360,55 395,120 375,315 300,345 120,335 25,280"/>
+      <polygon points="0,690 365,700 390,860 325,1045 85,1070 0,990"/>
+    </clipPath>
+    <clipPath id="layer-applications" clipPathUnits="userSpaceOnUse">
+      <polygon points="805,205 1088,205 1110,285 1090,475 815,485 775,400"/>
+      <polygon points="200,1015 535,1010 560,1125 520,1275 245,1280 190,1190"/>
+      <polygon points="575,985 1015,955 1065,1085 1030,1330 640,1335 565,1225"/>
+    </clipPath>
+    <clipPath id="layer-core-infrastructure" clipPathUnits="userSpaceOnUse">
+      <polygon points="560,35 840,35 880,115 830,285 585,300 530,205"/>
+      <polygon points="65,285 745,265 870,460 860,930 620,1010 200,965 75,805 30,510"/>
+    </clipPath>
+    <clipPath id="layer-vendor-embedded" clipPathUnits="userSpaceOnUse">
+      <polygon points="825,505 1118,500 1120,735 1030,785 845,745 810,640"/>
+      <polygon points="770,785 1115,775 1120,1010 1040,1060 790,1020 745,910"/>
+    </clipPath>
+  </defs>
+</svg>
