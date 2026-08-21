@@ -220,3 +220,21 @@ mechanics. Publishing the method inside the product — rather than only in a re
 reading the page will see — is what makes [D7] real rather than aspirational.
 
 **Forbids.** Changing the model without changing the Method screen in the same commit.
+
+---
+
+## D16 — The chosen industry and the takeaway stay visible
+
+**Decision.** From readiness onward, the copy names the selected industry as the network being
+examined. Selecting a system isolates that part of the supplied illustration without replacing or
+redrawing the source art. The event and result screens also offer a short path to a 60-second
+takeaway, and the ending separates learning, getting help, and continuing the simulation.
+
+**Why.** A reader should never have to remember how an industry choice relates to the next screen,
+or finish the full long-form journey to understand the core lesson. The simulator can support both
+a five-minute visitor and a reader who wants to inspect the mechanics without turning into two
+different products.
+
+**Forbids.** Generic post-selection headings that discard the industry context; hiding the only
+takeaway below the detailed analysis; or merging the educational, commercial, and exploratory exits
+into one ambiguous action.

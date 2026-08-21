@@ -3,7 +3,13 @@ import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const port = Number(process.env.PORT || 3000);
+const args = process.argv.slice(2);
+const valueAfter = (flag) => {
+  const index = args.indexOf(flag);
+  return index >= 0 ? args[index + 1] : undefined;
+};
+const port = Number(valueAfter("--port") || process.env.PORT || 3000);
+const host = valueAfter("--host") || "0.0.0.0";
 const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".svg": "image/svg+xml" };
 const binary = new Set([".png", ".jpg", ".jpeg", ".webp"]);
 
@@ -22,4 +28,4 @@ http.createServer(async (req, res) => {
     res.writeHead(404);
     res.end("Not found");
   }
-}).listen(port, () => console.log(`http://localhost:${port}`));
+}).listen(port, host, () => console.log(`http://${host}:${port}`));
