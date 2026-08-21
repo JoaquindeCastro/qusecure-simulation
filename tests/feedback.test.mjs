@@ -6,24 +6,32 @@ const css = await readFile(new URL('../assets/feedback.css', import.meta.url), '
 const js = await readFile(new URL('../assets/feedback.js', import.meta.url), 'utf8');
 const build = await readFile(new URL('../scripts/build.mjs', import.meta.url), 'utf8');
 
-test('build injects the narrative enhancement layer', () => {
+test('build injects the enhancement layer', () => {
   assert.match(build, /assets\/feedback\.css/);
   assert.match(build, /assets\/feedback\.js/);
 });
 
-test('industry continuity and quick exit are present', () => {
-  assert.match(js, /Here’s your/);
+test('industry continuity and quick exit remain', () => {
+  assert.match(js, /Your /);
   assert.match(js, /30-second takeaway/);
   assert.match(js, /Get crypto agility for your bank/);
 });
 
-test('readiness bridge and visual drill-down are present', () => {
-  assert.match(js, /What “protected” means here/);
-  assert.match(js, /Focus the network/);
-  assert.match(css, /\.scene\.layer-focus/);
+test('industry images isolate selected components', () => {
+  assert.match(js, /component-overlay/);
+  assert.match(js, /focusComponent/);
+  assert.match(js, /clipPath/);
+  assert.match(css, /\.scene\.component-focus/);
+  assert.match(css, /grayscale\(1\)/);
 });
 
-test('result has an explicit trouble-to-solution turn', () => {
-  assert.match(js, /You’re exposed\. This is the part you can change\./);
+test('copy density is reduced with progressive disclosure', () => {
+  assert.match(js, /Click a system to isolate it/);
+  assert.match(js, /Why this happened/);
+  assert.match(css, /result-disclosure/);
+});
+
+test('result still has an explicit trouble-to-solution turn', () => {
+  assert.match(js, /The edge was the easy part/);
   assert.match(js, /Replay with crypto agility/);
 });
