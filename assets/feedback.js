@@ -1,244 +1,607 @@
-(function(){
+(function () {
   'use strict';
 
-  if(typeof SCENES==='undefined' || typeof input==='undefined') return;
+  if (
+    typeof SCENES === 'undefined' ||
+    typeof ADOPTION === 'undefined' ||
+    typeof EVENTS === 'undefined' ||
+    typeof simulate !== 'function' ||
+    typeof coveredSet !== 'function' ||
+    typeof input === 'undefined'
+  ) return;
 
-  var INDUSTRY_META={
-    health:{noun:'healthcare network',owner:'hospital',cta:'Get crypto agility for your healthcare network'},
-    finance:{noun:'bank network',owner:'bank',cta:'Get crypto agility for your bank'},
-    gov:{noun:'government network',owner:'agency',cta:'Get crypto agility for your agency'},
-    infra:{noun:'critical infrastructure network',owner:'operator',cta:'Get crypto agility for your infrastructure network'},
-    infrastructure:{noun:'critical infrastructure network',owner:'operator',cta:'Get crypto agility for your infrastructure network'}
+  var ORDER = ['health', 'finance', 'gov', 'infra'];
+  var SCENARIO_META = {
+    qday: {
+      title: 'Q-Day',
+      short: "Today's common internet security can no longer be trusted.",
+      result: "Systems still relying on today's common internet security become untrusted at once."
+    },
+    tls: {
+      title: 'Old protocol banned',
+      short: 'A hard deadline forces an urgent replacement.',
+      result: 'Systems still using the banned connection method must change or be switched off.'
+    },
+    mlkem: {
+      title: 'Flaw in new protection',
+      short: 'Systems that already upgraded have to change again.',
+      result: 'Systems that adopted the flawed new protection must move again.'
+    },
+    ca: {
+      title: 'Digital trust failure',
+      short: 'Systems across the network can no longer prove who they are.',
+      result: 'Systems relying on the failed identity provider can no longer prove who they are.'
+    }
+  };
+  var READINESS_META = {
+    edge: {
+      title: 'Public edge only',
+      short: 'Website and external entry points.'
+    },
+    pilot: {
+      title: 'A few internal pilots',
+      short: 'Some systems have been upgraded.'
+    },
+    orchestrated: {
+      title: 'Most internal systems',
+      short: 'Coverage reaches deep into the network.'
+    },
+    native: {
+      title: 'Broad migration',
+      short: 'Most systems are upgraded; old equipment remains.'
+    }
+  };
+  var INDUSTRY_CTA = {
+    health: 'Get crypto agility for healthcare',
+    finance: 'Get crypto agility for your bank',
+    gov: 'Get crypto agility for government',
+    infra: 'Get crypto agility for infrastructure'
   };
 
-  var SHORT_LEVELS={
-    edge:'Public-facing systems only.',
-    pilot:'A few internal systems.',
-    orchestrated:'Most systems, managed centrally.',
-    native:'Broad migration; legacy still remains.'
-  };
-  var SHORT_NOTES={
-    edge:'The edge is protected. Most of the network is not.',
-    pilot:'A pilot proves the technology works. It does not solve a network-wide change.',
-    orchestrated:'Central control reaches most systems. Supplier and old hardware still sit outside it.',
-    native:'Most systems are migrated. Supplier-controlled and legacy equipment still remain.'
-  };
+  var app;
+  var industryView;
+  var workspace;
+  var side;
+  var sceneHost;
+  var sceneLabel;
+  var overlay;
+  var changeIndustry;
+  var selectedAsset = null;
+  var currentResult = null;
+  var currentMode = 'industry';
 
-  function scene(){return SCENES[input.industry]}
-  function meta(){
-    var sc=scene(),m=INDUSTRY_META[input.industry];
-    return m||{noun:(sc?sc.name.toLowerCase():'organization')+' network',owner:'organization',cta:'Get crypto agility for your organization'};
+  function el(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text != null) node.textContent = text;
+    return node;
   }
-  function assetById(id){
-    var sc=scene();
-    if(!sc)return null;
-    for(var i=0;i<sc.assets.length;i++)if(sc.assets[i].id===id)return sc.assets[i];
+
+  function scene() {
+    return SCENES[input.industry];
+  }
+
+  function assetById(id) {
+    var assets = scene().assets;
+    for (var i = 0; i < assets.length; i++) {
+      if (assets[i].id === id) return assets[i];
+    }
     return null;
   }
 
-  /* Keep the industry thread visible without adding another card of prose. */
-  function ensureIndustryBadges(){
-    [['s2','Your '],['s3','Same '],['s4','Same '],['s5','Same ']].forEach(function(x){
-      var root=document.getElementById(x[0]),center=root&&root.querySelector('.center');
-      if(!center)return;
-      var badge=center.querySelector('.industry-badge');
-      if(!badge){badge=document.createElement('p');badge.className='industry-badge';center.appendChild(badge)}
-      badge.textContent=x[1]+meta().noun;
+  function buildApp() {
+    var old = document.getElementById('qv2');
+    if (old) old.remove();
+
+    document.body.classList.add('qv2-active');
+    var original = document.querySelector('.shell');
+    if (original) original.setAttribute('aria-hidden', 'true');
+
+    app = el('div', 'qv2');
+    app.id = 'qv2';
+
+    var top = el('header', 'qv2-top');
+    var brand = el('button', 'qv2-brand');
+    brand.type = 'button';
+    brand.innerHTML = '<i aria-hidden="true"></i><span>QuSecure</span><small>Crypto Agility Stress Test</small>';
+    brand.addEventListener('click', showIndustryGrid);
+
+    var topActions = el('div', 'qv2-top-actions');
+    changeIndustry = el('button', 'qv2-link', 'Change industry');
+    changeIndustry.type = 'button';
+    changeIndustry.hidden = true;
+    changeIndustry.addEventListener('click', showIndustryGrid);
+    topActions.appendChild(changeIndustry);
+    top.appendChild(brand);
+    top.appendChild(topActions);
+
+    var main = el('main', 'qv2-main');
+    industryView = el('section', 'qv2-industry');
+    industryView.id = 'qv2Industry';
+    main.appendChild(industryView);
+
+    workspace = el('section', 'qv2-workspace');
+    workspace.id = 'qv2Workspace';
+    workspace.hidden = true;
+
+    var stage = el('div', 'qv2-stage');
+    var visual = el('div', 'qv2-visual');
+    sceneHost = el('div', 'qv2-scene');
+    sceneHost.id = 'qv2Scene';
+    sceneLabel = el('p', 'qv2-scene-label', 'Click a system to isolate it');
+    visual.appendChild(sceneHost);
+    visual.appendChild(sceneLabel);
+
+    side = el('aside', 'qv2-side');
+    side.id = 'qv2Side';
+    side.setAttribute('aria-live', 'polite');
+
+    stage.appendChild(visual);
+    stage.appendChild(side);
+    workspace.appendChild(stage);
+
+    overlay = buildScenarioOverlay();
+    workspace.appendChild(overlay);
+    main.appendChild(workspace);
+
+    app.appendChild(top);
+    app.appendChild(main);
+    document.body.appendChild(app);
+
+    renderIndustryGrid();
+  }
+
+  function renderIndustryGrid() {
+    industryView.textContent = '';
+
+    var heading = el('div', 'qv2-industry-heading');
+    heading.appendChild(el('p', 'qv2-kicker', 'Interactive simulation'));
+    heading.appendChild(el('h1', '', 'Choose an industry'));
+    heading.appendChild(el('p', 'qv2-intro', 'See what happens when security has to change across an entire network.'));
+
+    var grid = el('div', 'qv2-industry-grid');
+    ORDER.forEach(function (key) {
+      var sc = SCENES[key];
+      var button = el('button', 'qv2-industry-card');
+      button.type = 'button';
+      button.dataset.industry = key;
+      button.setAttribute('aria-label', 'Choose ' + sc.name);
+
+      var imageWrap = el('span', 'qv2-industry-image');
+      var image = document.createElement('img');
+      image.src = sc.img;
+      image.alt = '';
+      image.setAttribute('aria-hidden', 'true');
+      image.width = 1122;
+      image.height = 1402;
+      imageWrap.appendChild(image);
+
+      var copy = el('span', 'qv2-industry-copy');
+      copy.appendChild(el('b', '', sc.name));
+      copy.appendChild(el('span', '', shortIndustryLine(key)));
+
+      button.appendChild(imageWrap);
+      button.appendChild(copy);
+      button.addEventListener('click', function () {
+        chooseIndustry(key);
+      });
+      grid.appendChild(button);
     });
+
+    industryView.appendChild(heading);
+    industryView.appendChild(grid);
   }
 
-  /* Remove the earlier verbose enhancement layer. The picture should carry the story. */
-  function stripCrowdedAdditions(){
-    document.querySelectorAll('.industry-context,.crypto-bridge,.layer-drill,.layer-focus-label,.industry-level-detail').forEach(function(n){n.remove()});
+  function shortIndustryLine(key) {
+    return {
+      health: 'Hospitals, devices and patient systems',
+      finance: 'Payments, identity and core banking',
+      gov: 'Citizen services and national systems',
+      infra: 'Power, water and industrial control'
+    }[key];
   }
 
-  function simplifyCopy(){
-    var sc=scene();
-    if(!sc)return;
-    var s2h=document.querySelector('#s2 h2.title');
-    if(s2h)s2h.textContent=sc.name+' network';
-    var s2lede=document.querySelector('#s2 .center .lede');
-    if(s2lede)s2lede.textContent='Click a system to isolate it. Then choose how much of its cryptography has already been upgraded.';
+  function chooseIndustry(key) {
+    input.industry = key;
+    input.adoption = 'edge';
+    input.orch = 15;
+    selectedAsset = null;
+    currentResult = null;
+    currentMode = 'readiness';
 
-    var s3lede=document.querySelector('#s3 .center .lede');
-    if(s3lede)s3lede.textContent='Pick what changes. The same network stays in view.';
+    industryView.hidden = true;
+    workspace.hidden = false;
+    changeIndustry.hidden = false;
 
-    document.querySelectorAll('#levels .level').forEach(function(card){
-      var span=card.querySelector(':scope > span');
-      if(span&&SHORT_LEVELS[card.dataset.key])span.textContent=SHORT_LEVELS[card.dataset.key];
+    renderPersistentScene();
+    renderReadiness();
+  }
+
+  function showIndustryGrid() {
+    closeScenarioOverlay();
+    currentMode = 'industry';
+    workspace.hidden = true;
+    industryView.hidden = false;
+    changeIndustry.hidden = true;
+    selectedAsset = null;
+    currentResult = null;
+    industryView.querySelector('h1').focus({ preventScroll: true });
+  }
+
+  function renderPersistentScene() {
+    var sc = scene();
+    sceneHost.textContent = '';
+    sceneHost.dataset.industry = input.industry;
+
+    var base = document.createElement('img');
+    base.className = 'qv2-scene-image qv2-base-image';
+    base.src = sc.img;
+    base.alt = sc.alt;
+    base.width = 1122;
+    base.height = 1402;
+    base.decoding = 'async';
+
+    var highlight = document.createElement('img');
+    highlight.className = 'qv2-scene-image qv2-highlight-image';
+    highlight.src = sc.img;
+    highlight.alt = '';
+    highlight.setAttribute('aria-hidden', 'true');
+    highlight.width = 1122;
+    highlight.height = 1402;
+
+    sceneHost.appendChild(base);
+    sceneHost.appendChild(highlight);
+
+    var byId = {};
+    sc.assets.forEach(function (asset) {
+      byId[asset.id] = asset;
     });
 
-    var d2=document.getElementById('d2crypto');
-    if(d2&&(!window.pinned2))d2.textContent='Select a point to see what cryptography it uses and whether this readiness level reaches it.';
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'qv2-links');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-hidden', 'true');
 
-    var triggerCopy=document.getElementById('triggerCopy');
-    if(triggerCopy&&typeof EVENTS!=='undefined'&&EVENTS[input.event]){
-      triggerCopy.textContent=EVENTS[input.event].blurb+' Watch which systems change state.';
-    }
-  }
-
-  /* Each hotspot is treated as its own visual component. The underlying illustration is greyed,
-     while a clipped full-colour copy of the selected component is placed over it. This avoids
-     redrawing the artwork and keeps every highlight aligned with the simulation's own coordinates. */
-  function componentRadius(a){
-    if(!a)return [15,12];
-    if(a.id==='core')return [25,20];
-    if(a.band==='keys')return [17,13];
-    if(a.band==='legacy')return [16,12];
-    if(a.band==='edge')return [17,13];
-    return [15,12];
-  }
-
-  function ensureSceneOverlay(host){
-    if(!host||!host.querySelector('.plate-img'))return;
-    var base=host.querySelector('.plate-img');
-    var overlay=host.querySelector('.component-overlay');
-    if(!overlay){
-      overlay=document.createElement('img');
-      overlay.className='plate-img component-overlay';
-      overlay.alt='';overlay.setAttribute('aria-hidden','true');
-      overlay.width=base.width||1122;overlay.height=base.height||1402;
-      host.insertBefore(overlay,host.querySelector('.links'));
-    }
-    if(overlay.src!==base.src)overlay.src=base.src;
-
-    var label=host.parentElement&&host.parentElement.querySelector('.component-nameplate');
-    if(!label&&host.parentElement){
-      label=document.createElement('p');label.className='component-nameplate';
-      label.textContent='Select a system to isolate it';
-      host.insertAdjacentElement('beforebegin',label);
-    }
-
-    if(host.dataset.componentWired)return;
-    host.dataset.componentWired='1';
-    host.addEventListener('click',function(e){
-      var spot=e.target.closest('.spot');
-      if(!spot)return;
-      var id=spot.dataset.id;
-      focusComponent(host,host.dataset.focusId===id?null:id);
+    sc.links.forEach(function (link) {
+      var from = byId[link[0]];
+      var to = byId[link[1]];
+      var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M' + from.x + ' ' + from.y + 'L' + to.x + ' ' + to.y);
+      path.setAttribute('vector-effect', 'non-scaling-stroke');
+      path.dataset.from = link[0];
+      path.dataset.to = link[1];
+      svg.appendChild(path);
     });
+    sceneHost.appendChild(svg);
+
+    sc.assets.forEach(function (asset) {
+      var spot = el('button', 'qv2-spot');
+      spot.type = 'button';
+      spot.dataset.id = asset.id;
+      spot.style.left = asset.x + '%';
+      spot.style.top = asset.y + '%';
+      spot.setAttribute('aria-label', asset.name);
+      spot.innerHTML = '<i aria-hidden="true"></i><span>' + escapeHtml(asset.name) + '</span>';
+      spot.addEventListener('click', function (event) {
+        event.stopPropagation();
+        focusAsset(selectedAsset === asset.id ? null : asset.id);
+      });
+      sceneHost.appendChild(spot);
+    });
+
+    sceneHost.onclick = function (event) {
+      if (!event.target.closest('.qv2-spot')) focusAsset(null);
+    };
+
+    paintReadinessScene();
   }
 
-  function focusComponent(host,id){
-    if(!host)return;
-    var overlay=host.querySelector('.component-overlay'),label=host.parentElement&&host.parentElement.querySelector('.component-nameplate');
-    if(!overlay)return;
-    host.dataset.focusId=id||'';
-    host.classList.toggle('component-focus',!!id);
-    host.querySelectorAll('.spot').forEach(function(s){
-      s.classList.toggle('component-on',!!id&&s.dataset.id===id);
+  function focusAsset(id) {
+    selectedAsset = id;
+    var highlight = sceneHost.querySelector('.qv2-highlight-image');
+    sceneHost.classList.toggle('is-isolating', !!id);
+
+    sceneHost.querySelectorAll('.qv2-spot').forEach(function (spot) {
+      var active = !!id && spot.dataset.id === id;
+      spot.classList.toggle('is-selected', active);
+      spot.setAttribute('aria-pressed', String(active));
     });
-    if(!id){
-      overlay.style.clipPath='none';overlay.style.webkitClipPath='none';
-      if(label)label.textContent='Select a system to isolate it';
+
+    if (!id) {
+      highlight.style.clipPath = 'none';
+      highlight.style.webkitClipPath = 'none';
+      sceneLabel.textContent = 'Click a system to isolate it';
       return;
     }
-    var a=assetById(id);if(!a)return;
-    var r=componentRadius(a),clip='ellipse('+r[0]+'% '+r[1]+'% at '+a.x+'% '+a.y+'%)';
-    overlay.style.clipPath=clip;overlay.style.webkitClipPath=clip;
-    if(label)label.textContent=a.name;
+
+    var asset = assetById(id);
+    var radius = componentRadius(asset);
+    var clip = 'ellipse(' + radius[0] + '% ' + radius[1] + '% at ' + asset.x + '% ' + asset.y + '%)';
+    highlight.style.clipPath = clip;
+    highlight.style.webkitClipPath = clip;
+    sceneLabel.textContent = asset.name;
   }
 
-  function wireComponentScenes(){
-    ['scene2','scene4','scene5','scene6'].forEach(function(id){
-      var host=document.getElementById(id);if(host)ensureSceneOverlay(host);
+  function componentRadius(asset) {
+    if (asset.id === 'core') return [25, 19];
+    if (asset.band === 'keys') return [19, 14];
+    if (asset.band === 'legacy') return [18, 14];
+    if (asset.band === 'edge') return [18, 14];
+    return [16, 13];
+  }
+
+  function renderReadiness() {
+    currentMode = 'readiness';
+    side.textContent = '';
+
+    var header = el('div', 'qv2-side-header');
+    header.appendChild(el('p', 'qv2-kicker', scene().name));
+    header.appendChild(el('h2', '', 'How much is protected today?'));
+    header.appendChild(el('p', 'qv2-side-intro', 'Choose the closest starting point.'));
+
+    var levels = el('div', 'qv2-levels');
+    Object.keys(READINESS_META).forEach(function (key) {
+      var data = READINESS_META[key];
+      var button = el('button', 'qv2-level');
+      button.type = 'button';
+      button.dataset.level = key;
+      button.setAttribute('aria-pressed', String(input.adoption === key));
+      button.innerHTML = '<span class="qv2-radio" aria-hidden="true"></span><span><b>' +
+        escapeHtml(data.title) + '</b><small>' + escapeHtml(data.short) + '</small></span>';
+      button.addEventListener('click', function () {
+        input.adoption = key;
+        renderReadiness();
+        paintReadinessScene();
+      });
+      levels.appendChild(button);
+    });
+
+    var count = el('p', 'qv2-readiness-count');
+    count.id = 'qv2ReadinessCount';
+
+    var action = el('button', 'qv2-primary', 'Choose a scenario');
+    action.type = 'button';
+    action.addEventListener('click', openScenarioOverlay);
+
+    side.appendChild(header);
+    side.appendChild(levels);
+    side.appendChild(count);
+    side.appendChild(action);
+
+    updateReadinessCount();
+    paintReadinessScene();
+  }
+
+  function updateReadinessCount() {
+    var sc = scene();
+    var covered = coveredSet(sc.assets, ADOPTION[input.adoption].coverage);
+    var count = Object.keys(covered).length;
+    var output = document.getElementById('qv2ReadinessCount');
+    if (output) output.innerHTML = '<b>' + count + ' of ' + sc.assets.length + '</b> systems are protected at this level.';
+  }
+
+  function paintReadinessScene() {
+    if (!sceneHost || !sceneHost.querySelector('.qv2-spot')) return;
+    var sc = scene();
+    var covered = coveredSet(sc.assets, ADOPTION[input.adoption].coverage);
+    var states = {};
+    sc.assets.forEach(function (asset) {
+      states[asset.id] = covered[asset.id] ? 'protected' : (asset.band === 'legacy' ? 'holdout' : 'dim');
+    });
+    paintScene(states);
+  }
+
+  function buildScenarioOverlay() {
+    var layer = el('div', 'qv2-overlay');
+    layer.id = 'qv2Overlay';
+    layer.hidden = true;
+    layer.setAttribute('role', 'dialog');
+    layer.setAttribute('aria-modal', 'true');
+    layer.setAttribute('aria-labelledby', 'qv2ScenarioTitle');
+
+    var panel = el('div', 'qv2-overlay-panel');
+    var close = el('button', 'qv2-overlay-close', 'Close');
+    close.type = 'button';
+    close.addEventListener('click', closeScenarioOverlay);
+
+    var heading = el('div', 'qv2-overlay-heading');
+    heading.appendChild(el('p', 'qv2-kicker', 'Scenario'));
+    var title = el('h2', '', 'What changes?');
+    title.id = 'qv2ScenarioTitle';
+    heading.appendChild(title);
+    heading.appendChild(el('p', '', 'Choose one. The network behind this window stays the same.'));
+
+    var grid = el('div', 'qv2-scenario-grid');
+    Object.keys(SCENARIO_META).forEach(function (key) {
+      var data = SCENARIO_META[key];
+      var button = el('button', 'qv2-scenario');
+      button.type = 'button';
+      button.dataset.scenario = key;
+      button.innerHTML = '<span>' + escapeHtml(data.title) + '</span><small>' + escapeHtml(data.short) + '</small><i aria-hidden="true">&rarr;</i>';
+      button.addEventListener('click', function () {
+        chooseScenario(key);
+      });
+      grid.appendChild(button);
+    });
+
+    panel.appendChild(close);
+    panel.appendChild(heading);
+    panel.appendChild(grid);
+    layer.appendChild(panel);
+
+    layer.addEventListener('click', function (event) {
+      if (event.target === layer) closeScenarioOverlay();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !layer.hidden) closeScenarioOverlay();
+    });
+
+    return layer;
+  }
+
+  function openScenarioOverlay() {
+    overlay.hidden = false;
+    requestAnimationFrame(function () {
+      overlay.classList.add('is-open');
+      var first = overlay.querySelector('.qv2-scenario');
+      if (first) first.focus({ preventScroll: true });
     });
   }
 
-  function simplifyReadinessAfterPaint(){
-    if(document.getElementById('stackNote'))document.getElementById('stackNote').textContent=SHORT_NOTES[input.adoption]||'';
-    document.querySelectorAll('#levels .level').forEach(function(card){
-      var span=card.querySelector(':scope > span');
-      if(span&&SHORT_LEVELS[card.dataset.key])span.textContent=SHORT_LEVELS[card.dataset.key];
+  function closeScenarioOverlay() {
+    if (!overlay || overlay.hidden) return;
+    overlay.classList.remove('is-open');
+    setTimeout(function () {
+      overlay.hidden = true;
+    }, 160);
+  }
+
+  function chooseScenario(key) {
+    input.event = key;
+    currentResult = simulate(input);
+    closeScenarioOverlay();
+    renderResult(currentResult);
+  }
+
+  function renderResult(result) {
+    currentMode = 'result';
+    side.textContent = '';
+    paintScene(result.states);
+
+    var data = SCENARIO_META[input.event];
+    var header = el('div', 'qv2-side-header');
+    header.appendChild(el('p', 'qv2-kicker', data.title));
+    header.appendChild(el('h2', '', result.counts.affected + ' of ' + result.total + ' systems are affected'));
+    header.appendChild(el('p', 'qv2-side-intro', data.result));
+
+    var metrics = el('div', 'qv2-metrics');
+    metrics.appendChild(metric(result.counts.exposed, 'can be changed now'));
+    metrics.appendChild(metric(result.counts.blocked, 'waiting on suppliers or hardware'));
+    metrics.appendChild(metric(result.counts.unknown, 'missing from the records'));
+
+    var timing = el('p', 'qv2-timing');
+    if (result.days.fragmented > 0) {
+      timing.innerHTML = 'Changing the systems your team can reach takes about <b>' + result.days.fragmented + ' days</b> one by one.';
+    } else {
+      timing.textContent = 'Nothing in this run can be changed directly by the organization.';
+    }
+
+    var replay = el('button', 'qv2-primary', 'Replay with crypto agility');
+    replay.type = 'button';
+    replay.addEventListener('click', replayWithAgility);
+
+    var secondary = el('div', 'qv2-secondary-actions');
+    var another = el('button', 'qv2-link', 'Try another scenario');
+    another.type = 'button';
+    another.addEventListener('click', openScenarioOverlay);
+    var adjust = el('button', 'qv2-link', 'Adjust starting point');
+    adjust.type = 'button';
+    adjust.addEventListener('click', renderReadiness);
+    secondary.appendChild(another);
+    secondary.appendChild(adjust);
+
+    side.appendChild(header);
+    side.appendChild(metrics);
+    side.appendChild(timing);
+    side.appendChild(replay);
+    side.appendChild(secondary);
+  }
+
+  function metric(number, label) {
+    var item = el('div', 'qv2-metric');
+    item.appendChild(el('b', '', String(number)));
+    item.appendChild(el('span', '', label));
+    return item;
+  }
+
+  function replayWithAgility() {
+    if (!currentResult) return;
+    var before = currentResult;
+    var agileInput = Object.assign({}, input, { orch: 90 });
+    var after = simulate(agileInput);
+
+    var transitionStates = {};
+    Object.keys(after.states).forEach(function (key) {
+      transitionStates[key] = after.states[key] === 'exposed' ? 'resolved' : after.states[key];
     });
-    var host=document.getElementById('scene2');
-    if(host){ensureSceneOverlay(host);if(host.dataset.focusId)focusComponent(host,host.dataset.focusId)}
-  }
 
-  function ensureResultDisclosure(){
-    var root=document.getElementById('s5');if(!root)return;
-    var details=root.querySelector('.result-disclosure');
-    if(!details){
-      details=document.createElement('details');details.className='result-disclosure';
-      details.innerHTML='<summary>Why this happened</summary>';
-      var headline=document.getElementById('headline');
-      if(headline)headline.insertAdjacentElement('afterend',details);
+    sceneHost.classList.add('is-replaying');
+    setTimeout(function () {
+      paintScene(transitionStates);
+      sceneHost.classList.remove('is-replaying');
+    }, 420);
+
+    side.textContent = '';
+    var header = el('div', 'qv2-side-header');
+    header.appendChild(el('p', 'qv2-kicker', 'With crypto agility'));
+
+    var titleText;
+    if (before.days.fragmented > 0) {
+      titleText = after.days.agile + ' days instead of ' + before.days.fragmented;
+    } else {
+      titleText = 'The same limits remain';
     }
-    var qa=root.querySelector('.qa'),props=document.getElementById('props');
-    if(qa&&qa.parentElement!==details)details.appendChild(qa);
-    if(props&&props.parentElement!==details)details.appendChild(props);
-  }
+    header.appendChild(el('h2', '', titleText));
+    header.appendChild(el('p', 'qv2-side-intro', 'Same event. Same systems. The reachable work is coordinated from one place.'));
 
-  function ensureAha(){
-    var reveal=document.getElementById('reveal');if(!reveal)return;
-    var aha=document.querySelector('#s5 .aha-bridge');
-    if(!aha){aha=document.createElement('section');aha.className='aha-bridge';reveal.parentElement.insertBefore(aha,reveal)}
-    var r=(typeof result!=='undefined'&&result)?result:null;
-    var proof=r&&r.counts?'<div class="aha-proof"><span>'+r.counts.affected+' affected</span><span>'+r.counts.exposed+' directly reachable</span></div>':'';
-    aha.innerHTML='<p class="eyebrow">The aha</p><h3>The edge was the easy part.</h3><p>The hard part is changing cryptography across the whole '+meta().noun+'. Crypto agility turns that from a system-by-system scramble into one coordinated change.</p>'+proof;
-    var title=document.getElementById('revealTitle');if(title)title.textContent='Now give the same network crypto agility';
-    var intro=document.getElementById('revealIntro');if(intro)intro.textContent='Same event. Same systems. Change one capability: find and replace cryptography centrally.';
-    var button=document.getElementById('showAgile');if(button)button.textContent='Replay with crypto agility →';
-  }
+    var metrics = el('div', 'qv2-metrics qv2-metrics-agile');
+    metrics.appendChild(metric(after.counts.exposed, 'systems changed centrally'));
+    metrics.appendChild(metric(after.counts.blocked + after.counts.unknown, 'still outside direct reach'));
 
-  function updateCTA(){
-    var cta=document.getElementById('cta');if(!cta)return;
-    var h=cta.querySelector('h3');if(h)h.textContent='What next?';
-    var p=cta.querySelector(':scope > p');if(p)p.textContent='Crypto agility makes the cryptography you control visible, centralized and replaceable.';
-    var primary=document.getElementById('ctaPrimary');if(primary)primary.textContent=meta().cta;
-    var explore=cta.querySelector('[data-go="6"]');if(explore){explore.textContent='Keep playing';explore.classList.add('keep-playing')}
-    var learn=cta.querySelector('.cta-learn');if(learn)learn.remove();
-  }
-
-  function ensureQuickTakeaway(){
-    var trigger=document.querySelector('.quick-takeaway-trigger'),dlg=document.getElementById('quickTakeaway');
-    if(!trigger){
-      trigger=document.createElement('button');trigger.type='button';trigger.className='quick-takeaway-trigger';trigger.textContent='30-second takeaway';document.body.appendChild(trigger);
+    var note = el('p', 'qv2-timing');
+    if (after.counts.blocked + after.counts.unknown > 0) {
+      note.textContent = 'Crypto agility speeds up what you control. It does not erase supplier, hardware or inventory limits.';
+    } else {
+      note.textContent = 'Every affected system in this run is visible and reachable.';
     }
-    if(!dlg){
-      dlg=document.createElement('dialog');dlg.id='quickTakeaway';dlg.className='quick-takeaway';
-      dlg.innerHTML='<div class="takeaway-inner"><button class="takeaway-close" type="button" aria-label="Close">×</button><p class="eyebrow">If you stop here</p><h3>One thing to remember</h3><p class="one-line"><b>Protecting the edge is not crypto agility.</b> Crypto agility is being able to change cryptography across the network when the rules change.</p><div class="takeaway-actions"><a class="btn primary" href="https://www.qusecure.com" target="_blank" rel="noopener noreferrer">Learn about QuSecure</a><button class="btn takeaway-return" type="button">Keep exploring</button></div></div>';
-      document.body.appendChild(dlg);
-      dlg.querySelector('.takeaway-close').onclick=function(){dlg.close()};
-      dlg.querySelector('.takeaway-return').onclick=function(){dlg.close()};
-      dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()});
-    }
-    trigger.onclick=function(){if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','')};
+
+    var another = el('button', 'qv2-primary', 'Try another scenario');
+    another.type = 'button';
+    another.addEventListener('click', openScenarioOverlay);
+
+    var cta = document.createElement('a');
+    cta.className = 'qv2-text-cta';
+    cta.href = 'https://www.qusecure.com';
+    cta.target = '_blank';
+    cta.rel = 'noopener noreferrer';
+    cta.textContent = INDUSTRY_CTA[input.industry] + ' ->';
+
+    side.appendChild(header);
+    side.appendChild(metrics);
+    side.appendChild(note);
+    side.appendChild(another);
+    side.appendChild(cta);
   }
 
-  function updateQuickVisibility(n){document.body.classList.toggle('show-quick-takeaway',n>=2&&n<=4)}
+  function paintScene(states) {
+    if (!sceneHost) return;
+    sceneHost.querySelectorAll('.qv2-spot').forEach(function (spot) {
+      var state = states && states[spot.dataset.id] ? states[spot.dataset.id] : 'dim';
+      spot.dataset.state = state;
+    });
 
-  function refresh(n){
-    stripCrowdedAdditions();
-    simplifyCopy();
-    ensureIndustryBadges();
-    wireComponentScenes();
-    ensureResultDisclosure();
-    ensureAha();
-    updateCTA();
-    ensureQuickTakeaway();
-    if(typeof n==='number')updateQuickVisibility(n);
-  }
-
-  if(typeof paintReadiness==='function'){
-    var basePaintReadiness=paintReadiness;
-    window.paintReadiness=function(){var out=basePaintReadiness.apply(this,arguments);simplifyReadinessAfterPaint();return out};
-  }
-  if(typeof renderScene==='function'){
-    var baseRenderScene=renderScene;
-    window.renderScene=function(){var out=baseRenderScene.apply(this,arguments);var host=arguments[0];if(host)ensureSceneOverlay(host);return out};
-  }
-  if(typeof paintResult==='function'){
-    var basePaintResult=paintResult;
-    window.paintResult=function(){var out=basePaintResult.apply(this,arguments);ensureResultDisclosure();ensureAha();updateCTA();wireComponentScenes();return out};
-  }
-  if(typeof go==='function'){
-    var baseGo=go;
-    window.go=function(n){var out=baseGo.apply(this,arguments);setTimeout(function(){refresh(n)},0);return out};
+    sceneHost.querySelectorAll('.qv2-links path').forEach(function (path) {
+      var a = states && states[path.dataset.from];
+      var b = states && states[path.dataset.to];
+      var bad = ['exposed', 'blocked', 'unknown'];
+      path.classList.toggle('is-hot', bad.indexOf(a) >= 0 || bad.indexOf(b) >= 0);
+      path.classList.toggle('is-calm', (a === 'protected' || a === 'resolved') && (b === 'protected' || b === 'resolved'));
+    });
   }
 
-  var pick=document.getElementById('pickIndustry');
-  if(pick)pick.addEventListener('click',function(){setTimeout(function(){refresh(2)},0)});
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (character) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[character];
+    });
+  }
 
-  refresh(0);
+  buildApp();
 })();
