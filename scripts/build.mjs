@@ -8,8 +8,16 @@ await mkdir(dist, { recursive: true });
 
 const sourceHtml = await readFile(resolve(root, "index.html"), "utf8");
 const enhancedHtml = sourceHtml
-  .replace("</head>", "<link rel=\"stylesheet\" href=\"assets/feedback.css\">\n</head>")
-  .replace("</body>", "<script src=\"assets/feedback.js\"></script>\n</body>");
+  .replace(
+    "</head>",
+    "<link rel=\"stylesheet\" href=\"assets/feedback.css\">\n" +
+    "<link rel=\"stylesheet\" href=\"assets/brand-overrides.css\">\n</head>"
+  )
+  .replace(
+    "</body>",
+    "<script src=\"assets/feedback.js\"></script>\n" +
+    "<script src=\"assets/ui-patch.js\"></script>\n</body>"
+  );
 await writeFile(resolve(dist, "index.html"), enhancedHtml);
 
 const assets = resolve(root, "assets");
@@ -18,4 +26,4 @@ if (await stat(assets).then(() => true, () => false)) {
   console.log("Copied assets/ into dist/");
 }
 
-console.log("Built static site in dist/ with narrative enhancement layer");
+console.log("Built static site in dist/ with QuSecure brand presentation layer");
