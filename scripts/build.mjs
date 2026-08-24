@@ -11,7 +11,8 @@ const enhancedHtml = sourceHtml
   .replace(
     "</head>",
     "<link rel=\"stylesheet\" href=\"assets/feedback.css\">\n" +
-    "<link rel=\"stylesheet\" href=\"assets/brand-overrides.css\">\n</head>"
+    "<link rel=\"stylesheet\" href=\"assets/brand-overrides.css\">\n" +
+    "<link rel=\"stylesheet\" href=\"assets/industry-screen-fix.css\">\n</head>"
   )
   .replace(
     "</body>",
