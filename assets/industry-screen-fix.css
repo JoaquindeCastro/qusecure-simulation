@@ -68,12 +68,12 @@ body.qv2-active:has(.qv2-industry:not([hidden])) {
   box-shadow: none !important;
 }
 
-/* The image is clipped to its own row so it physically cannot overlap the label. */
+/* Image row is ~25% larger than the previous revision, while labels stay below in flow. */
 .qv2-industry-image {
   position: relative !important;
   display: block !important;
   width: 100% !important;
-  height: clamp(190px, 27vh, 290px) !important;
+  height: clamp(238px, 33.5vh, 363px) !important;
   padding: 0 !important;
   margin: 0 !important;
   overflow: hidden !important;
@@ -132,7 +132,7 @@ body.qv2-active:has(.qv2-industry:not([hidden])) {
     font-size: clamp(2.25rem, 3.2vw, 3.2rem) !important;
   }
   .qv2-industry-image {
-    height: clamp(170px, 24vh, 225px) !important;
+    height: clamp(213px, 30vh, 281px) !important;
   }
   .qv2-industry-copy { padding-top: 12px !important; }
 }
@@ -151,5 +151,5 @@ body.qv2-active:has(.qv2-industry:not([hidden])) {
   .qv2-industry-grid {
     grid-template-columns: 1fr !important;
   }
-  .qv2-industry-image { height: 260px !important; }
+  .qv2-industry-image { height: 325px !important; }
 }
