@@ -1,0 +1,364 @@
+/* QuSecure Brand Guide 2.0 alignment and UI fixes.
+   Palette: Midnight Blue #010748, Azure Blue #2F6FED, Cyber Aqua #39E0E8,
+   Electric Lime #A9FD91, Bronze #C56B4D / #FFA95E / #DF9262. */
+
+.qv2 {
+  --qs-midnight: #010748;
+  --qs-white: #FFFFFF;
+  --qs-azure: #2F6FED;
+  --qs-aqua: #39E0E8;
+  --qs-lime: #A9FD91;
+  --qs-bronze: #C56B4D;
+  --qs-bronze-mid: #DF9262;
+  --qs-bronze-light: #FFA95E;
+  --qs-arctic-deep: #072A79;
+  --qs-arctic-light: #6CC9F3;
+  --qs-line: #DCE4FF;
+  --qs-muted: #66708F;
+
+  background: var(--qs-white) !important;
+  color: var(--qs-midnight) !important;
+  font-family: "Albert Sans", Arial, Helvetica, sans-serif !important;
+}
+
+body.qv2-active {
+  background: var(--qs-white) !important;
+  color: var(--qs-midnight) !important;
+}
+
+.qv2-top {
+  background: rgba(255,255,255,.96) !important;
+  border-bottom-color: var(--qs-line) !important;
+}
+
+.qv2-brand span,
+.qv2 h1,
+.qv2 h2,
+.qv2-level b,
+.qv2-metric b {
+  color: var(--qs-midnight) !important;
+}
+
+.qv2-brand i {
+  background: var(--qs-aqua) !important;
+  box-shadow: 0 0 0 3px rgba(57,224,232,.12);
+}
+
+.qv2-brand small,
+.qv2-intro,
+.qv2-side-intro,
+.qv2-level small,
+.qv2-readiness-count,
+.qv2-timing,
+.qv2-link {
+  color: var(--qs-muted) !important;
+}
+
+.qv2-kicker {
+  color: var(--qs-azure) !important;
+}
+
+.qv2 button:focus-visible,
+.qv2 a:focus-visible {
+  outline-color: var(--qs-aqua) !important;
+}
+
+/* Industry choice: no cards/boxes. The image is the choice, the label sits clearly below. */
+.qv2-industry {
+  width: min(1480px, 100%) !important;
+  gap: 20px !important;
+  padding-left: 38px !important;
+  padding-right: 38px !important;
+}
+
+.qv2-industry-grid {
+  gap: clamp(20px, 2.2vw, 34px) !important;
+  align-items: start !important;
+}
+
+.qv2-industry-card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: center !important;
+}
+
+.qv2-industry-card:hover {
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.qv2-industry-image {
+  height: clamp(190px, 31vh, 330px) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+.qv2-industry-image img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  transform: scale(.96);
+  transform-origin: center bottom;
+  transition: transform .18s ease, filter .18s ease;
+}
+
+.qv2-industry-card:hover .qv2-industry-image img {
+  transform: scale(1);
+  filter: drop-shadow(0 12px 20px rgba(1,7,72,.10));
+}
+
+.qv2-industry-copy {
+  min-height: 0 !important;
+  padding: 10px 2px 0 !important;
+  text-align: center !important;
+  background: transparent !important;
+}
+
+.qv2-industry-copy b {
+  color: var(--qs-midnight) !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  transition: color .18s ease;
+}
+
+.qv2-industry-card:hover .qv2-industry-copy b {
+  color: var(--qs-azure) !important;
+}
+
+/* User asked for the industry name only beneath the image. */
+.qv2-industry-copy span {
+  display: none !important;
+}
+
+/* Persistent image workspace */
+.qv2-links path {
+  stroke: #7592D7 !important;
+}
+
+.qv2-links path.is-hot {
+  stroke: var(--qs-bronze) !important;
+}
+
+.qv2-links path.is-calm {
+  stroke: var(--qs-aqua) !important;
+}
+
+.qv2-spot {
+  color: var(--qs-midnight) !important;
+  border-color: #8B97B8 !important;
+  box-shadow: 0 0 0 4px rgba(255,255,255,.96), 0 2px 8px rgba(1,7,72,.16) !important;
+}
+
+/* No floating name bubble over the selected component. */
+.qv2-spot span {
+  display: none !important;
+}
+
+.qv2-scene.is-isolating .qv2-spot.is-selected {
+  box-shadow: 0 0 0 5px rgba(255,255,255,.98), 0 0 0 11px rgba(57,224,232,.28), 0 4px 18px rgba(1,7,72,.24) !important;
+}
+
+.qv2-spot[data-state="protected"],
+.qv2-spot[data-state="resolved"] {
+  color: var(--qs-midnight) !important;
+  border-color: var(--qs-aqua) !important;
+  background: rgba(57,224,232,.20) !important;
+}
+
+.qv2-spot[data-state="exposed"] {
+  color: var(--qs-midnight) !important;
+  border-color: var(--qs-bronze) !important;
+  background: rgba(197,107,77,.20) !important;
+}
+
+.qv2-spot[data-state="blocked"],
+.qv2-spot[data-state="holdout"] {
+  color: var(--qs-midnight) !important;
+  border-color: var(--qs-bronze-mid) !important;
+  background: rgba(255,169,94,.22) !important;
+}
+
+.qv2-spot[data-state="dependent"] {
+  color: var(--qs-midnight) !important;
+  border-color: var(--qs-azure) !important;
+  background: rgba(47,111,237,.15) !important;
+}
+
+.qv2-scene-label {
+  min-height: 30px !important;
+  margin-top: 8px !important;
+  color: var(--qs-midnight) !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: -.01em;
+}
+
+.qv2-scene-label:not(:empty)::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 3px;
+  margin: 0 9px 4px 0;
+  border-radius: 99px;
+  background: var(--qs-aqua);
+}
+
+.qv2-levels {
+  border-top-color: var(--qs-line) !important;
+}
+
+.qv2-level {
+  border-bottom-color: var(--qs-line) !important;
+}
+
+.qv2-level:hover {
+  background: rgba(47,111,237,.035) !important;
+}
+
+.qv2-level[aria-pressed="true"] {
+  color: var(--qs-azure) !important;
+}
+
+.qv2-level[aria-pressed="true"] .qv2-radio {
+  border-color: var(--qs-azure) !important;
+  background: var(--qs-azure) !important;
+}
+
+.qv2-primary {
+  border: 0 !important;
+  background: linear-gradient(100deg, var(--qs-midnight) 0%, var(--qs-arctic-deep) 45%, var(--qs-azure) 100%) !important;
+  color: var(--qs-white) !important;
+  box-shadow: 0 8px 24px rgba(1,7,72,.14);
+}
+
+.qv2-primary:hover {
+  background: linear-gradient(100deg, var(--qs-midnight) 0%, var(--qs-azure) 100%) !important;
+  box-shadow: 0 12px 30px rgba(1,7,72,.22) !important;
+}
+
+.qv2-link:hover {
+  color: var(--qs-azure) !important;
+}
+
+/* Scenario overlay gets the brand's dark foundation. */
+.qv2-overlay {
+  background: rgba(1,7,72,.48) !important;
+  backdrop-filter: blur(14px) saturate(.9) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(.9) !important;
+}
+
+.qv2-overlay-panel {
+  border-color: rgba(108,201,243,.28) !important;
+  background: linear-gradient(145deg, rgba(1,7,72,.98) 0%, rgba(7,42,121,.97) 100%) !important;
+  box-shadow: 0 30px 90px rgba(1,7,72,.42) !important;
+}
+
+.qv2-overlay-heading h2,
+.qv2-scenario span {
+  color: var(--qs-white) !important;
+}
+
+.qv2-overlay-heading > p:last-child,
+.qv2-scenario small,
+.qv2-overlay-close {
+  color: #C9D7FF !important;
+}
+
+.qv2-overlay .qv2-kicker,
+.qv2-scenario i {
+  color: var(--qs-aqua) !important;
+}
+
+.qv2-scenario-grid,
+.qv2-scenario,
+.qv2-scenario:nth-child(odd) {
+  border-color: rgba(108,201,243,.20) !important;
+}
+
+.qv2-scenario:hover {
+  background: rgba(57,224,232,.08) !important;
+}
+
+.qv2-metrics {
+  border-top-color: var(--qs-line) !important;
+  border-bottom-color: var(--qs-line) !important;
+}
+
+.qv2-metric {
+  border-right-color: var(--qs-line) !important;
+}
+
+.qv2-metric span {
+  color: var(--qs-muted) !important;
+}
+
+/* Replay comparison: new stat is the hero; old stat is visibly retired. */
+.qv2-agile-comparison {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.qv2-agile-comparison .qv2-new-stat {
+  color: var(--qs-midnight);
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -.045em;
+  line-height: 1;
+}
+
+.qv2-agile-comparison .qv2-old-stat {
+  color: #8A93AD;
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  font-weight: 650;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--qs-bronze);
+}
+
+/* Keep the two final actions visually separated. */
+.qv2-text-cta {
+  display: block !important;
+  width: fit-content;
+  margin-top: 26px !important;
+  color: var(--qs-bronze) !important;
+  font-weight: 700 !important;
+}
+
+.qv2-text-cta:hover {
+  color: #A95136 !important;
+}
+
+.qv2-side > .qv2-primary + .qv2-text-cta {
+  margin-top: 28px !important;
+}
+
+@media (max-height: 720px) and (min-width: 1041px) {
+  .qv2-industry-image {
+    height: 29vh !important;
+  }
+  .qv2-industry-copy {
+    padding-top: 6px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .qv2-industry-image {
+    height: 165px !important;
+  }
+  .qv2-industry-copy b {
+    font-size: 16px !important;
+  }
+}
