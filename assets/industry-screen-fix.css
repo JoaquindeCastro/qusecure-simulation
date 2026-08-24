@@ -1,104 +1,155 @@
-/* Industry chooser fit/label fix. Loaded after the brand layer. */
+/* Industry chooser: labels are a separate row BELOW the artwork, never over it. */
 
-/* The decorative diamond next to QuSecure was not part of the desired header. */
-.qv2-brand i {
-  display: none !important;
+/* Remove the decorative diamond beside QuSecure. */
+.qv2-brand i { display: none !important; }
+.qv2-brand { gap: 10px !important; }
+
+/* The industry chooser is allowed to scroll if the viewport is short. */
+body.qv2-active:has(.qv2-industry:not([hidden])) {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
 }
 
-.qv2-brand {
-  gap: 10px !important;
+.qv2:has(.qv2-industry:not([hidden])) {
+  height: auto !important;
+  min-height: 100dvh !important;
 }
 
-/* Keep the entire chooser, including the industry names, inside a normal laptop viewport. */
+.qv2-main:has(.qv2-industry:not([hidden])) {
+  height: auto !important;
+  min-height: calc(100dvh - 64px) !important;
+  overflow: visible !important;
+}
+
 .qv2-industry {
+  width: min(1500px, 100%) !important;
+  min-height: calc(100dvh - 64px) !important;
+  height: auto !important;
   justify-content: flex-start !important;
-  gap: 16px !important;
-  padding-top: clamp(34px, 5.5vh, 56px) !important;
-  padding-bottom: 20px !important;
+  gap: 22px !important;
+  padding: clamp(28px, 4.5vh, 48px) 38px 42px !important;
 }
 
-.qv2-industry-heading {
-  flex: 0 0 auto;
-}
-
-.qv2-industry-heading .qv2-kicker {
-  margin-bottom: 6px !important;
-}
-
-.qv2-industry-heading h1 {
-  font-size: clamp(2.5rem, 3.7vw, 3.9rem) !important;
-}
-
+.qv2-industry-heading { flex: 0 0 auto; }
+.qv2-industry-heading .qv2-kicker { margin-bottom: 6px !important; }
+.qv2-industry-heading h1 { font-size: clamp(2.5rem, 3.7vw, 3.9rem) !important; }
 .qv2-intro {
   margin-top: 8px !important;
   font-size: clamp(15px, 1.35vw, 18px) !important;
 }
 
 .qv2-industry-grid {
-  flex: 0 1 auto;
-  width: 100%;
-  gap: clamp(18px, 2vw, 30px) !important;
-  margin-top: 8px;
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(20px, 2vw, 32px) !important;
   align-items: start !important;
+  margin-top: 8px !important;
 }
 
+/* Explicit two-row structure: artwork first, text second. */
 .qv2-industry-card {
-  min-height: 0 !important;
+  display: grid !important;
+  grid-template-rows: auto auto !important;
+  align-content: start !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: center !important;
 }
 
+.qv2-industry-card:hover {
+  transform: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* The image is clipped to its own row so it physically cannot overlap the label. */
 .qv2-industry-image {
-  height: clamp(165px, 24vh, 265px) !important;
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: clamp(190px, 27vh, 290px) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  background: transparent !important;
 }
 
 .qv2-industry-image img {
-  transform: scale(.93) !important;
-  transform-origin: center center !important;
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none !important;
+  margin: 0 !important;
 }
 
 .qv2-industry-card:hover .qv2-industry-image img {
-  transform: scale(.97) !important;
+  transform: none !important;
+  filter: drop-shadow(0 10px 18px rgba(1,7,72,.09));
 }
 
+/* Label is normal flow content with deliberate white space above it. */
 .qv2-industry-copy {
+  position: static !important;
+  z-index: auto !important;
   display: block !important;
-  padding: 6px 2px 0 !important;
-  min-height: 28px !important;
-  position: relative !important;
-  z-index: 2 !important;
+  width: 100% !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 16px 4px 0 !important;
+  background: #fff !important;
+  text-align: center !important;
 }
 
 .qv2-industry-copy b {
+  position: static !important;
   display: block !important;
+  margin: 0 !important;
   color: var(--qs-midnight) !important;
-  font-size: clamp(15px, 1.2vw, 18px) !important;
+  font-size: clamp(16px, 1.25vw, 19px) !important;
   font-weight: 750 !important;
-  line-height: 1.18 !important;
+  line-height: 1.2 !important;
   white-space: normal !important;
 }
 
-/* Keep the extra descriptive line hidden: the label itself is enough. */
-.qv2-industry-copy span {
-  display: none !important;
-}
+.qv2-industry-copy span { display: none !important; }
 
 @media (max-height: 780px) and (min-width: 1041px) {
   .qv2-industry {
-    padding-top: 24px !important;
-    gap: 12px !important;
+    padding-top: 22px !important;
+    gap: 14px !important;
   }
-
   .qv2-industry-heading h1 {
-    font-size: clamp(2.2rem, 3.2vw, 3.2rem) !important;
+    font-size: clamp(2.25rem, 3.2vw, 3.2rem) !important;
   }
-
   .qv2-industry-image {
-    height: clamp(145px, 21vh, 205px) !important;
+    height: clamp(170px, 24vh, 225px) !important;
   }
+  .qv2-industry-copy { padding-top: 12px !important; }
 }
 
 @media (max-width: 1040px) {
-  .qv2-industry {
-    justify-content: flex-start !important;
-    overflow-y: auto;
+  .qv2-industry-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
+}
+
+@media (max-width: 620px) {
+  .qv2-industry {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+  .qv2-industry-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .qv2-industry-image { height: 260px !important; }
 }
