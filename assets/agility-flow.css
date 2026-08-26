@@ -1,4 +1,4 @@
-/* Live Q-Day model/replay additions. Keep the right panel compact and unboxed. */
+/* Before/after result flow. Keep both states visually aligned so the numbers read as one story. */
 
 .qv2-side h2 {
   font-size: clamp(1.8rem, 2.8vw, 2.65rem) !important;
@@ -14,27 +14,50 @@
   margin-top: 2px !important;
 }
 
-.qv2-agility-flow {
-  margin-top: 18px;
-  border-top: 1px solid var(--qs-line, #DCE4FF);
-  border-bottom: 1px solid var(--qs-line, #DCE4FF);
-}
-
-.qv2-agility-block {
-  padding: 14px 0;
-  border-bottom: 1px solid var(--qs-line, #DCE4FF);
-}
-
-.qv2-agility-block:last-child {
-  border-bottom: 0;
-}
-
-.qv2-agility-title {
-  margin: 0 0 5px;
+.qv2-state-label {
+  margin: 2px 0 8px;
   color: var(--qs-azure, #2F6FED);
   font-size: 11px;
   font-weight: 760;
   letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.qv2-comparison-flow,
+.qv2-agility-flow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 10px;
+  border-top: 1px solid var(--qs-line, #DCE4FF);
+  border-bottom: 1px solid var(--qs-line, #DCE4FF);
+}
+
+.qv2-comparison-block,
+.qv2-agility-block {
+  min-width: 0;
+  min-height: 118px;
+  padding: 14px 12px;
+  border-right: 1px solid var(--qs-line, #DCE4FF);
+}
+
+.qv2-comparison-block:first-child,
+.qv2-agility-block:first-child {
+  padding-left: 0;
+}
+
+.qv2-comparison-block:last-child,
+.qv2-agility-block:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.qv2-agility-title {
+  margin: 0 0 7px;
+  color: var(--qs-azure, #2F6FED);
+  font-size: 10.5px;
+  font-weight: 780;
+  letter-spacing: .11em;
   text-transform: uppercase;
 }
 
@@ -46,13 +69,14 @@
 
 .qv2-agility-stat {
   color: var(--qs-midnight, #010748);
-  font-size: 15px;
-  line-height: 1.35;
+  font-size: 12.5px;
+  line-height: 1.32;
 }
 
 .qv2-agility-stat b {
-  margin-right: 5px;
-  font-size: 25px;
+  display: block;
+  margin: 0 0 5px;
+  font-size: 27px;
   line-height: 1;
   letter-spacing: -.03em;
 }
@@ -60,12 +84,13 @@
 .qv2-agility-time {
   display: flex;
   align-items: baseline;
-  gap: 11px;
+  gap: 8px;
+  flex-wrap: wrap;
   color: var(--qs-midnight, #010748);
 }
 
 .qv2-new-stat {
-  font-size: clamp(1.85rem, 3vw, 2.55rem);
+  font-size: clamp(1.65rem, 2.5vw, 2.2rem);
   font-weight: 780;
   line-height: 1;
   letter-spacing: -.04em;
@@ -73,19 +98,68 @@
 
 .qv2-old-stat {
   color: var(--qs-muted, #66708F);
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
 }
 
 .qv2-agility-detail {
-  margin-top: 5px;
+  margin-top: 6px;
   color: var(--qs-muted, #66708F);
-  font-size: 13px;
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.qv2-segment {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .28s ease, transform .28s ease;
+  pointer-events: none;
+}
+
+.qv2-segment.is-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.qv2-result-actions {
+  margin-top: 8px;
+}
+
+.qv2-result-actions .qv2-primary {
+  margin-top: 12px;
+}
+
+.qv2-result-actions .qv2-timing {
+  margin-top: 12px;
+}
+
+.qv2-rewind {
+  display: block;
+  margin-top: 8px;
+  color: var(--qs-azure, #2F6FED) !important;
+  font-weight: 680;
+}
+
+.qv2-spot.qv2-step-pulse {
+  z-index: 10;
+  animation: qv2-step-pulse .7s ease both;
+}
+
+@keyframes qv2-step-pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 0 4px rgba(255,255,255,.95), 0 2px 8px rgba(14,28,38,.2);
+  }
+  45% {
+    transform: translate(-50%, -50%) scale(1.42);
+    box-shadow: 0 0 0 5px rgba(255,255,255,.96), 0 0 0 15px rgba(47,111,237,.18), 0 5px 18px rgba(14,28,38,.25);
+  }
 }
 
 @media (max-height: 780px) and (min-width: 1041px) {
   .qv2-side-header {
-    margin-bottom: 12px !important;
+    margin-bottom: 10px !important;
   }
 
   .qv2-level {
@@ -110,7 +184,46 @@
     margin-top: 14px !important;
   }
 
+  .qv2-comparison-block,
   .qv2-agility-block {
-    padding: 10px 0;
+    min-height: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
+@media (max-width: 760px) {
+  .qv2-comparison-flow,
+  .qv2-agility-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .qv2-comparison-block,
+  .qv2-agility-block,
+  .qv2-comparison-block:first-child,
+  .qv2-agility-block:first-child,
+  .qv2-comparison-block:last-child,
+  .qv2-agility-block:last-child {
+    min-height: 0;
+    padding: 12px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--qs-line, #DCE4FF);
+  }
+
+  .qv2-comparison-block:last-child,
+  .qv2-agility-block:last-child {
+    border-bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qv2-segment {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .qv2-spot.qv2-step-pulse {
+    animation: none;
   }
 }
