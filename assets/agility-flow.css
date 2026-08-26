@@ -1,0 +1,116 @@
+/* Live Q-Day model/replay additions. Keep the right panel compact and unboxed. */
+
+.qv2-side h2 {
+  font-size: clamp(1.8rem, 2.8vw, 2.65rem) !important;
+}
+
+.qv2-level {
+  min-height: 60px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.qv2-level small {
+  margin-top: 2px !important;
+}
+
+.qv2-agility-flow {
+  margin-top: 18px;
+  border-top: 1px solid var(--qs-line, #DCE4FF);
+  border-bottom: 1px solid var(--qs-line, #DCE4FF);
+}
+
+.qv2-agility-block {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--qs-line, #DCE4FF);
+}
+
+.qv2-agility-block:last-child {
+  border-bottom: 0;
+}
+
+.qv2-agility-title {
+  margin: 0 0 5px;
+  color: var(--qs-azure, #2F6FED);
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.qv2-agility-stat,
+.qv2-agility-time,
+.qv2-agility-detail {
+  margin: 0;
+}
+
+.qv2-agility-stat {
+  color: var(--qs-midnight, #010748);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.qv2-agility-stat b {
+  margin-right: 5px;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -.03em;
+}
+
+.qv2-agility-time {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  color: var(--qs-midnight, #010748);
+}
+
+.qv2-new-stat {
+  font-size: clamp(1.85rem, 3vw, 2.55rem);
+  font-weight: 780;
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+
+.qv2-old-stat {
+  color: var(--qs-muted, #66708F);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.qv2-agility-detail {
+  margin-top: 5px;
+  color: var(--qs-muted, #66708F);
+  font-size: 13px;
+}
+
+@media (max-height: 780px) and (min-width: 1041px) {
+  .qv2-side-header {
+    margin-bottom: 12px !important;
+  }
+
+  .qv2-level {
+    min-height: 52px !important;
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+  }
+
+  .qv2-level b {
+    font-size: 14.5px !important;
+  }
+
+  .qv2-level small {
+    font-size: 12px !important;
+  }
+
+  .qv2-readiness-count {
+    margin-top: 10px !important;
+  }
+
+  .qv2-primary {
+    margin-top: 14px !important;
+  }
+
+  .qv2-agility-block {
+    padding: 10px 0;
+  }
+}
