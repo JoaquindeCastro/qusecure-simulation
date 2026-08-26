@@ -52,14 +52,15 @@ test('scenario choice is a translucent overlay with concrete production scenario
   assert.doesNotMatch(js, /Old protocol banned/);
 });
 
-test('before and after use matching three-column comparison flows', () => {
+test('before and after use matching three-row comparison flows', () => {
   assert.match(js, /Before crypto agility/);
   assert.match(js, /With crypto agility/);
   assert.match(js, /Reconnaissance/);
   assert.match(js, /Resilience/);
   assert.match(js, /Reporting/);
   assert.match(js, /runThreeStepSequence/);
-  assert.match(liveCss, /grid-template-columns: repeat\(3/);
+  assert.match(liveCss, /grid-template-columns: 1fr/);
+  assert.match(liveCss, /translateX\(-34px\)/);
   assert.match(liveCss, /qv2-segment\.is-visible/);
 });
 
