@@ -6,26 +6,28 @@
     typeof ADOPTION === 'undefined' ||
     typeof EVENTS === 'undefined' ||
     typeof simulate !== 'function' ||
-    typeof coveredSet !== 'function' ||
+    typeof migrationSet !== 'function' ||
     typeof input === 'undefined'
   ) return;
 
   var ORDER = ['health', 'finance', 'gov', 'infra'];
+  var READINESS_ORDER = ['none', 'edge', 'pilot', 'orchestrated', 'native'];
+
   var SCENARIO_META = {
     qday: {
       title: 'Q-Day',
       short: "Today's common internet security can no longer be trusted.",
-      result: "Systems still relying on today's common internet security become untrusted at once."
+      result: "Systems still relying on today's common internet security (e.g. RSA) become vulnerable at once."
     },
     tls: {
-      title: 'Old protocol banned',
+      title: 'PQC migration deadline',
       short: 'A hard deadline forces an urgent replacement.',
-      result: 'Systems still using the banned connection method must change or be switched off.'
+      result: 'Systems still using quantum-vulnerable cryptography must change or be switched off.'
     },
     mlkem: {
-      title: 'Flaw in new protection',
+      title: 'PQC vulnerability found',
       short: 'Systems that already upgraded have to change again.',
-      result: 'Systems that adopted the flawed new protection must move again.'
+      result: 'Systems that adopted the vulnerable PQC implementation must move again.'
     },
     ca: {
       title: 'Digital trust failure',
@@ -33,24 +35,30 @@
       result: 'Systems relying on the failed identity provider can no longer prove who they are.'
     }
   };
+
   var READINESS_META = {
+    none: {
+      title: 'None / Not sure',
+      short: 'We have not heard of PQC'
+    },
     edge: {
       title: 'Public edge only',
-      short: 'Website and external entry points.'
+      short: "We trust that our providers know what they're doing"
     },
     pilot: {
-      title: 'A few internal pilots',
-      short: 'Some systems have been upgraded.'
+      title: 'A few internal systems',
+      short: 'We’ve tried or started implementing PQC'
     },
     orchestrated: {
       title: 'Most internal systems',
-      short: 'Coverage reaches deep into the network.'
+      short: 'We are making it a requirement'
     },
     native: {
       title: 'Broad migration',
-      short: 'Most systems are upgraded; old equipment remains.'
+      short: 'We have upgraded all of our current systems'
     }
   };
+
   var INDUSTRY_CTA = {
     health: 'Get crypto agility for healthcare',
     finance: 'Get crypto agility for your bank',
@@ -68,7 +76,6 @@
   var changeIndustry;
   var selectedAsset = null;
   var currentResult = null;
-  var currentMode = 'industry';
 
   function el(tag, className, text) {
     var node = document.createElement(tag);
@@ -103,7 +110,7 @@
     var top = el('header', 'qv2-top');
     var brand = el('button', 'qv2-brand');
     brand.type = 'button';
-    brand.innerHTML = '<i aria-hidden="true"></i><span>QuSecure</span><small>Crypto Agility Stress Test</small>';
+    brand.innerHTML = '<span>QuSecure</span><small>Q-Day Simulation</small>';
     brand.addEventListener('click', showIndustryGrid);
 
     var topActions = el('div', 'qv2-top-actions');
@@ -157,7 +164,7 @@
     var heading = el('div', 'qv2-industry-heading');
     heading.appendChild(el('p', 'qv2-kicker', 'Interactive simulation'));
     heading.appendChild(el('h1', '', 'Choose an industry'));
-    heading.appendChild(el('p', 'qv2-intro', 'See what happens when security has to change across an entire network.'));
+    heading.appendChild(el('p', 'qv2-intro', 'Learn the common components that make up your industry, and how these dependencies can become liabilities.'));
 
     var grid = el('div', 'qv2-industry-grid');
     ORDER.forEach(function (key) {
@@ -182,9 +189,7 @@
 
       button.appendChild(imageWrap);
       button.appendChild(copy);
-      button.addEventListener('click', function () {
-        chooseIndustry(key);
-      });
+      button.addEventListener('click', function () { chooseIndustry(key); });
       grid.appendChild(button);
     });
 
@@ -203,11 +208,11 @@
 
   function chooseIndustry(key) {
     input.industry = key;
-    input.adoption = 'edge';
+    input.adoption = 'none';
     input.orch = 15;
+    input.recon = false;
     selectedAsset = null;
     currentResult = null;
-    currentMode = 'readiness';
 
     industryView.hidden = true;
     workspace.hidden = false;
@@ -219,13 +224,13 @@
 
   function showIndustryGrid() {
     closeScenarioOverlay();
-    currentMode = 'industry';
     workspace.hidden = true;
     industryView.hidden = false;
     changeIndustry.hidden = true;
     selectedAsset = null;
     currentResult = null;
-    industryView.querySelector('h1').focus({ preventScroll: true });
+    var title = industryView.querySelector('h1');
+    if (title) title.focus({ preventScroll: true });
   }
 
   function renderPersistentScene() {
@@ -253,9 +258,7 @@
     sceneHost.appendChild(highlight);
 
     var byId = {};
-    sc.assets.forEach(function (asset) {
-      byId[asset.id] = asset;
-    });
+    sc.assets.forEach(function (asset) { byId[asset.id] = asset; });
 
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('class', 'qv2-links');
@@ -332,16 +335,14 @@
   }
 
   function renderReadiness() {
-    currentMode = 'readiness';
     side.textContent = '';
 
     var header = el('div', 'qv2-side-header');
     header.appendChild(el('p', 'qv2-kicker', scene().name));
-    header.appendChild(el('h2', '', 'How much is protected today?'));
-    header.appendChild(el('p', 'qv2-side-intro', 'Choose the closest starting point.'));
+    header.appendChild(el('h2', '', 'Where do you currently have post-quantum cryptography?'));
 
     var levels = el('div', 'qv2-levels');
-    Object.keys(READINESS_META).forEach(function (key) {
+    READINESS_ORDER.forEach(function (key) {
       var data = READINESS_META[key];
       var button = el('button', 'qv2-level');
       button.type = 'button';
@@ -351,6 +352,7 @@
         escapeHtml(data.title) + '</b><small>' + escapeHtml(data.short) + '</small></span>';
       button.addEventListener('click', function () {
         input.adoption = key;
+        input.recon = false;
         renderReadiness();
         paintReadinessScene();
       });
@@ -373,9 +375,13 @@
     paintReadinessScene();
   }
 
+  function currentMigrationSet() {
+    return migrationSet(scene().assets, input.adoption, input);
+  }
+
   function updateReadinessCount() {
     var sc = scene();
-    var covered = coveredSet(sc.assets, ADOPTION[input.adoption].coverage);
+    var covered = currentMigrationSet();
     var count = Object.keys(covered).length;
     var output = document.getElementById('qv2ReadinessCount');
     if (output) output.innerHTML = '<b>' + count + ' of ' + sc.assets.length + '</b> systems are protected at this level.';
@@ -384,7 +390,7 @@
   function paintReadinessScene() {
     if (!sceneHost || !sceneHost.querySelector('.qv2-spot')) return;
     var sc = scene();
-    var covered = coveredSet(sc.assets, ADOPTION[input.adoption].coverage);
+    var covered = currentMigrationSet();
     var states = {};
     sc.assets.forEach(function (asset) {
       states[asset.id] = covered[asset.id] ? 'protected' : (asset.band === 'legacy' ? 'holdout' : 'dim');
@@ -406,11 +412,10 @@
     close.addEventListener('click', closeScenarioOverlay);
 
     var heading = el('div', 'qv2-overlay-heading');
-    heading.appendChild(el('p', 'qv2-kicker', 'Scenario'));
+    heading.appendChild(el('p', 'qv2-kicker', 'Simulate Scenario'));
     var title = el('h2', '', 'What changes?');
     title.id = 'qv2ScenarioTitle';
     heading.appendChild(title);
-    heading.appendChild(el('p', '', 'Choose one. The network behind this window stays the same.'));
 
     var grid = el('div', 'qv2-scenario-grid');
     Object.keys(SCENARIO_META).forEach(function (key) {
@@ -419,9 +424,7 @@
       button.type = 'button';
       button.dataset.scenario = key;
       button.innerHTML = '<span>' + escapeHtml(data.title) + '</span><small>' + escapeHtml(data.short) + '</small><i aria-hidden="true">&rarr;</i>';
-      button.addEventListener('click', function () {
-        chooseScenario(key);
-      });
+      button.addEventListener('click', function () { chooseScenario(key); });
       grid.appendChild(button);
     });
 
@@ -453,20 +456,18 @@
   function closeScenarioOverlay() {
     if (!overlay || overlay.hidden) return;
     overlay.classList.remove('is-open');
-    setTimeout(function () {
-      overlay.hidden = true;
-    }, 160);
+    setTimeout(function () { overlay.hidden = true; }, 160);
   }
 
   function chooseScenario(key) {
     input.event = key;
+    input.recon = false;
     currentResult = simulate(input);
     closeScenarioOverlay();
     renderResult(currentResult);
   }
 
   function renderResult(result) {
-    currentMode = 'result';
     side.textContent = '';
     paintScene(result.states);
 
@@ -516,11 +517,19 @@
     return item;
   }
 
+  function agilityBlock(title) {
+    var block = el('section', 'qv2-agility-block');
+    block.appendChild(el('p', 'qv2-agility-title', title));
+    return block;
+  }
+
   function replayWithAgility() {
     if (!currentResult) return;
+
     var before = currentResult;
-    var agileInput = Object.assign({}, input, { orch: 90 });
+    var agileInput = Object.assign({}, input, { orch: 90, recon: true });
     var after = simulate(agileInput);
+    var discovered = Math.max(0, before.counts.unknown - after.counts.unknown);
 
     var transitionStates = {};
     Object.keys(after.states).forEach(function (key) {
@@ -536,30 +545,49 @@
     side.textContent = '';
     var header = el('div', 'qv2-side-header');
     header.appendChild(el('p', 'qv2-kicker', 'With crypto agility'));
+    header.appendChild(el('h2', '', 'Crypto agility helps by'));
+    side.appendChild(header);
 
-    var titleText;
-    if (before.days.fragmented > 0) {
-      titleText = after.days.agile + ' days instead of ' + before.days.fragmented;
+    var flow = el('div', 'qv2-agility-flow');
+
+    var recon = agilityBlock('Reconnaissance');
+    var reconStat = el('p', 'qv2-agility-stat');
+    reconStat.innerHTML = '<b>' + discovered + '</b> previously unknown systems identified';
+    recon.appendChild(reconStat);
+    flow.appendChild(recon);
+
+    var resilience = agilityBlock('Resilience');
+    var time = el('p', 'qv2-agility-time');
+    if (after.days.fragmented > 0) {
+      time.innerHTML = '<span class="qv2-new-stat">' + after.days.agile + ' days</span><s class="qv2-old-stat">' + after.days.fragmented + ' days</s>';
     } else {
-      titleText = 'The same limits remain';
+      time.textContent = 'The same limits remain';
     }
-    header.appendChild(el('h2', '', titleText));
-    header.appendChild(el('p', 'qv2-side-intro', 'Same event. Same systems. The reachable work is coordinated from one place.'));
+    resilience.appendChild(time);
+    resilience.appendChild(el('p', 'qv2-agility-detail', after.counts.exposed + ' systems changed centrally'));
+    flow.appendChild(resilience);
 
-    var metrics = el('div', 'qv2-metrics qv2-metrics-agile');
-    metrics.appendChild(metric(after.counts.exposed, 'systems changed centrally'));
-    metrics.appendChild(metric(after.counts.blocked + after.counts.unknown, 'still outside direct reach'));
+    var reporting = agilityBlock('Reporting');
+    var outside = after.counts.blocked + after.counts.unknown;
+    var reportStat = el('p', 'qv2-agility-stat');
+    reportStat.innerHTML = '<b>' + outside + '</b> still outside direct reach';
+    reporting.appendChild(reportStat);
+    flow.appendChild(reporting);
+
+    side.appendChild(flow);
 
     var note = el('p', 'qv2-timing');
-    if (after.counts.blocked + after.counts.unknown > 0) {
-      note.textContent = 'Crypto agility speeds up what you control. It does not erase supplier, hardware or inventory limits.';
+    if (outside > 0) {
+      note.textContent = 'Limitation: crypto agility does not replace the need to update systems and suppliers.';
     } else {
       note.textContent = 'Every affected system in this run is visible and reachable.';
     }
+    side.appendChild(note);
 
     var another = el('button', 'qv2-primary', 'Try another scenario');
     another.type = 'button';
     another.addEventListener('click', openScenarioOverlay);
+    side.appendChild(another);
 
     var cta = document.createElement('a');
     cta.className = 'qv2-text-cta';
@@ -567,11 +595,6 @@
     cta.target = '_blank';
     cta.rel = 'noopener noreferrer';
     cta.textContent = INDUSTRY_CTA[input.industry] + ' ->';
-
-    side.appendChild(header);
-    side.appendChild(metrics);
-    side.appendChild(note);
-    side.appendChild(another);
     side.appendChild(cta);
   }
 
