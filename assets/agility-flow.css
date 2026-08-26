@@ -23,11 +23,12 @@
   text-transform: uppercase;
 }
 
+/* Three horizontal rows, matching the reference layout. */
 .qv2-comparison-flow,
 .qv2-agility-flow {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   margin-top: 10px;
   border-top: 1px solid var(--qs-line, #DCE4FF);
   border-bottom: 1px solid var(--qs-line, #DCE4FF);
@@ -36,24 +37,19 @@
 .qv2-comparison-block,
 .qv2-agility-block {
   min-width: 0;
-  min-height: 118px;
-  padding: 14px 12px;
-  border-right: 1px solid var(--qs-line, #DCE4FF);
-}
-
-.qv2-comparison-block:first-child,
-.qv2-agility-block:first-child {
-  padding-left: 0;
+  min-height: 0;
+  padding: 14px 0 13px;
+  border-right: 0;
+  border-bottom: 1px solid var(--qs-line, #DCE4FF);
 }
 
 .qv2-comparison-block:last-child,
 .qv2-agility-block:last-child {
-  padding-right: 0;
-  border-right: 0;
+  border-bottom: 0;
 }
 
 .qv2-agility-title {
-  margin: 0 0 7px;
+  margin: 0 0 6px;
   color: var(--qs-azure, #2F6FED);
   font-size: 10.5px;
   font-weight: 780;
@@ -68,14 +64,17 @@
 }
 
 .qv2-agility-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
   color: var(--qs-midnight, #010748);
-  font-size: 12.5px;
+  font-size: 14.5px;
   line-height: 1.32;
 }
 
 .qv2-agility-stat b {
-  display: block;
-  margin: 0 0 5px;
+  display: inline-block;
+  margin: 0;
   font-size: 27px;
   line-height: 1;
   letter-spacing: -.03em;
@@ -84,13 +83,13 @@
 .qv2-agility-time {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
   color: var(--qs-midnight, #010748);
 }
 
 .qv2-new-stat {
-  font-size: clamp(1.65rem, 2.5vw, 2.2rem);
+  font-size: clamp(1.75rem, 2.7vw, 2.35rem);
   font-weight: 780;
   line-height: 1;
   letter-spacing: -.04em;
@@ -98,27 +97,28 @@
 
 .qv2-old-stat {
   color: var(--qs-muted, #66708F);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .qv2-agility-detail {
-  margin-top: 6px;
+  margin-top: 5px;
   color: var(--qs-muted, #66708F);
-  font-size: 11.5px;
+  font-size: 12.5px;
   line-height: 1.35;
 }
 
+/* Each result row slides in from the left when its diagram step starts. */
 .qv2-segment {
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity .28s ease, transform .28s ease;
+  transform: translateX(-34px);
+  transition: opacity .34s ease, transform .34s cubic-bezier(.22,.61,.36,1);
   pointer-events: none;
 }
 
 .qv2-segment.is-visible {
   opacity: 1;
-  transform: none;
+  transform: translateX(0);
   pointer-events: auto;
 }
 
@@ -186,33 +186,15 @@
 
   .qv2-comparison-block,
   .qv2-agility-block {
-    min-height: 100px;
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 9px;
   }
 }
 
 @media (max-width: 760px) {
-  .qv2-comparison-flow,
-  .qv2-agility-flow {
-    grid-template-columns: 1fr;
-  }
-
   .qv2-comparison-block,
-  .qv2-agility-block,
-  .qv2-comparison-block:first-child,
-  .qv2-agility-block:first-child,
-  .qv2-comparison-block:last-child,
-  .qv2-agility-block:last-child {
-    min-height: 0;
+  .qv2-agility-block {
     padding: 12px 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--qs-line, #DCE4FF);
-  }
-
-  .qv2-comparison-block:last-child,
-  .qv2-agility-block:last-child {
-    border-bottom: 0;
   }
 }
 
