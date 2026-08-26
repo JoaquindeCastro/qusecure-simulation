@@ -66,6 +66,17 @@ button{font:inherit;color:inherit}
 h2.title{font-size:clamp(1.9rem,3.4vw,2.7rem);letter-spacing:-.03em}
 .lede{font-size:clamp(1.02rem,1.5vw,1.19rem);color:var(--body);margin-top:18px}
 .sub{color:var(--muted);margin-top:12px;font-size:15.5px}
+.context-line{margin-top:10px;color:var(--teal-deep);font-size:14.5px;font-weight:600}
+.crypto-bridge{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:0;max-width:920px;margin:18px auto 0;
+  border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);overflow:hidden;text-align:left
+}
+.crypto-bridge div{padding:13px 16px;position:relative}
+.crypto-bridge div+div{border-left:1px solid var(--line)}
+.crypto-bridge b{display:block;font-size:13px;color:var(--ink);font-weight:640}
+.crypto-bridge span{display:block;margin-top:3px;color:var(--muted);font-size:13.5px;line-height:1.45}
+.quick-path{margin-top:16px;font-size:14px;color:var(--muted)}
+.quick-path .linky{font-weight:600}
 
 /* ---------- buttons ---------- */
 .btn{
@@ -123,7 +134,9 @@ details.learn[open] summary:before{content:"–"}
 .dots button[aria-current=true]{background:var(--teal);width:26px;border-radius:5px}
 
 /* ---------- readiness stack ---------- */
-.readiness{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;margin-top:44px}
+#s2{padding-top:clamp(24px,4vh,40px)}
+#s2 .lede{margin-top:12px}
+.readiness{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;margin-top:32px}
 .scene-count{text-align:center;margin-top:16px;color:var(--muted);font-size:15px}
 .scene-count b{color:var(--ink);font-weight:640;font-variant-numeric:tabular-nums}
 .detail.slim{margin-top:18px;min-height:0}
@@ -166,6 +179,16 @@ details.learn[open] summary:before{content:"–"}
 /* ---------- scene ---------- */
 .scene{position:relative;width:100%;max-width:min(455px,52vh);margin-inline:auto;aspect-ratio:1122/1402}
 .scene .plate-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.scene .scene-base{transition:opacity .28s var(--step),filter .28s var(--step)}
+.scene .scene-focus{
+  opacity:0;clip-path:circle(0 at var(--focus-x,50%) var(--focus-y,50%));pointer-events:none;
+  transition:opacity .2s var(--step),clip-path .38s var(--step);filter:saturate(1.06) contrast(1.03)
+}
+.scene.has-focus .scene-base{opacity:.24;filter:saturate(.42)}
+.scene.has-focus .scene-focus{opacity:1;clip-path:circle(15% at var(--focus-x) var(--focus-y))}
+.scene.has-focus .links{opacity:.24}
+.scene.has-focus .spot{opacity:.28}
+.scene.has-focus .spot[data-focus=true]{opacity:1}
 .noart{background:var(--raise);border:1px dashed var(--line-2);border-radius:var(--r-lg)}
 .noart img{opacity:0}
 .slide.noart{min-height:280px;display:grid;place-items:center}
@@ -285,6 +308,13 @@ details.learn[open] summary:before{content:"–"}
 .linky{border:0;background:none;padding:0;color:var(--teal-deep);cursor:pointer;font:inherit;text-decoration:underline;text-underline-offset:3px}
 .linky:hover{color:var(--ink)}
 .method-link{margin-top:26px;text-align:center;font-size:15px}
+.takeaway{
+  max-width:900px;margin:30px auto 0;padding:24px 28px;border:1px solid var(--line-2);
+  border-left:4px solid var(--teal);border-radius:var(--r-md);background:var(--surface);text-align:left;box-shadow:var(--shadow)
+}
+.takeaway h3{font-size:21px;margin-top:5px}
+.takeaway p:not(.eyebrow){color:var(--body);margin-top:8px;font-size:15.5px;line-height:1.58}
+.takeaway .linky{display:inline-block;margin-top:12px;font-size:14.5px;font-weight:600}
 .reveal{margin-top:26px;padding:34px;border:1px solid var(--teal);border-radius:var(--r-lg);background:linear-gradient(160deg,var(--teal-wash),#fff 70%);text-align:left}
 .reveal h3{font-size:22px}
 .reveal .sub{max-width:640px}
@@ -305,6 +335,8 @@ details.learn[open] summary:before{content:"–"}
 .cta .btn.primary:hover{background:#12aab8;border-color:#12aab8}
 .cta .btn:not(.primary){background:transparent;border-color:#42606f;color:#eef6f8}
 .cta .btn:not(.primary):hover{border-color:#8fb2be}
+.cta .btn.play{border-color:transparent;padding-inline:16px;color:#b9ced6}
+.cta .btn.play:hover{color:#fff;border-color:transparent;transform:none}
 .cta-foot{margin-top:24px;font-size:13.6px;color:#8fa8b3}
 .cta-foot .linky{color:#b9ced6}
 .cta-foot .linky:hover{color:#fff}
@@ -333,7 +365,8 @@ details.learn[open] summary:before{content:"–"}
   .readiness,.trigger-wrap,.explore,.hero{grid-template-columns:1fr;gap:34px}
   .hero{min-height:0}.hero .copy{text-align:center;margin-inline:auto}.hero .row{justify-content:center}
   .stackwrap{padding-left:120px}
-  .events,.qa,.sliders,.reveal-grid{grid-template-columns:1fr}
+  .events,.qa,.sliders,.reveal-grid,.crypto-bridge{grid-template-columns:1fr}
+  .crypto-bridge div+div{border-left:0;border-top:1px solid var(--line)}
   .reveal,.cta{padding:26px}
   .arrow{width:46px;height:46px}
   .arrow.prev{left:-6px}.arrow.next{right:-6px}
@@ -403,7 +436,13 @@ details.learn[open] summary:before{content:"–"}
 <!-- 2 · READINESS -->
 <section class="screen" id="s2">
   <div class="center"><p class="eyebrow">Step 2 of 4</p><h2 class="title">How deep does protection go?</h2>
+    <p class="context-line" id="selectedIndustry">You chose Healthcare. Here is your healthcare network.</p>
     <p class="lede">Every system on this map is held together by cryptography — keys that keep its data private, and certificates that prove which machine is which. Upgrading a system means replacing those. Watch how far down the organization that actually reaches.</p></div>
+  <div class="crypto-bridge" aria-label="How cryptography becomes protection">
+    <div><b>1 · Cryptography is the dependency</b><span>Keys, certificates and protocols keep each connection private and trustworthy.</span></div>
+    <div><b>2 · Protection means changeable</b><span>A system is protected only when that cryptography has actually been replaced.</span></div>
+    <div><b>3 · Readiness is reach</b><span>The deeper this replacement goes, the more of the network can survive the next change.</span></div>
+  </div>
   <div class="readiness">
     <div>
       <div class="scene" id="scene2"></div>
@@ -428,8 +467,9 @@ details.learn[open] summary:before{content:"–"}
 
 <!-- 3 · EVENT -->
 <section class="screen" id="s3">
-  <div class="center"><p class="eyebrow">Step 3 of 4</p><h2 class="title">Choose a cryptographic shock</h2>
-    <p class="lede">This is not only about quantum computers. It is about whether an organization can change its cryptography at all, at short notice, on somebody else’s deadline.</p></div>
+  <div class="center"><p class="eyebrow">Step 3 of 4</p><h2 class="title" id="eventTitle">Choose a shock for your healthcare network</h2>
+    <p class="lede">This is not only about quantum computers. It is about whether an organization can change its cryptography at all, at short notice, on somebody else’s deadline.</p>
+    <p class="quick-path">Short on time? <button class="linky" data-go="5">Skip to the 60-second takeaway</button></p></div>
   <div class="events" id="events"></div>
   <details class="learn advanced">
     <summary>Advanced assumptions (optional)</summary>
@@ -444,7 +484,8 @@ details.learn[open] summary:before{content:"–"}
 
 <!-- 4 · TRIGGER -->
 <section class="screen" id="s4">
-  <div class="center"><p class="eyebrow">Step 4 of 4</p><h2 class="title" id="triggerTitle">Trigger the event</h2></div>
+  <div class="center"><p class="eyebrow">Step 4 of 4</p><h2 class="title" id="triggerTitle">Trigger the event</h2>
+    <p class="quick-path">Need the short version? <button class="linky" data-go="5">Go straight to the takeaway</button></p></div>
   <div class="trigger-wrap">
     <div><div class="scene" id="scene4"></div><div class="legend" id="legend4" hidden></div></div>
     <div class="trigger-side">
@@ -462,6 +503,12 @@ details.learn[open] summary:before{content:"–"}
 <section class="screen" id="s5">
   <div class="center"><p class="eyebrow" id="resultEyebrow">Result</p><h2 class="title" id="resultTitle"></h2></div>
   <div class="headline center" id="headline" aria-live="polite"></div>
+  <aside class="takeaway" aria-labelledby="takeawayTitle">
+    <p class="eyebrow">Your 60-second takeaway</p>
+    <h3 id="takeawayTitle">This network is exposed, but the response is not helpless.</h3>
+    <p id="takeawayCopy">Crypto agility lets the organization find and replace reachable cryptography centrally. It cuts response time; it does not shorten supplier schedules, replace physical equipment or discover systems nobody recorded.</p>
+    <button class="linky" id="jumpAgility">See how crypto agility changes this exact result ↓</button>
+  </aside>
   <div class="qa">
     <article><h3>What happened</h3><p id="qWhat"></p></article>
     <article><h3>Why it happened</h3><p id="qWhy"></p></article>
@@ -469,9 +516,9 @@ details.learn[open] summary:before{content:"–"}
     <article><h3>What crypto agility cannot solve</h3><ul id="qCant"></ul></article>
   </div>
   <section class="reveal" id="reveal" aria-labelledby="revealTitle">
-    <h3 id="revealTitle">Now change one thing</h3>
-    <p class="sub" id="revealIntro">Keep the same event, the same suppliers, the same people and the same records. Change only this: the organization can find its cryptography and replace it from one place, instead of system by system. That ability has a name — crypto agility.</p>
-    <div class="row" style="justify-content:flex-start"><button class="btn primary" id="showAgile">Replay it that way</button></div>
+    <h3 id="revealTitle">This network is in trouble. Here is the control that changes the response.</h3>
+    <p class="sub" id="revealIntro">The event exposed two problems: what broke, and whether the organization can coordinate a response. Crypto agility is the ability to find and replace cryptography centrally. Keep the same event, suppliers, people and records—then turn on only that capability.</p>
+    <div class="row" style="justify-content:flex-start"><button class="btn primary" id="showAgile">Turn on crypto agility</button></div>
     <div id="revealOut" hidden>
       <div class="reveal-grid">
         <div><div class="scene" id="scene5"></div></div>
@@ -503,8 +550,9 @@ details.learn[open] summary:before{content:"–"}
     <h3>So what actually helps?</h3>
     <p>Three things stopped this response: a supplier’s release schedule, equipment somebody has to physically replace, and systems nobody had written down. The first two are not yours to shortcut. The third — knowing what cryptography you have, and being able to replace it from one place — is a decision an organization gets to make. That decision is crypto agility.</p>
     <div class="cta-row">
-      <a class="btn primary big" id="ctaPrimary" href="https://www.qusecure.com" target="_blank" rel="noopener noreferrer">Get crypto agility</a>
-      <button class="btn big" data-go="6">Keep exploring</button>
+      <a class="btn big" id="ctaLearn" href="https://www.qusecure.com/what-is-crypto%E2%80%91agility/" target="_blank" rel="noopener noreferrer">Learn about crypto agility</a>
+      <a class="btn primary big" id="ctaPrimary" href="https://www.qusecure.com/learn-more-request-a-demo/" target="_blank" rel="noopener noreferrer">Get crypto agility</a>
+      <button class="btn big play" data-go="6">Keep playing</button>
     </div>
     <p class="cta-foot"><button class="linky" data-go="4">Replay the event</button> · <button class="linky" data-go="7">How this model works, and what it cannot tell you</button></p>
   </div>
@@ -988,6 +1036,12 @@ addEventListener('scroll',function(){if(!tip.hidden)hideTip()},{passive:true});
 addEventListener('resize',hideTip);
 var ORDER=['health','finance','gov','infra'];
 var STEP_OF={1:1,2:2,3:3,4:3,5:4,6:4};
+var INDUSTRY_CTA={
+  health:'Get crypto agility for your health system',
+  finance:'Get crypto agility for your bank',
+  gov:'Get crypto agility for your agency',
+  infra:'Get crypto agility for your infrastructure'
+};
 
 var input={industry:'health',adoption:'edge',event:'qday',inventory:65,teams:3,vendor:55,orch:15,horizon:7};
 var slide=0,result=null,fired=false,pinned=null;
@@ -1024,8 +1078,9 @@ function go(n){
     pinned2=null;paintReadiness(true);
     if(REDUCED.matches)paintReadiness();else setTimeout(paintReadiness,420);
   }
+  if(n===3)$('#eventTitle').textContent='Choose a shock for your '+SCENES[input.industry].name.toLowerCase()+' network';
   if(n===4)enterTrigger();
-  if(n===5)paintResult();
+  if(n===5){result=simulate(input);paintResult()}
   if(n===6)enterExplore();
   annotate($('#s'+n));
   window.scrollTo({top:0,behavior:REDUCED.matches?'auto':'smooth'});
@@ -1092,9 +1147,11 @@ $('#methodBack').onclick=function(){go(priorScreen)};
    model will use. Grey means the cryptography in that system has not been replaced. */
 function paintReadiness(dark){
   renderScene($('#scene2'),true);
+  focusScene($('#scene2'),pinned2);
   var scene=SCENES[input.industry],
       covered=dark?{}:coveredSet(scene.assets,ADOPTION[input.adoption].coverage),
       states={},lit=0;
+  $('#selectedIndustry').textContent='You chose '+scene.name+'. Here is your '+scene.name.toLowerCase()+' network.';
   scene.assets.forEach(function(a){
     if(covered[a.id]){states[a.id]='protected';lit++}
     else states[a.id]=a.band==='legacy'?'holdout':'dim';
@@ -1189,12 +1246,15 @@ var SVGNS='http://www.w3.org/2000/svg';
 function renderScene(host,interactive){
   var sc=SCENES[input.industry];
   if(host.dataset.key===input.industry)return;
-  host.dataset.key=input.industry;host.textContent='';
+  host.dataset.key=input.industry;host.textContent='';host.classList.remove('has-focus');
   var img=document.createElement('img');
-  img.className='plate-img';img.src=sc.img;img.alt=sc.alt;img.width=1122;img.height=1402;img.decoding='async';
+  img.className='plate-img scene-base';img.src=sc.img;img.alt=sc.alt;img.width=1122;img.height=1402;img.decoding='async';
   /* If the illustration cannot load, the map still has to work: hotspots and states stay usable. */
   img.onerror=function(){host.classList.add('noart')};
   host.appendChild(img);
+  var focus=document.createElement('img');
+  focus.className='plate-img scene-focus';focus.src=sc.img;focus.alt='';focus.width=1122;focus.height=1402;
+  focus.decoding='async';focus.setAttribute('aria-hidden','true');host.appendChild(focus);
   var at={};sc.assets.forEach(function(a){at[a.id]=a});
   var svg=document.createElementNS(SVGNS,'svg');
   svg.setAttribute('class','links');svg.setAttribute('viewBox','0 0 100 100');
@@ -1217,6 +1277,12 @@ function renderScene(host,interactive){
     if(!interactive)s.tabIndex=-1;
     host.appendChild(s);
   });
+}
+function focusScene(host,id){
+  var sc=SCENES[input.industry],a=id&&sc.assets.filter(function(x){return x.id===id})[0];
+  host.classList.toggle('has-focus',!!a);
+  if(a){host.style.setProperty('--focus-x',a.x+'%');host.style.setProperty('--focus-y',a.y+'%')}
+  $$('#'+host.id+' .spot').forEach(function(s){s.dataset.focus=String(!!a&&s.dataset.id===a.id)});
 }
 function paintStates(host,states){
   $$('#'+host.id+' .spot').forEach(function(s){
@@ -1269,14 +1335,15 @@ $('#scene2').addEventListener('click',function(e){
   var s=e.target.closest('.spot');if(!s)return;
   pinned2=pinned2===s.dataset.id?null:s.dataset.id;
   $$('#scene2 .spot').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.id===pinned2)});
+  focusScene($('#scene2'),pinned2);
   showReadinessDetail(pinned2);
 });
 $('#scene2').addEventListener('pointerover',function(e){
-  var s=e.target.closest('.spot');if(s)showReadinessDetail(s.dataset.id);
+  var s=e.target.closest('.spot');if(s){focusScene($('#scene2'),s.dataset.id);showReadinessDetail(s.dataset.id)}
 });
-$('#scene2').addEventListener('pointerleave',function(){showReadinessDetail(pinned2)});
+$('#scene2').addEventListener('pointerleave',function(){focusScene($('#scene2'),pinned2);showReadinessDetail(pinned2)});
 $('#scene2').addEventListener('focusin',function(e){
-  var s=e.target.closest('.spot');if(s)showReadinessDetail(s.dataset.id);
+  var s=e.target.closest('.spot');if(s){focusScene($('#scene2'),s.dataset.id);showReadinessDetail(s.dataset.id)}
 });
 $('#scene4').addEventListener('click',function(e){
   var s=e.target.closest('.spot');if(!s)return;
@@ -1324,6 +1391,13 @@ function paintResult(){
   }
   $('#headline').innerHTML=lines.join('');
 
+  var agilePreview=simulate(Object.assign({},input,{orch:AGILE_ORCH})),outside=c.blocked+c.unknown;
+  $('#takeawayTitle').textContent=r.industry+' is under pressure. The lever you control is the response.';
+  $('#takeawayCopy').textContent=c.exposed
+    ? 'Crypto agility lets this organization find and replace reachable cryptography centrally. In this run, it turns '+r.days.fragmented+' days of system-by-system work into '+agilePreview.days.agile+' days. '+outside+' system'+(outside===1?' remains':'s remain')+' outside that control.'
+    : 'Crypto agility coordinates work the organization can reach, but this run has no directly changeable systems. Suppliers, physical equipment and unrecorded systems must be addressed before central control can help.';
+  $('#ctaPrimary').textContent=INDUSTRY_CTA[input.industry];
+
   $('#qWhat').textContent=ev.plain;
   $('#qWhy').textContent='At the “'+ADOPTION[input.adoption].label+'” level, '+c.protected+' of '+r.total+
     ' systems had already migrated. The event puts pressure on '+ev.properties+'. '+
@@ -1362,6 +1436,8 @@ function paintResult(){
   $('#mReach').textContent=r.reach+'%';
   paintProperties(r);
   /* The reveal is a one-time turn; reset it whenever the underlying run changes. */
+  $('#revealTitle').textContent='This network is in trouble. Here is the control that changes the response.';
+  $('#showAgile').textContent='Turn on crypto agility';
   $('#showAgile').hidden=false;$('#revealOut').hidden=true;
 }
 
@@ -1374,6 +1450,7 @@ $('#showAgile').onclick=function(){
       after=simulate(Object.assign({},input,{orch:AGILE_ORCH}));
   $('#showAgile').hidden=true;
   $('#revealOut').hidden=false;
+  $('#revealTitle').textContent='Crypto agility changed the response — not the estate.';
 
   renderScene($('#scene5'),false);
   paintStates($('#scene5'),before.states);
@@ -1398,6 +1475,11 @@ $('#showAgile').onclick=function(){
       'which is why the inventory and the suppliers matter as much as the tooling.'
     : '<b>Nothing was left behind in this run.</b> Lower the supplier readiness or the inventory visibility and you will see the systems no amount of agility reaches.';
   annotate($('#reveal'));
+};
+
+$('#jumpAgility').onclick=function(){
+  $('#reveal').scrollIntoView({behavior:REDUCED.matches?'auto':'smooth',block:'start'});
+  $('#showAgile').focus({preventScroll:true});
 };
 
 var PROPERTY_COPY={

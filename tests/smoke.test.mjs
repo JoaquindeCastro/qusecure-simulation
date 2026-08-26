@@ -93,8 +93,16 @@ test("the page tells the reader what the dotted words are", () => {
 
 test("the readiness screen runs on the chosen industry, not an abstract diagram", () => {
   assert.ok(html.includes('id="scene2"'), "readiness screen has no industry map");
+  assert.ok(html.includes('id="selectedIndustry"'), "the chosen industry is not framed on the next screen");
   assert.ok(/coveredSet\(scene\.assets/.test(html), "the map is not driven by the model's own coverage");
   assert.ok(html.includes("holdout"), "systems no readiness level reaches are not marked");
+  assert.ok(html.includes("focusScene"), "system drill-down does not visually isolate the relevant sector");
+});
+
+test("offers a short path without losing the takeaway", () => {
+  assert.ok(html.includes("Skip to the 60-second takeaway"));
+  assert.ok(html.includes('id="takeawayTitle"'));
+  assert.ok(html.includes("The lever you control is the response"));
 });
 
 test("the crypto-agility turn exists and keeps its own caveat", () => {
@@ -104,8 +112,10 @@ test("the crypto-agility turn exists and keeps its own caveat", () => {
 });
 
 test("the ending offers both a way forward and a way to keep playing", () => {
+  assert.ok(html.includes("Learn about crypto agility"));
   assert.ok(html.includes("Get crypto agility"));
-  assert.ok(html.includes("Keep exploring"));
+  assert.ok(html.includes("Get crypto agility for your bank"));
+  assert.ok(html.includes("Keep playing"));
   assert.ok(/rel="noopener noreferrer"/.test(html), "outbound link is not safely rel-tagged");
 });
 
