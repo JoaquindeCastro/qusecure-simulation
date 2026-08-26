@@ -35,8 +35,8 @@ test('the chosen industry remains in a persistent split workspace', () => {
   assert.match(css, /height: 100dvh/);
 });
 
-test('readiness has explicit stages including none and broad migration', () => {
-  assert.match(js, /None \/ Not sure/);
+test('readiness has explicit stages including the requested not-sure wording and broad migration', () => {
+  assert.match(js, /Not sure\? Click None - We have not heard of PQC/);
   assert.match(js, /Public edge only/);
   assert.match(js, /A few internal systems/);
   assert.match(js, /Most internal systems/);
@@ -52,14 +52,32 @@ test('scenario choice is a translucent overlay with concrete production scenario
   assert.doesNotMatch(js, /Old protocol banned/);
 });
 
-test('replay explicitly uses reconnaissance, resilience, and reporting', () => {
+test('before and after use matching three-column comparison flows', () => {
+  assert.match(js, /Before crypto agility/);
+  assert.match(js, /With crypto agility/);
   assert.match(js, /Reconnaissance/);
   assert.match(js, /Resilience/);
   assert.match(js, /Reporting/);
+  assert.match(js, /runThreeStepSequence/);
+  assert.match(liveCss, /grid-template-columns: repeat\(3/);
+  assert.match(liveCss, /qv2-segment\.is-visible/);
+});
+
+test('result animation connects each segment to a diagram pulse', () => {
+  assert.match(js, /pulseIds/);
+  assert.match(js, /qv2-step-pulse/);
+  assert.match(js, /idsForState\(result\.states, \['unknown'\]\)/);
+  assert.match(js, /idsForState\(result\.states, \['exposed'\]\)/);
+  assert.match(js, /idsForState\(result\.states, \['blocked'\]\)/);
+  assert.match(liveCss, /@keyframes qv2-step-pulse/);
+});
+
+test('replay uses reconnaissance plus resilience and can rewind', () => {
   assert.match(js, /recon: true/);
   assert.match(js, /orch: 90/);
   assert.match(js, /previously unknown systems identified/);
-  assert.match(liveCss, /qv2-agility-flow/);
+  assert.match(js, /Rewind without crypto agility/);
+  assert.match(js, /renderResult\(currentResult\)/);
 });
 
 test('component isolation grays the rest of the industry image', () => {
